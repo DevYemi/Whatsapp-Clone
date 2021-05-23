@@ -1,0 +1,53 @@
+.login {
+    background-color: #f8f8f8;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    place-items: center;
+}
+.login__container {
+    padding: 100px;
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(63, 4, 4, 0.12) 0 1px
+}
+.login__container > img {
+    object-fit: contain;
+    height: 100px;
+    margin-bottom: 40px;
+}
+.login__text {
+    margin-bottom: 1em;
+}
+.login__container > button {
+    margin-top: 30px;
+    text-transform: inherit !important;
+    background-color: #0a8d48;
+    color: white;
+}
+.login__container > button:hover {
+    background-color: #076633;
+    color: white;
+}
+.login__login,.login__signUp {
+    display: flex;
+    font-size: small !important;
+    margin-top: 1em;
+    align-items: center;
+    justify-content: center;
+}
+.login__login span,.login__signUp span {
+    color: rgb(7, 145, 199);
+    cursor: pointer;
+    margin-left: .2em;
+}
+.PhoneInputInput {
+    padding: .5em;
+    outline-color: green;
+}
+.login__eg {
+    font-size: x-small;
+    color: rgba(0, 0, 0, 0.548);
+    margin-top: .2em;
+}

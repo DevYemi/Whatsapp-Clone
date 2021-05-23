@@ -1,0 +1,20 @@
+/* ADD CHAT MODAL STYLES */
+
+.modal__addChat .PhoneInput {
+    margin: 1em 0;
+}
+.modal__addChat button,.modal__addRoom button {
+    text-align: center;
+    width: 50%;
+    background-color: #05638a;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    display: block;
+    font-weight: 600;
+    padding: .5em 0;
+    margin: auto;
+}
+.modal__addChat button:hover,.modal__addRoom button:hover {
+    background-color: #11749e;
+}

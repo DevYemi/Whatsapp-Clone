@@ -1,0 +1,63 @@
+.userProfile__wr {
+    flex: .35;
+}
+.userProfile__header {
+    display: flex;
+    align-items: center;
+    padding: 1.8em;
+    border-bottom: 1px solid #80808036;
+    background-color: #ededed;
+    
+}
+.userProfile__header > p {
+    margin-left: 1em;
+}
+.userProfileBody__sec1 {
+    display: flex;
+    background-color: white;
+    padding: 1.3em;
+    flex-direction: column;
+}
+.userProfileBody__sec1 .MuiAvatar-root {
+width: 200px;
+height: 200px;
+align-self: center;
+margin-top: 1em;
+}
+.userProfileBody__sec1 div {
+    margin-top: 1em;
+}
+.userProfileBody__sec1 div p {
+    margin-top: .5em;
+    color: rgba(0, 0, 0, 0.493);
+}
+.userProfileBody__sec1 div p:first-child {
+    font-size: 1.2rem;
+    color: rgba(0, 0, 0, 0.781);
+}
+.userProfileBody__sec2 {
+    display: flex;
+    background-color: white;
+    padding: 1em;
+    flex-direction: column;
+    margin-top: .5em;
+}
+.userProfileBody__sec2 > p {
+    font-size: .8rem;
+    align-self: center;
+    color: rgba(0, 0, 0, 0.473);
+    margin-top: 1.1em;
+}
+.userProfileBody__sec2Info {
+    display: flex;
+    justify-content: space-between;
+}
+.userProfileBody__sec2Info p {
+    font-size: .9rem;
+    color: #009688;
+}
+.userProfileBody__sec2Info .MuiSvgIcon-root {
+    color: rgba(0, 0, 0, 0.527);
+    width: .7em;
+    height: .7em;
+}

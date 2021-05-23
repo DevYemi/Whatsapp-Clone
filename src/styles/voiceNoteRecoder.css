@@ -1,0 +1,46 @@
+.voiceNoteRecoder {
+    display: flex;
+    transition: all 1s ease-in-out;
+    align-items: center;
+    justify-content: space-between;
+}
+.voiceNoteRecoder.show {
+    width: 100%
+}
+.voiceNoteRecoder__recoding {
+    display: none;
+}
+.voiceNoteRecoder__recoding > div > .MuiSvgIcon-root {
+    color: #FF0000;
+    transform: translateY(0px) rotate(0deg);
+    display: inline-block;
+    position: relative;
+    transition: all .5s ease-in-out;
+}
+.voiceNoteRecoder__recoding > div > .MuiSvgIcon-root.blink {
+    opacity: .2;
+}
+.voiceNoteRecoder__recoding > div {
+    position: relative;
+}
+.voiceNoteRecoder__recoding > div > img {
+    position: absolute;
+    transform: translateY(50px);
+}
+.voiceNoteRecoder__recoding > .voiceNoteRecoder__timer {
+    margin-left: 1em;
+    color: rgba(0, 0, 0, 0.808);
+}
+.voiceNoteRecoder__recoding.show {
+    display: flex;
+    align-items: center;
+}
+.voiceNoteRecoder > p {
+    display: none;
+    cursor: pointer;
+    color: #FF0000;
+    font-weight: 500;
+}
+.voiceNoteRecoder p.show {
+    display: block;
+}

@@ -59,6 +59,15 @@
     overflow-y: scroll;
     border-radius: 0px 0px 0px 20px;
 }
+.sidebar__convos::-webkit-scrollbar {
+    width: .6em;
+  }
+.sidebar__convos::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(128, 128, 128, 0); 
+  } 
+  .sidebar__convos::-webkit-scrollbar-thumb {
+    background: rgba(73, 72, 72, 0.466); 
+  }
 .sidebar__convos > a  {
     text-decoration: none;
     color: black;

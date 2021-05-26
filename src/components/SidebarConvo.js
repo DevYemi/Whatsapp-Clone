@@ -3,17 +3,18 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import '../styles/sidebarConvo.css'
 import DisplayModal from './DisplayModal';
-import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, getTotalUsersFromDb, createNewChatInDb, getUserInfoFromDb, createNewRoomInDb, getRoomMessgFromDb } from './get&SetDataToDb';
+import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, getTotalUsersFromDb, createNewChatInDb, getUserInfoFromDb, createNewRoomInDb } from './get&SetDataToDb';
 import SidebarConvoLastMessage from './SidebarConvoLastMessage';
 import { useStateValue } from './StateProvider';
 import {useLocation} from "react-router-dom";
+import { userProfile } from './UserProfile';
 
 
 function SidebarConvo({ addNewConvo, convoId, name, isRoom }) {
     const [{ user }] = useStateValue(); // keeps state for current logged in user
     const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
     const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
-    const [modalInput, setModalInput] = useState() // keeps state of user input in the modal
+    const [modalInput, setModalInput] = useState("") // keeps state of user input in the modal
     const [newMssgNum, setNewMssgNum] = useState(0); // keeps stste for the number of new messages
     const [totalUserOnDb, setTotalUserOnDb] = useState() // keeps state for the total user on the db
     const [lastMessage, setlastMessage] = useState(); // keeps state for the last message recived or sent
@@ -74,7 +75,7 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom }) {
     }, [convoId, user?.info.uid, isRoom])
     return !addNewConvo ? (
         <Link to={isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`}>
-            <div onClick={() => { setNewMssgNum(0); displayConvoForMobile("show") }} className="sidebarConvoWr">
+            <div onClick={() => { setNewMssgNum(0); displayConvoForMobile("show"); userProfile.close(); }} className="sidebarConvoWr">
                 <div className="sidebarConvo">
                     <Avatar src={userInfoDb?.avi} />
                     <div className="sidebarConvo__info">
@@ -105,10 +106,8 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom }) {
 
 export default React.memo(SidebarConvo)
 export const displayConvoForMobile = (event) => { // displays chat message on a mobile screen when the user clicks on the sideBarConvo component 
-    console.log("drawing div out")
     var currentScreenSize = window.innerWidth
     let convoDiv = document.querySelector(".convo");
-    console.log(convoDiv)
     if (currentScreenSize > 767) return
     if (!convoDiv) return
     if (event === "show") {

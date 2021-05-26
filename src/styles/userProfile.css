@@ -1,6 +1,16 @@
 .userProfile__wr {
-    flex: .35;
+    flex: 0;
+    overflow-y: scroll;
 }
+.userProfile__wr::-webkit-scrollbar {
+    width: .4em;
+  }
+.userProfile__wr::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #EFEFEF; 
+  } 
+  .userProfile__wr::-webkit-scrollbar-thumb {
+    background: #BFBFBF; 
+  }
 .userProfile__header {
     display: flex;
     align-items: center;
@@ -9,8 +19,15 @@
     background-color: #ededed;
     
 }
+.userProfile__header .MuiSvgIcon-root {
+    cursor: pointer;
+}
 .userProfile__header > p {
     margin-left: 1em;
+}
+.userProfile__body {
+    opacity: 0;
+    margin-top: -30px;
 }
 .userProfileBody__sec1 {
     display: flex;
@@ -35,7 +52,7 @@ margin-top: 1em;
     font-size: 1.2rem;
     color: rgba(0, 0, 0, 0.781);
 }
-.userProfileBody__sec2 {
+.userProfileBody__sec2, .userProfileBody__sec3, .userProfileBody__sec4{
     display: flex;
     background-color: white;
     padding: 1em;
@@ -56,8 +73,53 @@ margin-top: 1em;
     font-size: .9rem;
     color: #009688;
 }
-.userProfileBody__sec2Info .MuiSvgIcon-root {
+.userProfileBody__sec2Info .MuiSvgIcon-root, .starMessg .MuiSvgIcon-root, .disappearingMessg .MuiSvgIcon-root {
     color: rgba(0, 0, 0, 0.527);
     width: .7em;
     height: .7em;
+}
+
+.muteNotifi, .starMessg, .disappearingMessg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.082);
+    padding-bottom: .9em;
+}
+.starMessg {
+    margin: 1.3em 0;
+    padding-bottom: 1em !important;
+}
+.disappearingMessg {
+    border-bottom: none !important;
+}
+.disappearingMessg p {
+    display: flex;
+    flex-direction: column;
+}
+.disappearingMessg p span:last-child {
+  color: rgba(128, 128, 128, 0.562);
+  margin-top: .5em;
+}
+.userProfileBody__sec4 p:first-child {
+    font-size: .9rem;
+    color: #009688;
+}
+.userProfileBody__sec4 p:nth-of-type(2) {
+    margin: 1.2em 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.082);
+    font-size: 1.1rem;
+    color: rgb(61, 57, 57);
+    padding-bottom: 1em;
+}
+.userProfileBody__sec5, .userProfileBody__sec6, .userProfileBody__sec7 {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 1em;
+    margin-top: .5em;
+    color: red !important;
+}
+.userProfileBody__sec5 p, .userProfileBody__sec6 p, .userProfileBody__sec7 p {
+    margin-left: 1.6em;
 }

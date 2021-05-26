@@ -10,17 +10,17 @@ import ChatBody from './ChatBody';
 import ChatFooter from './ChatFooter';
 import { IconButton } from '@material-ui/core';
 
-function Chat() {
+function Chat(props) {
+    const {setOpenModal, setModalType, setIsRoom} = props
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
     const [isFileOnPreview, setIsFileOnPreview] = useState(false); // keeps state if there currently a file on preview
     const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
-    const [{ user }] = useStateValue(); // new logged in user
+    const [{ user,currentDisplayConvoInfo }, dispatch] = useStateValue(); // new logged in user and the currentDisplayConvoInfo
     const [messages, setMessages] = useState([]); // keeps state for the messages in a chat
     const [isChatSearchBarOpen, setIsChatSearchBarOpen] = useState(false) // keeps state if the chatheader search bar is open
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
     const [totalChatWordFound, setTotalChatWordFound] = useState(0); // keeps state of total word found when a user search on the header search bar
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
-    const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
     const { chatId } = useParams(); // id for the current room the user is on
     console.log("chat rendring")
     const sendMessage = (e, eventType, file) => { // sends new message to db
@@ -98,26 +98,29 @@ function Chat() {
     useEffect(()=>{ // reset the user read value to true once a chat is opened
         resetRecieverMssgReadOnDb(chatId,user?.info.uid, true)
     },[chatId,user?.info.uid])
-    useEffect(() => { // gets userInfoDb and chatMessages on first render
+    useEffect(() => { // gets currentDisplayConvoInfo and chatMessages on first render
         let unsubcribeMessages;
         if (chatId) {
-            getUserInfoFromDb(chatId, setUserInfoDb);
+            getUserInfoFromDb(chatId, dispatch, true);
             unsubcribeMessages = getMessgFromDb(user?.info.uid,chatId,false, "asc", setMessages, false);
         }
         return () => {unsubcribeMessages(); }
-    }, [chatId,user?.info.uid]);
+    }, [chatId,user?.info.uid, dispatch]);
 
     return (
         <div className="chat convo">
             <ChatHeader
                 chatId={chatId}
-                userInfoDb={userInfoDb}
+                currentDisplayConvoInfo={currentDisplayConvoInfo}
                 messages={messages}
                 setMessages={setMessages}
                 setIsChatSearchBarOpen={setIsChatSearchBarOpen}
                 uploadFile={uploadFile}
                 setFoundWordIndex={setFoundWordIndex}
                 setTotalChatWordFound={setTotalChatWordFound}
+                setOpenModal={setOpenModal}
+                setModalType={setModalType} 
+                setIsRoom={setIsRoom}
             />
             <ChatBody
                 messages={messages}
@@ -125,7 +128,7 @@ function Chat() {
             />
             <ChatFooter
                 showEmojis={showEmojis}
-                userInfoDb={userInfoDb}
+                currentDisplayConvoInfo={currentDisplayConvoInfo}
                 totalChatWordFound={totalChatWordFound}
                 onEmojiClick={onEmojiClick}
                 input={input}

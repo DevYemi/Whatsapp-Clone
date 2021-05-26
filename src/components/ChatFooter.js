@@ -1,11 +1,11 @@
 import { IconButton } from '@material-ui/core'
 import { ExpandLessRounded, ExpandMoreRounded, InsertEmoticon } from '@material-ui/icons'
 import Picker from 'emoji-picker-react';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import VoiceNoteRecoder from './VoiceNoteRecoder'
 
 function ChatFooter(props) {
-    const { showEmojis,userInfoDb, onEmojiClick, input,setFoundWordIndex, setInput,foundWordIndex, sendMessage, chatId, scrollChatBody, isChatSearchBarOpen, totalChatWordFound } = props
+    const { showEmojis,currentDisplayConvoInfo, onEmojiClick, input,setFoundWordIndex, setInput,foundWordIndex, sendMessage, chatId, scrollChatBody, isChatSearchBarOpen, totalChatWordFound } = props
     const [vnIsRecoding, setVnIsRecoding] = useState(false); // keeps state if the user is currently recording a voice note
     const navigateToFoundWord = (key) => {
         let newIndex;
@@ -66,7 +66,7 @@ function ChatFooter(props) {
                     vnIsRecoding={vnIsRecoding}
                     setVnIsRecoding={setVnIsRecoding}
                     convoId={chatId}
-                    convoInfo={userInfoDb}
+                    convoInfo={currentDisplayConvoInfo}
                     scrollChatBody={scrollChatBody}
                 />
             </section>

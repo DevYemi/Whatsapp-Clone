@@ -24,7 +24,6 @@ function Room() {
     const [roomMembers, setRoomMembers] = useState([])
     const [roomInfo, setRoomInfo] = useState(""); // keeps state for the current room name the user is on
     const { roomId } = useParams(); // id for the current room the user is on
-    console.log("room rendring")
   
     const sendMessage = (e, eventType, file) => { // sends new message to db
         e && e.preventDefault();

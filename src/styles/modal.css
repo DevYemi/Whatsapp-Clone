@@ -6,7 +6,7 @@
 .modal__addChat button,.modal__addRoom button {
     text-align: center;
     width: 50%;
-    background-color: #05638a;
+    background-color: #06D755;
     color: white;
     border-radius: 5px;
     border: none;
@@ -16,5 +16,28 @@
     margin: auto;
 }
 .modal__addChat button:hover,.modal__addRoom button:hover {
-    background-color: #11749e;
+    background-color: #06D755;
 }
+
+.modal__muteConvo p {
+    margin: 1em 0;
+    color: rgba(0, 0, 0, 0.699);
+}
+.modal__muteConvo div button {
+    padding: 1em 1.2em;
+    cursor: pointer;
+    outline: none;
+    border: none;
+}
+.modal__muteConvo div button:nth-of-type(1) {
+ color: #06D755;
+ background-color: white;
+ box-shadow: 1px 1px 8px  black;
+}
+.modal__muteConvo div button:nth-of-type(2) {
+    margin-left: 1em;
+    background-color: #06D755;
+    border-radius: 5px;
+    color: white;
+}
+

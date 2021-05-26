@@ -26,19 +26,24 @@ function Sidebar() {
     },[convos,urlHistory,isFirstRender])
     useEffect(() => { // gets the chat and the room convo
         const unsubcribeRooms = getRoomsFromDb(user?.info.uid, setRooms); // gets all rooms from db on first render 
-        const unsubcribeUserInfoDb = getUserInfoFromDb(user?.info.uid, setUserInfoDb)
+        const unsubcribeUserInfoDb = getUserInfoFromDb(user?.info.uid, setUserInfoDb, false)
         const unsubcribeChats = getChatsFromDb(user?.info.uid, setChats); // gets all chats from db on first render
         return () => { unsubcribeRooms(); unsubcribeChats(); unsubcribeUserInfoDb(); }
     }, [user?.info.uid])
     useEffect(() => { // makes sure the latest convo show at the up
         if (chats && rooms) {
-            let conversations = [...chats, ...rooms];
-            conversations.sort(function (x, y) {
+            let mutedConvos = [...chats, ...rooms].filter((convo) =>{ // filter out convos that has been muted by user
+                return convo.data.muted === true
+              });
+              let unmutedConvos = [...chats, ...rooms].filter((convo) =>{ // filter out convos that hasnt been muted by user
+                  return convo.data.muted !== true
+                });
+            unmutedConvos.sort(function (x, y) {
                 let chat1 = new Date(x?.data?.timestamp?.seconds);
                 let chat2 = new Date(y?.data?.timestamp?.seconds);
                 return chat2 - chat1;
             })
-            setConvos(conversations)
+            setConvos([...unmutedConvos, ...mutedConvos])
         }
     }, [chats, rooms])
     return (

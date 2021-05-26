@@ -12,10 +12,11 @@ import db from "../firebase";
 import { getMessgFromDb } from "./get&SetDataToDb";
 import { displayConvoForMobile } from "./SidebarConvo";
 import { useStateValue } from "./StateProvider";
+import { userProfile } from "./UserProfile";
 
 function ChatHeader(props) {
   const {
-    userInfoDb,
+    currentDisplayConvoInfo,
     messages,
     setFoundWordIndex,
     chatId,
@@ -23,10 +24,14 @@ function ChatHeader(props) {
     uploadFile,
     setIsChatSearchBarOpen,
     setTotalChatWordFound,
+    setOpenModal,
+    setModalType,
+    setIsRoom,
   } = props;
   const [searchInput, setSearchInput] = useState("");
   const [{ user }] = useStateValue(); // new logged in user
-  const [ischatHeaderHelpOpened, setIschatHeaderHelpOpened] = useState(false);
+  const [ischatHeaderHelpOpened, setIschatHeaderHelpOpened] = useState(false); // keeps state if the chat help div is opened or not
+
   const chatHeaderSearchBar = {
     open: function () {
       let headerContent = document.querySelector(".chat__headerWr");
@@ -111,25 +116,31 @@ function ChatHeader(props) {
   const chatHeaderHelp = {
     // handling the opeeninga and closing of the HelpIcon
     open: function () {
+      console.log("chatheaderhelp meant to open ");
       let chatHeaderHelpDiv = document.querySelector(".chatHeaderHelp");
       chatHeaderHelpDiv.style.display = "flex";
       setIschatHeaderHelpOpened(true);
     },
     close: function () {
+      console.log("chatheaderhelp meant to close ");
       let chatHeaderHelpDiv = document.querySelector(".chatHeaderHelp");
       chatHeaderHelpDiv.style.display = "none";
       setIschatHeaderHelpOpened(false);
     },
     handle: function (e) {
       // checks if the chatHeaderHelp Div is open and closes it vice versa
-      let chatHeaderHelpDiv = document.querySelector(".chatHeaderHelp");
+      console.log("handling");
+      let chatHeaderHelpDiv = document.querySelector(".chatHeaderHelp__wr");
       if (e.target === null || chatHeaderHelpDiv === null) return;
+      console.log(e.target);
       let isDecendent = chatHeaderHelpDiv.contains(e.target);
+      console.log(e.target.id, isDecendent, ischatHeaderHelpOpened);
       if (
         e.target.id !== "chatHeaderHelp" &&
         isDecendent === false &&
         ischatHeaderHelpOpened === true
       ) {
+        console.log(" bad handling");
         chatHeaderHelp.close();
       }
     },
@@ -148,9 +159,9 @@ function ChatHeader(props) {
         <IconButton onClick={() => displayConvoForMobile("hide")}>
           <KeyboardBackspaceRounded />
         </IconButton>
-        <Avatar src={userInfoDb?.avi} />
-        <div className="chat__headerInfo">
-          <h3>{userInfoDb?.name}</h3>
+        <Avatar src={currentDisplayConvoInfo?.avi} onClick={userProfile.open} />
+        <div className="chat__headerInfo" onClick={userProfile.open}>
+          <h3>{currentDisplayConvoInfo?.name}</h3>
           <p>
             Last seen{" "}
             {messages[messages.length - 1]?.timestamp
@@ -172,15 +183,24 @@ function ChatHeader(props) {
             />
             <AttachFile />
           </IconButton>
-          <div>
+          <div className="chatHeaderHelp__wr">
             <IconButton onClick={chatHeaderHelp.open}>
               <MoreVert />
             </IconButton>
             <div className="chatHeaderHelp" id="chatHeaderHelp">
               <ul>
-                <li>Contact Info</li>
+                <li onClick={userProfile.open}>Contact Info</li>
                 <li>Select Messages</li>
-                <li>Mute Notification</li>
+                <li
+                  onClick={() => {
+                    setOpenModal(true);
+                    setModalType("MUTE__CONVO");
+                    setIsRoom(false);
+                    chatHeaderHelp.close();
+                  }}
+                >
+                  Mute Notification
+                </li>
                 <li>Clear Messages</li>
                 <li>Delelct Chat</li>
               </ul>

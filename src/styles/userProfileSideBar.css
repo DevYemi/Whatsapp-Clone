@@ -1,0 +1,33 @@
+/* STARRED MESSAGE STYLES */
+.userProfileSidebar__wr {
+    height: 100%;
+    width: 0%;
+}
+.UPSB_starMessage {
+    height: 100%;
+}
+.UPSB_starMessage__header {
+    background-color: #00BFA5;
+    display: flex;
+    padding: 0 0 1em 1em;
+    height: 100px;
+    align-items: flex-end;
+    color: white
+}
+
+.UPSB_starMessage__header > div {
+    display: flex;
+    align-items: center;
+}
+.UPSB_starMessage__header > div p {
+    margin-left: 1.3em;
+    font-weight: 700;
+}
+.UPSB_starMessage__body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: small;
+    color: grey;
+}

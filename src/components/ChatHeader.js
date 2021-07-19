@@ -114,33 +114,27 @@ function ChatHeader(props) {
     },
   };
   const chatHeaderHelp = {
-    // handling the opeeninga and closing of the HelpIcon
+    // handling the opeening and closing of the HelpIcon
     open: function () {
-      console.log("chatheaderhelp meant to open ");
       let chatHeaderHelpDiv = document.querySelector(".chatHeaderHelp");
       chatHeaderHelpDiv.style.display = "flex";
       setIschatHeaderHelpOpened(true);
     },
     close: function () {
-      console.log("chatheaderhelp meant to close ");
       let chatHeaderHelpDiv = document.querySelector(".chatHeaderHelp");
       chatHeaderHelpDiv.style.display = "none";
       setIschatHeaderHelpOpened(false);
     },
     handle: function (e) {
       // checks if the chatHeaderHelp Div is open and closes it vice versa
-      console.log("handling");
       let chatHeaderHelpDiv = document.querySelector(".chatHeaderHelp__wr");
       if (e.target === null || chatHeaderHelpDiv === null) return;
-      console.log(e.target);
       let isDecendent = chatHeaderHelpDiv.contains(e.target);
-      console.log(e.target.id, isDecendent, ischatHeaderHelpOpened);
       if (
         e.target.id !== "chatHeaderHelp" &&
         isDecendent === false &&
         ischatHeaderHelpOpened === true
       ) {
-        console.log(" bad handling");
         chatHeaderHelp.close();
       }
     },
@@ -159,8 +153,8 @@ function ChatHeader(props) {
         <IconButton onClick={() => displayConvoForMobile("hide")}>
           <KeyboardBackspaceRounded />
         </IconButton>
-        <Avatar src={currentDisplayConvoInfo?.avi} onClick={userProfile.open} />
-        <div className="chat__headerInfo" onClick={userProfile.open}>
+        <Avatar src={currentDisplayConvoInfo?.avi} onClick={()=> userProfile.open(false)} />
+        <div className="chat__headerInfo" onClick={()=> userProfile.open(false)}>
           <h3>{currentDisplayConvoInfo?.name}</h3>
           <p>
             Last seen{" "}
@@ -189,7 +183,7 @@ function ChatHeader(props) {
             </IconButton>
             <div className="chatHeaderHelp" id="chatHeaderHelp">
               <ul>
-                <li onClick={userProfile.open}>Contact Info</li>
+                <li onClick={()=> userProfile.open(false)}>Contact Info</li>
                 <li>Select Messages</li>
                 <li
                   onClick={() => {

@@ -12,10 +12,10 @@ import db from "../firebase";
 import { getMessgFromDb } from "./get&SetDataToDb";
 import { displayConvoForMobile } from "./SidebarConvo";
 import { useStateValue } from "./StateProvider";
+import { userProfile } from "./UserProfile";
 
 function RoomHeader(props) {
   const {
-    roomInfo,
     seed,
     roomMembers,
     setFoundWordIndex,
@@ -24,9 +24,12 @@ function RoomHeader(props) {
     uploadFile,
     setIsRoomSearchBarOpen,
     setTotalRoomWordFound,
+    setOpenModal,
+    setModalType,
+    setIsRoom,
   } = props;
   const [searchInput, setSearchInput] = useState("");
-  const [{ user }] = useStateValue(); // new logged in user
+  const [{ user,currentDisplayConvoInfo }] = useStateValue(); // new logged in user
   const [isroomHeaderHelpOpened, setIsroomHeaderHelpOpened] = useState(false);
   const roomHeaderSearchBar = {
     open: function () {
@@ -112,6 +115,7 @@ function RoomHeader(props) {
   const roomHeaderHelp = {
     // handling the opeeninga and closing of the HelpIcon
     open: function () {
+      console.log("opening")
       let roomHeaderHelpDiv = document.querySelector(".roomHeaderHelp");
       roomHeaderHelpDiv.style.display = "flex";
       setIsroomHeaderHelpOpened(true);
@@ -150,8 +154,8 @@ function RoomHeader(props) {
           <KeyboardBackspaceRounded />
         </IconButton>
         <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
-        <div className="room__headerInfo">
-          <h3>{roomInfo?.roomName}</h3>
+        <div className="room__headerInfo" onClick={()=> userProfile.open(true)}>
+          <h3>{currentDisplayConvoInfo?.roomName}</h3>
           <p>
             {roomMembers.length > 0
               ? roomMembers.map((member, index) => (
@@ -177,10 +181,19 @@ function RoomHeader(props) {
               <MoreVert />
             </IconButton>
             <div className="roomHeaderHelp" id="roomHeaderHelp">
-              <ul>
-                <li>Contact Info</li>
+            <ul>
+                <li onClick={()=> userProfile.open(true)}>Group Info</li>
                 <li>Select Messages</li>
-                <li>Mute Notification</li>
+                <li
+                  onClick={() => {
+                    setOpenModal(true);
+                    setModalType("MUTE__CONVO");
+                    setIsRoom(false);
+                    roomHeaderHelp.close();
+                  }}
+                >
+                  Mute Notification
+                </li>
                 <li>Clear Messages</li>
                 <li>Delelct Chat</li>
               </ul>

@@ -1,6 +1,6 @@
 
 .room {
-    flex: .65;
+    width: 65%;
     position: relative;
     display: flex;
     transition: all 1s ease-in-out;
@@ -67,6 +67,7 @@
 .room__headerInfo {
     flex: 1;
     padding-left: 20px;
+    cursor: pointer;
 }
 .room__headerInfo > h3 {
     margin-bottom: 3px;
@@ -138,9 +139,19 @@
     padding: 1em;
     background-repeat: repeat;
     background-position: center;
+    overflow-x: hidden;
     overflow-y: scroll;
     scroll-behavior: smooth;
 }
+.room__body::-webkit-scrollbar {
+    width: .5em;
+  }
+.room__body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(128, 128, 128, 0); 
+  } 
+  .room__body::-webkit-scrollbar-thumb {
+    background: rgba(73, 72, 72, 0.466); 
+  }
 .room__footer.searching {
     justify-content: space-around;
     align-items: initial;

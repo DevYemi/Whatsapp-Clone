@@ -14,6 +14,7 @@ function App() {
   const [modalInput, setModalInput] = useState(""); // keeps state of user input in the modal
   const [modalType, setModalType] = useState(""); // keeps state of which type of modal should pop up
   const [isRoom, setIsRoom] = useState(null); // keeps state if the pop up modal is meant for a room or a chat
+  const [isUserProfileRoom, setIsUserProfileRoom] = useState(true); // keeps state to display the profile appropriately for chat and room
   console.log(user);
   return (
     <div className="app">
@@ -29,6 +30,7 @@ function App() {
                   setOpenModal={setOpenModal}
                   setModalType={setModalType}
                   setIsRoom={setIsRoom}
+                  setIsUserProfileRoom={setIsUserProfileRoom}
                 />
               </Route>
               <Route path="/chats/:chatId">
@@ -36,6 +38,7 @@ function App() {
                   setOpenModal={setOpenModal}
                   setModalType={setModalType}
                   setIsRoom={setIsRoom}
+                  setIsUserProfileRoom={setIsUserProfileRoom}
                 />
               </Route>
             </Switch>
@@ -43,6 +46,7 @@ function App() {
               setOpenModal={setOpenModal}
               setModalType={setModalType}
               setIsRoom={setIsRoom}
+              isUserProfileRoom={isUserProfileRoom}
             />
             <DisplayModal
               modalType={modalType}

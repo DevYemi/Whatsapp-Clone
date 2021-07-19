@@ -1,84 +1,115 @@
-.message__text, .message__video, .message__audio, .message__image,.message__VN_wr {
-    position: relative;
-    font-size: .9rem;
-    word-break: break-all;
-    padding: .6em;
-    max-width: 60%;
-    background-color: #ffffff;
-    margin-bottom: 1.6em;
-    width: fit-content;
-    border-radius: 10px;
+.message {
+  position: relative;
 }
-.message__text > p strong, .message__video > p strong, .message__audio > p strong, .message__image > p strong {
-    background-color: yellow;
+.message .MuiSvgIcon-root.receiver {
+    color: white;
+    top: 0px;
+    left: -22px;
+    font-size: 2.8rem;
+    position: absolute;
+}
+.message .MuiSvgIcon-root.sender {
+    color: #DCFBC6;
+    top: -19px;
+    right: -23px;
+    font-size: 2.8rem;
+    position: absolute
+}
+.message__text,
+.message__video,
+.message__audio,
+.message__image,
+.message__VN_wr {
+  font-size: 0.9rem;
+  word-break: break-all;
+  padding: 0.6em;
+  max-width: 60%;
+  background-color: #ffffff;
+  margin-bottom: 1.6em;
+  width: fit-content;
+  border-radius: 10px;
+}
+.message__audio {
+    display: flex;
+    flex-direction: column;
+}
+.message__audio .message__timeStamp {
+    margin-top: .7em;
+}
+.message__text > p strong,
+.message__video > p strong,
+.message__audio > p strong,
+.message__image > p strong {
+  background-color: yellow;
 }
 .message__image {
-    cursor: pointer;
+  cursor: pointer;
 }
 .message__name {
-    position: absolute;
-    top: -13px;
-    font-size: xx-small;
-    font-weight: 700;
-    left: 0;
+  font-size: xx-small;
+  font-weight: 700;
 }
+.message__name.user {
+    font-size: x-small;
+    margin-top: .2em;
+}
+
 .message__timeStamp {
-    margin-left: .7em;
-    font-size: xx-small;
+  margin-left: 0.7em;
+  font-size: xx-small;
 }
 
 .message__image > div > img {
-    width: 100%;
-    object-fit: cover;
+  width: 100%;
+  object-fit: cover;
 }
 
 .message__audio > audio {
-    max-width: 100%;
-    max-height: 40px;
+  max-width: 100%;
+  max-height: 40px;
 }
 .message__video > video {
-    width: 100%;
+  width: 100%;
 }
 .message__sender {
-    margin-left: auto;
-    background-color: #dcfbc6;
+  margin-left: auto;
+  background-color: #dcfbc6;
 }
 
 .message__VN {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    border-radius: 20px;
-    background-color: #F1F3F4;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  background-color: #f1f3f4;
 }
 .message__VN_wrap1 {
-    position: relative;
-    display: flex;
-    z-index: 1;
-    margin-left: .5em;
+  position: relative;
+  display: flex;
+  z-index: 1;
+  margin-left: 0.5em;
 }
 
 .message__VN_wrap1 > .MuiSvgIcon-root {
-    position: absolute;
-    color: #2168de;
-    top: 15px;
-    right: -10px;
+  position: absolute;
+  color: #2168de;
+  top: 15px;
+  right: -10px;
 }
 .message__VN_wrap1 > .MuiAvatar-root {
-    width: 35px ;
-    height: 35px;
+  width: 35px;
+  height: 35px;
 }
 .message__VN audio {
-    flex: 1;
+  flex: 1;
 }
-@media(max-width: 425px) {
-    .message__VN_wrap1 > .MuiAvatar-root {
-        width: 30px ;
-        height: 30px;
-    }
-    .message__VN_wrap1 > .MuiSvgIcon-root {
-
-        top: 14px;
-        right: -8px;
-    }
+@media (max-width: 425px) {
+  .message__VN_wrap1 > .MuiAvatar-root {
+    width: 30px;
+    height: 30px;
+  }
+  .message__VN_wrap1 > .MuiSvgIcon-root {
+    top: 14px;
+    right: -8px;
+  }
 }

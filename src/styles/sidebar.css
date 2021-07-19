@@ -1,5 +1,5 @@
 .sidebar {
-    flex: .35 1;
+    width: 35%;
     display: flex;
     flex-direction: column;
 }

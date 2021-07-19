@@ -11,7 +11,7 @@ import ChatFooter from './ChatFooter';
 import { IconButton } from '@material-ui/core';
 
 function Chat(props) {
-    const {setOpenModal, setModalType, setIsRoom} = props
+    const {setOpenModal, setModalType, setIsRoom,setIsUserProfileRoom} = props
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
     const [isFileOnPreview, setIsFileOnPreview] = useState(false); // keeps state if there currently a file on preview
     const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
@@ -98,14 +98,16 @@ function Chat(props) {
     useEffect(()=>{ // reset the user read value to true once a chat is opened
         resetRecieverMssgReadOnDb(chatId,user?.info.uid, true)
     },[chatId,user?.info.uid])
+
     useEffect(() => { // gets currentDisplayConvoInfo and chatMessages on first render
         let unsubcribeMessages;
+        setIsUserProfileRoom(false);
         if (chatId) {
             getUserInfoFromDb(chatId, dispatch, true);
             unsubcribeMessages = getMessgFromDb(user?.info.uid,chatId,false, "asc", setMessages, false);
         }
         return () => {unsubcribeMessages(); }
-    }, [chatId,user?.info.uid, dispatch]);
+    }, [chatId,user?.info.uid,setIsUserProfileRoom, dispatch]);
 
     return (
         <div className="chat convo">

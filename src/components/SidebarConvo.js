@@ -11,7 +11,7 @@ import { userProfile } from './UserProfile';
 
 
 function SidebarConvo({ addNewConvo, convoId, name, isRoom }) {
-    const [{ user }] = useStateValue(); // keeps state for current logged in user
+    const [{ user,isMuteNotifichecked,currentDisplayConvoInfo }] = useStateValue(); // keeps state for current logged in user
     const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
     const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
     const [modalInput, setModalInput] = useState("") // keeps state of user input in the modal
@@ -75,7 +75,7 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom }) {
     }, [convoId, user?.info.uid, isRoom])
     return !addNewConvo ? (
         <Link to={isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`}>
-            <div onClick={() => { setNewMssgNum(0); displayConvoForMobile("show"); userProfile.close(); }} className="sidebarConvoWr">
+            <div onClick={() => { setNewMssgNum(0); displayConvoForMobile("show"); userProfile.close(currentDisplayConvoInfo?.isRoom ? true : false); }} className="sidebarConvoWr">
                 <div className="sidebarConvo">
                     <Avatar src={userInfoDb?.avi} />
                     <div className="sidebarConvo__info">
@@ -83,7 +83,7 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom }) {
                         {lastMessage ? <SidebarConvoLastMessage lastMessage={lastMessage} /> : "Chat is currently empty"}
                     </div>
                 </div>
-                <p className={newMssgNum > 0 ? "show" : ""}>{newMssgNum}</p>
+                <p className={newMssgNum && isMuteNotifichecked > 0 ? "show" : ""}>{newMssgNum}</p>
             </div>
         </Link>
     ) : (

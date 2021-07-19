@@ -41,3 +41,18 @@
     color: white;
 }
 
+.modal__notAdmin p, .modal__emptyGroupName p {
+    font-size: .9rem;
+    font-weight: lighter;
+    color: rgba(0, 0, 0, 0.753);
+}
+.modal__notAdmin button, .modal__emptyGroupName button {
+    margin: 3em 0 auto 0;
+    border: none;
+    color: white;
+    padding: .7em 1.9em;
+    background-color: #0AA545;
+    float: right;
+    border-radius: 4px;
+}
+

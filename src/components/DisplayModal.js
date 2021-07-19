@@ -7,7 +7,7 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import TextField from "@material-ui/core/TextField";
 import "../styles/modal.css";
 import { useStateValue } from "./StateProvider";
-import { muteContactOnDb, unmuteContactOnDb } from "./get&SetDataToDb";
+import { muteConvoOnDb, unmuteConvoOnDb } from "./get&SetDataToDb";
 
 const useStylesTextField = makeStyles((theme) => ({
   root: {
@@ -29,7 +29,8 @@ function DisplayModal(props) {
     setModalInput,
     modalInput,
   } = props;
-  const [{ user, currentDisplayConvoInfo,isMuteNotifichecked }, dispatch] = useStateValue(); // React context API
+  const [{ user, currentDisplayConvoInfo, isMuteNotifichecked }, dispatch] =
+    useStateValue(); // React context API
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -169,22 +170,34 @@ function DisplayModal(props) {
           <Fade in={openModal}>
             <div className={classes.paper}>
               <div className="modal__muteConvo">
-                <h3>Mute {currentDisplayConvoInfo?.name} Messages</h3>
+                <h3>Mute {currentDisplayConvoInfo?.name || currentDisplayConvoInfo?.roomName} Messages</h3>
                 <p>
-                  Are you sure you want to mute {currentDisplayConvoInfo?.name},
-                  you will not be able to recieve message from the contact while
-                  they are muted
+                  {isMuteNotifichecked
+                    ? `Unmute ${currentDisplayConvoInfo?.name || currentDisplayConvoInfo?.roomName} so you can recieve thier message notification`
+                    : `Are you sure you want to mute ${currentDisplayConvoInfo?.name || currentDisplayConvoInfo?.roomName},
+                        you will not be able to recieve message from the contact while
+                        they are muted`}
                 </p>
                 <div>
                   <button onClick={handleClose}>Cancel</button>
                   <button
-                    onClick={() => {
+                    onClick={() => {              
                       if (isMuteNotifichecked) {
-                        unmuteContactOnDb(user?.info?.uid,currentDisplayConvoInfo?.uid,isRoom, dispatch );
+                        unmuteConvoOnDb(
+                          user?.info?.uid,
+                          currentDisplayConvoInfo?.uid || currentDisplayConvoInfo?.roomId,
+                          isRoom,
+                          dispatch
+                        );
                         setModalInput(false);
                         handleClose();
                       } else {
-                        muteContactOnDb(user?.info?.uid,currentDisplayConvoInfo?.uid,isRoom, dispatch)
+                        muteConvoOnDb(
+                          user?.info?.uid,
+                          currentDisplayConvoInfo?.uid || currentDisplayConvoInfo?.roomId,
+                          isRoom,
+                          dispatch
+                        );
                         setModalInput(true);
                         handleClose();
                       }
@@ -201,8 +214,61 @@ function DisplayModal(props) {
         </Modal>
       </div>
     );
-  }else {
-      return []
+  }else if (modalType === "NOT_ADMIN") {
+    return (
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={`${classes.modal} muteConvoModal`}
+          open={openModal}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={classes.paper}>
+              <div className="modal__notAdmin">
+               <p>Only admin can edit this group info</p>
+               <button onClick={handleClose}>Ok</button>
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+    );
+  } else if (modalType === "EMPTY_GROUPNAME") {
+      return (
+        <div>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={`${classes.modal} muteConvoModal`}
+            open={openModal}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={openModal}>
+              <div className={classes.paper}>
+                <div className="modal__emptyGroupName">
+                 <p>Group Subject can't be empty</p>
+                 <button onClick={handleClose}>Ok</button>
+                </div>
+              </div>
+            </Fade>
+          </Modal>
+        </div>
+      );
+    }
+   else {
+    return [];
   }
 }
 

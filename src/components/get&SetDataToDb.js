@@ -79,7 +79,6 @@ export function createNewRoomInDb(user, roomName) {
     .collection("rooms")
     .doc(newRoomKey)
     .set({
-      name: roomName,
       id: newRoomKey,
       isRoom: true,
       admin: true,
@@ -96,6 +95,7 @@ export function createNewRoomInDb(user, roomName) {
       dateCreated: firebase.firestore.FieldValue.serverTimestamp(),
       read: false,
       muted: false,
+      description: "",
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     })
     .then(() => {
@@ -166,13 +166,16 @@ export function getMessgFromDb(
   }
 }
 
-export function getRoomInfoFromDb(roomId, hookCallback) {
+export function getRoomInfoFromDb(roomId, hookCallBack) {
   // gets the name of a specific room from db
   return db
     .collection("rooms")
     .doc(roomId)
     .onSnapshot((snapshot) => {
-      hookCallback(snapshot.data());
+      hookCallBack({
+        type: "SET_CURRENTDISPLAYCONVOINFO",
+        currentDisplayConvoInfo: snapshot.data(),
+      })
     });
 }
 export function getCurrentChatNameFromDb(userId, chatId, hookCallback) {
@@ -441,7 +444,7 @@ export function getTotalUsersFromDb(setTotalUserOnDb) {
   });
 }
 
-export function muteContactOnDb(userId, convoId, isRoom, hookCallback) {
+export function muteConvoOnDb(userId, convoId, isRoom, hookCallback) {
   // mute contact chat or room on the db
     db.collection("registeredUsers")
       .doc(userId)
@@ -457,7 +460,7 @@ export function muteContactOnDb(userId, convoId, isRoom, hookCallback) {
         })
       });
 }
-export function unmuteContactOnDb(userId, convoId, isRoom, hookCallback) {
+export function unmuteConvoOnDb(userId, convoId, isRoom, hookCallback) {
   // unmute contact chat or room on the db
 
     db.collection("registeredUsers")
@@ -494,4 +497,38 @@ export function isConvoMutedOnDb (userId,convoId,isRoom,hookCallback) { // check
       }
     })
     .catch((e) => {});
+}
+export function setNewGroupNameOnDb (roomId, newRoomName) { // Set a new name for a group on the db
+
+  db.collection("rooms") 
+  .doc(roomId)
+  .update({
+    roomName: newRoomName,
+  })
+}
+export function setNewGroupDescriptionOnDb (roomId, newRoomDescription) { // set a new description for the group on the db
+  db.collection("rooms") 
+  .doc(roomId)
+  .update({
+    description: newRoomDescription,
+  })
+}
+export function getGroupMemberFromDb (roomId, reactHookCallback) {
+  return db
+  .collection("rooms")
+  .doc(roomId)
+  .collection("members")
+  .onSnapshot((snapshot) => {
+    reactHookCallback(snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
+  });
+}
+export function getIfCurrentUserIsGroupAdminFromDb (userId, roomId, reactHookCallback) {
+  return db
+  .collection("registeredUsers")
+  .doc(userId)
+  .collection("rooms")
+  .doc(roomId)
+  .onSnapshot((snapshot) => {
+    reactHookCallback(snapshot.data()?.admin);
+  });
 }

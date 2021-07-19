@@ -10,19 +10,19 @@ import RoomBody from './RoomBody';
 import RoomFooter from './RoomFooter';
 import { IconButton } from '@material-ui/core';
 
-function Room() {
+function Room(props) {
+    const {setOpenModal, setModalType, setIsRoom,setIsUserProfileRoom} = props
     const [seed, setSeed] = useState(""); // keeps state get new id for every new group
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
     const [isFileOnPreview, setIsFileOnPreview] = useState(false); // keeps state if there currently a file on preview
     const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
-    const [{ user }] = useStateValue(); // new logged in user
+    const [{ user }, dispatch] = useStateValue(); // new logged in user
     const [messages, setMessages] = useState([]); // keeps state for the messages in a room
     const [isRoomSearchBarOpen, setIsRoomSearchBarOpen] = useState(false) // keeps state if the roomheader search bar is open
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
     const [totalRoomWordFound, setTotalRoomWordFound] = useState(0); // keeps state of total word found when a user search on the header search bar
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
     const [roomMembers, setRoomMembers] = useState([])
-    const [roomInfo, setRoomInfo] = useState(""); // keeps state for the current room name the user is on
     const { roomId } = useParams(); // id for the current room the user is on
   
     const sendMessage = (e, eventType, file) => { // sends new message to db
@@ -96,19 +96,21 @@ function Room() {
             roomBody.style.scrollBehavior = "initial"
             roomBody?.scrollTo(0, roomBody.offsetHeight * 500000);
         }
-    }, [messages])
-    useEffect(() => { // gets roomInfo, roomMessages, roomMembers on first render
-        let unsubcribeRoomName;
+    }, [messages]);
+
+    useEffect(() => { // gets currentDisplayConvoInfo, roomMessages, roomMembers on first render
+        let unsubcribeRoomInfo;
         let unsubcribeMessages;
-        let unsubcribeRoomMembers
+        let unsubcribeRoomMembers;
         setSeed(Math.floor(Math.random() * 5000));
+        setIsUserProfileRoom(true);
         if (roomId) {
-            unsubcribeRoomName = getRoomInfoFromDb(roomId, setRoomInfo);
+            unsubcribeRoomInfo = getRoomInfoFromDb(roomId, dispatch);
             unsubcribeMessages = getMessgFromDb(null,roomId,true, "asc", setMessages, false);
             unsubcribeRoomMembers = getRoomMembersFromDb(roomId, setRoomMembers)
         }
-        return () => { unsubcribeRoomName(); unsubcribeMessages(); unsubcribeRoomMembers(); }
-    }, [roomId]);
+        return () => { unsubcribeRoomInfo(); unsubcribeMessages(); unsubcribeRoomMembers(); }
+    }, [roomId,setIsUserProfileRoom, dispatch]);
     useEffect(() => {
         setSeed(Math.floor(Math.random() * 5000));
     }, [])
@@ -117,13 +119,15 @@ function Room() {
             <RoomHeader
                 seed={seed}
                 roomId={roomId}
-                roomInfo={roomInfo}
                 roomMembers={roomMembers}
                 setMessages={setMessages}
                 setIsRoomSearchBarOpen={setIsRoomSearchBarOpen}
                 uploadFile={uploadFile}
                 setFoundWordIndex={setFoundWordIndex}
                 setTotalRoomWordFound={setTotalRoomWordFound}
+                setOpenModal={setOpenModal}
+                setModalType={setModalType} 
+                setIsRoom={setIsRoom}
             />
             <RoomBody
                 messages={messages}
@@ -131,7 +135,6 @@ function Room() {
             />
             <RoomFooter
                 showEmojis={showEmojis}
-                roomInfo={roomInfo}
                 totalRoomWordFound={totalRoomWordFound}
                 onEmojiClick={onEmojiClick}
                 input={input}

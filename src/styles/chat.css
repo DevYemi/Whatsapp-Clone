@@ -1,6 +1,6 @@
 
 .chat {
-    flex: .65;
+    width: 65%;
     position: relative;
     display: flex;
     transition: all 1s ease-in-out;
@@ -94,7 +94,7 @@
 .chatHeaderHelp {
     position: absolute;
     display: none;
-    z-index: 2;
+    z-index: 10000;
     right: 28%;
     width: max-content;
     flex-direction: column;
@@ -135,6 +135,7 @@
     padding: 1em;
     background-repeat: repeat;
     background-position: center;
+    overflow-x: hidden;
     overflow-y: scroll;
     scroll-behavior: smooth;
 }

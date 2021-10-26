@@ -8,15 +8,14 @@ import {
 } from "@material-ui/icons";
 import gsap from "gsap";
 import React, { useEffect, useState } from "react";
-import db from "../firebase";
-import { getMessgFromDb } from "./get&SetDataToDb";
-import { displayConvoForMobile } from "./SidebarConvo";
-import { useStateValue } from "./StateProvider";
-import { userProfile } from "./UserProfile";
+import db from "../backend/firebase";
+import { getMessgFromDb } from "../backend/get&SetDataToDb";
+import { displayConvoForMobile } from "../sidebar/SidebarConvo";
+import { useStateValue } from "../global-state-provider/StateProvider";
+import { userProfile } from "../userprofile/UserProfile";
 
 function RoomHeader(props) {
   const {
-    seed,
     roomMembers,
     setFoundWordIndex,
     roomId,
@@ -29,7 +28,7 @@ function RoomHeader(props) {
     setIsRoom,
   } = props;
   const [searchInput, setSearchInput] = useState("");
-  const [{ user,currentDisplayConvoInfo }] = useStateValue(); // new logged in user
+  const [{ user, currentDisplayConvoInfo }] = useStateValue(); // new logged in user
   const [isroomHeaderHelpOpened, setIsroomHeaderHelpOpened] = useState(false);
   const roomHeaderSearchBar = {
     open: function () {
@@ -115,7 +114,6 @@ function RoomHeader(props) {
   const roomHeaderHelp = {
     // handling the opeeninga and closing of the HelpIcon
     open: function () {
-      console.log("opening")
       let roomHeaderHelpDiv = document.querySelector(".roomHeaderHelp");
       roomHeaderHelpDiv.style.display = "flex";
       setIsroomHeaderHelpOpened(true);
@@ -153,14 +151,14 @@ function RoomHeader(props) {
         <IconButton onClick={() => displayConvoForMobile("hide")}>
           <KeyboardBackspaceRounded />
         </IconButton>
-        <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
-        <div className="room__headerInfo" onClick={()=> userProfile.open(true)}>
+        <Avatar src={currentDisplayConvoInfo?.avi} />
+        <div className="room__headerInfo" onClick={() => userProfile.open(true)}>
           <h3>{currentDisplayConvoInfo?.roomName}</h3>
           <p>
             {roomMembers.length > 0
               ? roomMembers.map((member, index) => (
-                  <small key={index}>{member.name}</small>
-                ))
+                <small key={index}>{member.name}</small>
+              ))
               : "There are no member in this room"}
           </p>
         </div>
@@ -181,8 +179,8 @@ function RoomHeader(props) {
               <MoreVert />
             </IconButton>
             <div className="roomHeaderHelp" id="roomHeaderHelp">
-            <ul>
-                <li onClick={()=> userProfile.open(true)}>Group Info</li>
+              <ul>
+                <li onClick={() => userProfile.open(true)}>Group Info</li>
                 <li>Select Messages</li>
                 <li
                   onClick={() => {

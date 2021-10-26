@@ -1,35 +1,34 @@
 import { CloseRounded } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react'
-import '../styles/chat.css'
+import '../../styles/chat.css'
 import { useParams } from 'react-router-dom';
-import { useStateValue } from './StateProvider';
-import { getMessgFromDb, getUserInfoFromDb, resetRecieverMssgReadOnDb, setNewMessageToDb, uploadFileToDb } from './get&SetDataToDb';
-import FilePreview from './FilePreview';
+import { useStateValue } from '../global-state-provider/StateProvider';
+import { getIsConvoBlockedOnDb, getMessgFromDb, getUserInfoFromDb, resetRecieverMssgReadOnDb, setNewMessageToDb, uploadFileToDb } from '../backend/get&SetDataToDb';
+import FilePreview from '../common/FilePreview';
 import ChatHeader from './ChatHeader';
 import ChatBody from './ChatBody';
 import ChatFooter from './ChatFooter';
 import { IconButton } from '@material-ui/core';
 
 function Chat(props) {
-    const {setOpenModal, setModalType, setIsRoom,setIsUserProfileRoom} = props
+    const { setOpenModal, setModalType, setIsRoom, setIsUserProfileRoom } = props
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
     const [isFileOnPreview, setIsFileOnPreview] = useState(false); // keeps state if there currently a file on preview
     const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
-    const [{ user,currentDisplayConvoInfo }, dispatch] = useStateValue(); // new logged in user and the currentDisplayConvoInfo
+    const [{ user, currentDisplayConvoInfo }, dispatch] = useStateValue(); // new logged in user and the currentDisplayConvoInfo
     const [messages, setMessages] = useState([]); // keeps state for the messages in a chat
     const [isChatSearchBarOpen, setIsChatSearchBarOpen] = useState(false) // keeps state if the chatheader search bar is open
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
     const [totalChatWordFound, setTotalChatWordFound] = useState(0); // keeps state of total word found when a user search on the header search bar
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
     const { chatId } = useParams(); // id for the current room the user is on
-    console.log("chat rendring")
     const sendMessage = (e, eventType, file) => { // sends new message to db
         e && e.preventDefault();
         if (input === "" && eventType === "text") return // return if the user is sending an empty message
         if (eventType === "file") { // handle as file messaage if message contains files e.g image, audio, video
-            setNewMessageToDb(chatId, input, user, scrollChatBody,false, file);
+            setNewMessageToDb(chatId, input, user, scrollChatBody, false, file);
         } else if (eventType === "text") { // handle as text if message if just a text
-            setNewMessageToDb(chatId, input, user, scrollChatBody,false, { type: "text", exten: ".txt" });
+            setNewMessageToDb(chatId, input, user, scrollChatBody, false, { type: "text", exten: ".txt" });
         }
         setInput("");
         setIsFileOnPreview(false);
@@ -95,19 +94,21 @@ function Chat(props) {
             chatBody?.scrollTo(0, chatBody.offsetHeight * 500000);
         }
     }, [messages])
-    useEffect(()=>{ // reset the user read value to true once a chat is opened
-        resetRecieverMssgReadOnDb(chatId,user?.info.uid, true)
-    },[chatId,user?.info.uid])
+    useEffect(() => { // reset the user read value to true once a chat is opened
+        resetRecieverMssgReadOnDb(user?.info.uid, chatId, true, false);
+    }, [chatId, user?.info.uid])
 
-    useEffect(() => { // gets currentDisplayConvoInfo and chatMessages on first render
+    useEffect(() => { // gets currentDisplayConvoInfo, isConvoBlockedOnDb  and chatMessages on first render
         let unsubcribeMessages;
+        let unsubcribeIsConvoBlockedOnDb;
         setIsUserProfileRoom(false);
         if (chatId) {
             getUserInfoFromDb(chatId, dispatch, true);
-            unsubcribeMessages = getMessgFromDb(user?.info.uid,chatId,false, "asc", setMessages, false);
+            unsubcribeMessages = getMessgFromDb(user?.info?.uid, chatId, false, "asc", setMessages, false);
+            unsubcribeIsConvoBlockedOnDb = getIsConvoBlockedOnDb(user?.info.uid, chatId, dispatch);
         }
-        return () => {unsubcribeMessages(); }
-    }, [chatId,user?.info.uid,setIsUserProfileRoom, dispatch]);
+        return () => { unsubcribeMessages(); unsubcribeIsConvoBlockedOnDb(); }
+    }, [chatId, user?.info.uid, setIsUserProfileRoom, dispatch]);
 
     return (
         <div className="chat convo">
@@ -121,7 +122,7 @@ function Chat(props) {
                 setFoundWordIndex={setFoundWordIndex}
                 setTotalChatWordFound={setTotalChatWordFound}
                 setOpenModal={setOpenModal}
-                setModalType={setModalType} 
+                setModalType={setModalType}
                 setIsRoom={setIsRoom}
             />
             <ChatBody

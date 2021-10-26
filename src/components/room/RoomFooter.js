@@ -2,10 +2,10 @@ import { IconButton } from '@material-ui/core'
 import { ExpandLessRounded, ExpandMoreRounded, InsertEmoticon } from '@material-ui/icons'
 import Picker from 'emoji-picker-react';
 import React, { useState } from 'react'
-import VoiceNoteRecoder from './VoiceNoteRecoder'
+import VoiceNoteRecoder from '../common/VoiceNoteRecoder'
 
 function RoomFooter(props) {
-    const { showEmojis, onEmojiClick, input,setFoundWordIndex, setInput,foundWordIndex, sendMessage, roomId, scrollroomBody, isroomSearchBarOpen, totalroomWordFound } = props
+    const { showEmojis, onEmojiClick, input, setFoundWordIndex, setInput, foundWordIndex, sendMessage, roomId, scrollroomBody, isroomSearchBarOpen, totalroomWordFound } = props
     const [vnIsRecoding, setVnIsRecoding] = useState(false); // keeps state if the user is currently recording a voice note
     const navigateToFoundWord = (key) => {
         let newIndex;
@@ -13,13 +13,13 @@ function RoomFooter(props) {
             case "PLUS":
                 newIndex = foundWordIndex + 1
                 if (newIndex > totalroomWordFound) return
-                scrollroomBody.toSearchedMssg(newIndex,totalroomWordFound);
+                scrollroomBody.toSearchedMssg(newIndex, totalroomWordFound);
                 setFoundWordIndex(newIndex);
                 break;
             case "MINUS":
                 newIndex = foundWordIndex - 1
                 if (newIndex < 1) return
-                scrollroomBody.toSearchedMssg(newIndex,totalroomWordFound);
+                scrollroomBody.toSearchedMssg(newIndex, totalroomWordFound);
                 setFoundWordIndex(newIndex);
                 break;
 
@@ -30,7 +30,7 @@ function RoomFooter(props) {
 
 
     if (isroomSearchBarOpen) {
-        
+
         return (
             <section className="room__footer searching">
                 <div className="room__footerSearchNav">

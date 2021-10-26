@@ -55,4 +55,45 @@
     float: right;
     border-radius: 4px;
 }
+.modal__blockChat p, .modal__clearMssgs p, .modal__deleteChat p {
+    font-size: .9rem;
+    font-weight: lighter;
+    margin-bottom: 2.5em;
+    color: rgba(0, 0, 0, 0.747);
+}
+.modal__blockChat button, .modal__clearMssgs button, .modal__reportContact button, .modal__deleteChat button {
+    padding: 1em 1.2em;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    float: right;
+    border-radius: 4px;
+}
+.modal__blockChat button:nth-of-type(2), .modal__clearMssgs button:nth-of-type(2), .modal__reportContact button:nth-of-type(2), .modal__deleteChat button:nth-of-type(2) {
+ background-color: white;
+ color: #06D755;
+ margin-right: .5em;
+ border: 1px solid rgba(128, 128, 128, 0.151);
+}
+.modal__blockChat button:nth-of-type(1), .modal__clearMssgs button:nth-of-type(1), .modal__reportContact button:nth-of-type(1), .modal__deleteChat button:nth-of-type(1) {
+    background-color: #06D755;
+    color: white;
+}
+.modal__reportContact > p, .modal__reportContact > div p {
+    font-size: .9rem;
+    color: rgba(0, 0, 0, 0.952);
+    font-weight: lighter;
+}
+.modal__reportContact > span {
+ font-size: small;
+ display: block;
+ margin: 1.2em 0;
+ color: rgba(0, 0, 0, 0.527);
+}
+.modal__reportContact > div {
+    display: flex;
+    align-items: center;
+}
+
+
 

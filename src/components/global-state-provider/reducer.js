@@ -2,6 +2,7 @@ export const initialState = {
   user: null,
   currentDisplayConvoInfo: null,
   isMuteNotifichecked: false,
+  isCurrentConvoBlocked: false,
 };
 
 function reducer(state, action) {
@@ -12,6 +13,8 @@ function reducer(state, action) {
       return { ...state, currentDisplayConvoInfo: action.currentDisplayConvoInfo };
       case "SET_ISMUTENOTIFICHECKED":
       return { ...state, isMuteNotifichecked: action.isMuteNotifichecked };
+      case "SET_ISCURRENTCONVOBLOCKED":
+      return { ...state, isCurrentConvoBlocked: action.isCurrentConvoBlocked };
     default:
       return state;
   }

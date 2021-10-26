@@ -53,19 +53,19 @@ function SidebarChatLastMessage({ lastMessage }) {
         )
     } else if (fileType?.info?.type === "image") {
         return (
-            <p><ImageRounded className="img" /></p>
+            <p><ImageRounded className="img" /> Image</p>
         )
     } else if (fileType?.info?.type === "audio") {
         return (
-            <p><AudiotrackRounded className="audio" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"}</p>
+            <p><AudiotrackRounded className="audio" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Audio</p>
         )
     } else if (fileType?.info?.type === "video") {
         return (
-            <p><VideocamRounded className="video" />{audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}`: "00:00"}</p>
+            <p><VideocamRounded className="video" />{audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}`: "00:00"} Video</p>
         )
     } else if (fileType?.info?.type === "voice-note") {
         return (
-            <p><MicRounded className="mic" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"}</p>
+            <p><MicRounded className="mic" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Voice-Note</p>
         )
     } else {
         return (

@@ -8,11 +8,11 @@ import {
 } from "@material-ui/icons";
 import gsap from "gsap";
 import React, { useEffect, useState } from "react";
-import db from "../firebase";
-import { getMessgFromDb } from "./get&SetDataToDb";
-import { displayConvoForMobile } from "./SidebarConvo";
-import { useStateValue } from "./StateProvider";
-import { userProfile } from "./UserProfile";
+import db from "../backend/firebase";
+import { getMessgFromDb } from "../backend/get&SetDataToDb";
+import { displayConvoForMobile } from "../sidebar/SidebarConvo";
+import { useStateValue } from "../global-state-provider/StateProvider";
+import { userProfile } from "../userprofile/UserProfile";
 
 function ChatHeader(props) {
   const {
@@ -138,6 +138,9 @@ function ChatHeader(props) {
         chatHeaderHelp.close();
       }
     },
+    clearMssgs: function () {
+
+    }
   };
   useEffect(() => {
     // adds and remove an eventlistener that closes and open the chatHeaderHelp Div
@@ -153,15 +156,15 @@ function ChatHeader(props) {
         <IconButton onClick={() => displayConvoForMobile("hide")}>
           <KeyboardBackspaceRounded />
         </IconButton>
-        <Avatar src={currentDisplayConvoInfo?.avi} onClick={()=> userProfile.open(false)} />
-        <div className="chat__headerInfo" onClick={()=> userProfile.open(false)}>
+        <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => userProfile.open(false)} />
+        <div className="chat__headerInfo" onClick={() => userProfile.open(false)}>
           <h3>{currentDisplayConvoInfo?.name}</h3>
           <p>
             Last seen{" "}
             {messages[messages.length - 1]?.timestamp
               ? new Date(
-                  messages[messages.length - 1]?.timestamp?.toDate()
-                ).toUTCString()
+                messages[messages.length - 1]?.timestamp?.toDate()
+              ).toUTCString()
               : "offline"}
           </p>
         </div>
@@ -183,7 +186,7 @@ function ChatHeader(props) {
             </IconButton>
             <div className="chatHeaderHelp" id="chatHeaderHelp">
               <ul>
-                <li onClick={()=> userProfile.open(false)}>Contact Info</li>
+                <li onClick={() => userProfile.open(false)}>Contact Info</li>
                 <li>Select Messages</li>
                 <li
                   onClick={() => {
@@ -195,8 +198,19 @@ function ChatHeader(props) {
                 >
                   Mute Notification
                 </li>
-                <li>Clear Messages</li>
-                <li>Delelct Chat</li>
+                <li onClick={() => {
+                  setOpenModal(true);
+                  setModalType("CLEAR__MESSAGES");
+                  setIsRoom(false);
+                  chatHeaderHelp.close();
+                }}>Clear Messages</li>
+                <li onClick={() => {
+                  setOpenModal(true);
+                  setModalType("DELETE_CHAT");
+                  setIsRoom(false);
+                  chatHeaderHelp.close();
+                }}
+                >Delelct Chat</li>
               </ul>
             </div>
           </div>

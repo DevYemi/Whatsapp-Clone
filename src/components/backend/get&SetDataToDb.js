@@ -1,4 +1,4 @@
-import db, { storage } from "../firebase";
+import db, { storage } from "./firebase";
 import firebase from "firebase";
 export function getUserInfoFromDb(id, hookCallBack, isReducerCallback) {
   if (isReducerCallback) {
@@ -50,6 +50,7 @@ export function createNewChatInDb(user, chatUser) {
     .set({
       name: chatUser.name,
       id: chatUser.uid,
+      isBlocked: "",
       isRoom: false,
       email: chatUser.email,
       read: false,
@@ -89,6 +90,7 @@ export function createNewRoomInDb(user, roomName) {
   db.collection("rooms") // add room to Rooms db
     .doc(newRoomKey)
     .set({
+      avi: "",
       roomName: roomName,
       roomId: newRoomKey,
       isRoom: true,
@@ -175,7 +177,7 @@ export function getRoomInfoFromDb(roomId, hookCallBack) {
       hookCallBack({
         type: "SET_CURRENTDISPLAYCONVOINFO",
         currentDisplayConvoInfo: snapshot.data(),
-      })
+      });
     });
 }
 export function getCurrentChatNameFromDb(userId, chatId, hookCallback) {
@@ -194,7 +196,7 @@ export function getCurrentChatNameFromDb(userId, chatId, hookCallback) {
       } else {
       }
     })
-    .catch((e) => {});
+    .catch((e) => { });
 }
 export function setNewMessageToDb(
   convoId,
@@ -246,14 +248,14 @@ export function setNewMessageToDb(
           .doc(newMssgKey)
           .set({
             message: text,
-            senderId: user?.info.uid,
+            senderId: user?.info?.uid,
             receiverId: convoId,
             fileType: fileType,
             name: user?.info.displayName,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           })
           .then(() => {
-            resetRecieverMssgReadOnDb(user?.info.uid, convoId, false);
+            resetRecieverMssgReadOnDb(convoId, user?.info?.uid, false, isRoom);
             resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
             scrollChatBody.toEnd();
           });
@@ -289,10 +291,10 @@ export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
       });
   }
 }
-export function resetRecieverMssgReadOnDb(senId, recId, value) {
+export function resetRecieverMssgReadOnDb(recId, senId, value, isRoom) {
   db.collection("registeredUsers")
     .doc(recId)
-    .collection("chats")
+    .collection(isRoom ? "room" : "chats")
     .doc(senId)
     .update({
       read: value,
@@ -315,17 +317,12 @@ export function getAndComputeNumberOfNewMssgOnDb(
         i = messages.length + 1;
       }
     }
-    let currentLocation = isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`;
-    if (currentLocation === currentUrl) {
-      // if the user is already on chat reset it to zero
-      setNewMssgNum(0);
-    } else {
-      setNewMssgNum(numOfNewMessages);
-    }
+    setNewMssgNum(numOfNewMessages);
+    resetRecieverMssgReadOnDb(userId, convoId, false, isRoom);
   };
   if (isRoom) {
     // get it from the rooms in db
-    db.collection("registeredUsers")
+    (db.collection("registeredUsers")
       .doc(userId)
       .collection("rooms")
       .doc(convoId)
@@ -335,9 +332,9 @@ export function getAndComputeNumberOfNewMssgOnDb(
           // if chat hasn't been read by user commute the amount of message sent by other sender
           getMessgFromDb(userId, convoId, isRoom, "desc", mssgCallback, false);
         }
-      });
+      }))();
   } else {
-    db.collection("registeredUsers")
+    (db.collection("registeredUsers")
       .doc(userId)
       .collection("chats")
       .doc(convoId)
@@ -347,7 +344,7 @@ export function getAndComputeNumberOfNewMssgOnDb(
           // if chat hasn't been read by user commute the amount of message sent by sender
           getMessgFromDb(userId, convoId, isRoom, "desc", mssgCallback, false);
         }
-      });
+      }))();
   }
 }
 export function uploadFileToDb(file, fileInfo, setFileOnPreview) {
@@ -446,43 +443,43 @@ export function getTotalUsersFromDb(setTotalUserOnDb) {
 
 export function muteConvoOnDb(userId, convoId, isRoom, hookCallback) {
   // mute contact chat or room on the db
-    db.collection("registeredUsers")
-      .doc(userId)
-      .collection(isRoom? "rooms": "chats")
-      .doc(convoId)
-      .update({
-        muted: true,
-      })
-      .then(() => {
-        hookCallback({
-          type: "SET_ISMUTENOTIFICHECKED",
-          isMuteNotifichecked: true,
-        })
+  db.collection("registeredUsers")
+    .doc(userId)
+    .collection(isRoom ? "rooms" : "chats")
+    .doc(convoId)
+    .update({
+      muted: true,
+    })
+    .then(() => {
+      hookCallback({
+        type: "SET_ISMUTENOTIFICHECKED",
+        isMuteNotifichecked: true,
       });
+    });
 }
 export function unmuteConvoOnDb(userId, convoId, isRoom, hookCallback) {
   // unmute contact chat or room on the db
 
-    db.collection("registeredUsers")
-      .doc(userId)
-      .collection(isRoom? "rooms": "chats")
-      .doc(convoId)
-      .update({
-        muted: false,
-      })
-      .then(() => {
-        hookCallback({
-          type: "SET_ISMUTENOTIFICHECKED",
-          isMuteNotifichecked: false,
-        })
+  db.collection("registeredUsers")
+    .doc(userId)
+    .collection(isRoom ? "rooms" : "chats")
+    .doc(convoId)
+    .update({
+      muted: false,
+    })
+    .then(() => {
+      hookCallback({
+        type: "SET_ISMUTENOTIFICHECKED",
+        isMuteNotifichecked: false,
       });
+    });
 }
-export function isConvoMutedOnDb (userId,convoId,isRoom,hookCallback) { // checks if a convo is muted or not
-  console.log(userId,convoId,isRoom,hookCallback);
+export function isConvoMutedOnDb(userId, convoId, isRoom, hookCallback) {
+  // checks if a convo is muted or not
   let docRef = db
     .collection("registeredUsers")
     .doc(userId)
-    .collection(isRoom? "rooms": "chats")
+    .collection(isRoom ? "rooms" : "chats")
     .doc(convoId);
 
   docRef
@@ -492,43 +489,196 @@ export function isConvoMutedOnDb (userId,convoId,isRoom,hookCallback) { // check
         hookCallback({
           type: "SET_ISMUTENOTIFICHECKED",
           isMuteNotifichecked: doc.data()?.muted,
-        })
+        });
       } else {
       }
     })
-    .catch((e) => {});
+    .catch((e) => { });
 }
-export function setNewGroupNameOnDb (roomId, newRoomName) { // Set a new name for a group on the db
+export function setNewGroupNameOnDb(roomId, newRoomName) {
+  // Set a new name for a group on the db
 
-  db.collection("rooms") 
-  .doc(roomId)
-  .update({
+  db.collection("rooms").doc(roomId).update({
     roomName: newRoomName,
-  })
+  });
 }
-export function setNewGroupDescriptionOnDb (roomId, newRoomDescription) { // set a new description for the group on the db
-  db.collection("rooms") 
-  .doc(roomId)
-  .update({
+export function setNewGroupDescriptionOnDb(roomId, newRoomDescription) {
+  // set a new description for the group on the db
+  db.collection("rooms").doc(roomId).update({
     description: newRoomDescription,
-  })
-}
-export function getGroupMemberFromDb (roomId, reactHookCallback) {
-  return db
-  .collection("rooms")
-  .doc(roomId)
-  .collection("members")
-  .onSnapshot((snapshot) => {
-    reactHookCallback(snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
   });
 }
-export function getIfCurrentUserIsGroupAdminFromDb (userId, roomId, reactHookCallback) {
-  return db
-  .collection("registeredUsers")
-  .doc(userId)
-  .collection("rooms")
-  .doc(roomId)
-  .onSnapshot((snapshot) => {
-    reactHookCallback(snapshot.data()?.admin);
-  });
+export function getGroupMemberFromDb(roomId, reactHookCallback) {
+  let modifiedMemebers = [];
+  return db // first get members from db
+    .collection("rooms")
+    .doc(roomId)
+    .collection("members")
+    .onSnapshot((snapshot) => {
+      snapshot.docs.forEach((member, index) => {
+        // for each members go get their current individual avi
+        let upperSnapshot = snapshot.docs;
+        db.collection("registeredUsers")
+          .doc(member.id)
+          .onSnapshot((snapshot) => {
+            modifiedMemebers.push({
+              avi: snapshot.data().avi,
+              id: member.id,
+              data: member.data(),
+            });
+            if (upperSnapshot.length - 1 === index) {
+              // at the last index call reactHookCallback with modifieldMembers
+              reactHookCallback(modifiedMemebers);
+            }
+          });
+      });
+    });
 }
+export function getIfCurrentUserIsGroupAdminFromDb(
+  userId,
+  roomId,
+  reactHookCallback
+) {
+  // gets if the current logged in user is an admin of the group
+  return db
+    .collection("registeredUsers")
+    .doc(userId)
+    .collection("rooms")
+    .doc(roomId)
+    .onSnapshot((snapshot) => {
+      reactHookCallback(snapshot.data()?.admin);
+    });
+}
+export function getUserProfilePictureFromDb(userId, callBackFunc) {
+  return db
+    .collection("registeredUsers")
+    .doc(userId)
+    .onSnapshot((snapshot) => {
+      callBackFunc(snapshot.data().avi);
+    });
+}
+
+export function setNewAviForGroupOnDb(image, roomId) {
+  const setImageUrlOnDb = (url) => {
+    // set new avi url on db
+    db.collection("rooms").doc(roomId).update({
+      avi: url,
+    });
+  };
+  const sendImgToStorage = () => {
+    // saved new image to storage and create a url for it
+    const uploadTask = storage.ref(`images/${image.name}`).put(image);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+      },
+      (error) => {
+        console.log(error.message);
+        alert(error.message);
+      },
+      () => {
+        storage
+          .ref("images")
+          .child(image.name)
+          .getDownloadURL()
+          .then((url) => {
+            setImageUrlOnDb(url);
+          });
+      }
+    );
+  };
+  sendImgToStorage();
+}
+export function getIsConvoBlockedOnDb(userId, chatId, hookCallback) {
+  return db
+    .collection("registeredUsers")
+    .doc(userId)
+    .collection("chats")
+    .doc(chatId)
+    .onSnapshot((snapshot) => {
+      hookCallback({
+        type: "SET_ISCURRENTCONVOBLOCKED",
+        isCurrentConvoBlocked: snapshot?.data()?.isBlocked,
+      });
+    });
+}
+export function unBlockChatOnDb(userId, chatId) {
+  const unBlockOncurrentLoggedInUserDb = () => {
+    db.collection("registeredUsers")
+      .doc(userId)
+      .collection("chats")
+      .doc(chatId)
+      .update({
+        isBlocked: "",
+      });
+  };
+  const unBlockOnOtherUserDb = () => {
+    db.collection("registeredUsers")
+      .doc(chatId)
+      .collection("chats")
+      .doc(userId)
+      .update({
+        isBlocked: "",
+      });
+  };
+  unBlockOncurrentLoggedInUserDb();
+  unBlockOnOtherUserDb();
+}
+export function blockChatOnDb(userId, chatId) {
+  const blockOncurrentLoggedInUserDb = () => {
+    db.collection("registeredUsers")
+      .doc(userId)
+      .collection("chats")
+      .doc(chatId)
+      .update({
+        isBlocked: userId,
+      });
+  };
+  const blockOnOtherUserDb = () => {
+    db.collection("registeredUsers")
+      .doc(chatId)
+      .collection("chats")
+      .doc(userId)
+      .update({
+        isBlocked: userId,
+      });
+  };
+  blockOncurrentLoggedInUserDb();
+  blockOnOtherUserDb();
+}
+export function clearChatOnDb(userId, chatId) {
+  let unsubcribeClearChat;
+  let callBackFunc = () => {
+    // on subcribe from state change on firestore db
+    unsubcribeClearChat();
+  };
+  unsubcribeClearChat = db
+    .collection("registeredUsers")
+    .doc(userId)
+    .collection("chats")
+    .doc(chatId)
+    .collection("messages")
+    .onSnapshot((snapshot) => {
+      callBackFunc();
+      snapshot.docs.forEach((mssg, index) => {
+        // get each message and delete it individualy
+        db.collection("registeredUsers")
+          .doc(userId)
+          .collection("chats")
+          .doc(chatId)
+          .collection("messages")
+          .doc(mssg.id)
+          .delete();
+      });
+    });
+}
+export function deleteConvoOnDb(userId, chatId) {
+  clearChatOnDb(userId, chatId);
+  db.collection("registeredUsers")
+    .doc(userId)
+    .collection("chats")
+    .doc(chatId)
+    .delete();
+}
+

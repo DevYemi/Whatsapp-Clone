@@ -1,17 +1,17 @@
 import { CloseRounded } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react'
-import '../styles/room.css'
+import '../../styles/room.css'
 import { useParams } from 'react-router-dom';
-import { useStateValue } from './StateProvider';
-import { getRoomInfoFromDb, getMessgFromDb, setNewMessageToDb, uploadFileToDb, getRoomMembersFromDb } from './get&SetDataToDb';
-import FilePreview from './FilePreview';
+import { useStateValue } from '../global-state-provider/StateProvider';
+import { getRoomInfoFromDb, getMessgFromDb, setNewMessageToDb, uploadFileToDb, getRoomMembersFromDb, resetRecieverMssgReadOnDb } from '../backend/get&SetDataToDb';
+import FilePreview from '../common/FilePreview';
 import RoomHeader from './RoomHeader';
 import RoomBody from './RoomBody';
 import RoomFooter from './RoomFooter';
 import { IconButton } from '@material-ui/core';
 
 function Room(props) {
-    const {setOpenModal, setModalType, setIsRoom,setIsUserProfileRoom} = props
+    const { setOpenModal, setModalType, setIsRoom, setIsUserProfileRoom } = props
     const [seed, setSeed] = useState(""); // keeps state get new id for every new group
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
     const [isFileOnPreview, setIsFileOnPreview] = useState(false); // keeps state if there currently a file on preview
@@ -24,14 +24,14 @@ function Room(props) {
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
     const [roomMembers, setRoomMembers] = useState([])
     const { roomId } = useParams(); // id for the current room the user is on
-  
+
     const sendMessage = (e, eventType, file) => { // sends new message to db
         e && e.preventDefault();
         if (input === "" && eventType === "text") return // return if the user is sending an empty message
         if (eventType === "file") { // handle as file messaage if message contains files e.g image, audio, video
-            setNewMessageToDb(roomId, input, user, scrollRoomBody,true, file);
+            setNewMessageToDb(roomId, input, user, scrollRoomBody, true, file);
         } else if (eventType === "text") { // handle as text if message if just a text
-            setNewMessageToDb(roomId, input, user, scrollRoomBody,true, { type: "text", exten: ".txt" });
+            setNewMessageToDb(roomId, input, user, scrollRoomBody, true, { type: "text", exten: ".txt" });
         }
         setInput("");
         setIsFileOnPreview(false);
@@ -97,6 +97,9 @@ function Room(props) {
             roomBody?.scrollTo(0, roomBody.offsetHeight * 500000);
         }
     }, [messages]);
+    useEffect(() => { // reset the user read value to true once a room is opened
+        resetRecieverMssgReadOnDb(user?.info.uid, roomId, true, true)
+    }, [roomId, user?.info.uid])
 
     useEffect(() => { // gets currentDisplayConvoInfo, roomMessages, roomMembers on first render
         let unsubcribeRoomInfo;
@@ -106,11 +109,11 @@ function Room(props) {
         setIsUserProfileRoom(true);
         if (roomId) {
             unsubcribeRoomInfo = getRoomInfoFromDb(roomId, dispatch);
-            unsubcribeMessages = getMessgFromDb(null,roomId,true, "asc", setMessages, false);
+            unsubcribeMessages = getMessgFromDb(null, roomId, true, "asc", setMessages, false);
             unsubcribeRoomMembers = getRoomMembersFromDb(roomId, setRoomMembers)
         }
         return () => { unsubcribeRoomInfo(); unsubcribeMessages(); unsubcribeRoomMembers(); }
-    }, [roomId,setIsUserProfileRoom, dispatch]);
+    }, [roomId, setIsUserProfileRoom, dispatch]);
     useEffect(() => {
         setSeed(Math.floor(Math.random() * 5000));
     }, [])
@@ -126,7 +129,7 @@ function Room(props) {
                 setFoundWordIndex={setFoundWordIndex}
                 setTotalRoomWordFound={setTotalRoomWordFound}
                 setOpenModal={setOpenModal}
-                setModalType={setModalType} 
+                setModalType={setModalType}
                 setIsRoom={setIsRoom}
             />
             <RoomBody
@@ -173,4 +176,4 @@ function Room(props) {
     )
 }
 
-export default React.memo(Room)  
+export default React.memo(Room)

@@ -164,6 +164,13 @@
     display: grid;
     place-items: center;
 }
+.chat__footer.blocked {
+    justify-content: center;
+}
+.chat__footer.blocked p {
+    color: grey;
+    font-size: small;
+}
 
 .chat__footer {
     display: flex;

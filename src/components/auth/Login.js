@@ -1,11 +1,11 @@
 import { Button } from '@material-ui/core'
 import React, { useState, useEffect } from 'react'
-import { auth, provider } from '../firebase'
-import '../styles/login.css'
+import { auth, provider } from '../backend/firebase'
+import '../../styles/login.css'
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
-import { useStateValue } from './StateProvider';
-import { getTotalUsersFromDb, registerNewUserInDb } from './get&SetDataToDb'
+import { useStateValue } from '../global-state-provider/StateProvider';
+import { getTotalUsersFromDb, registerNewUserInDb } from '../backend/get&SetDataToDb'
 
 function Login() {
     const [, dispatch] = useStateValue();
@@ -39,7 +39,7 @@ function Login() {
                     .then(res => {
                         let checkEmail = sign.hasEmailBeenUsedBefore(res?.user?.email)
                         if (!checkEmail.res) {
-                            registerNewUserInDb(res?.user?.email, phoneInput,res?.user?.uid,res?.user?.displayName,res?.user?.photoURL)
+                            registerNewUserInDb(res?.user?.email, phoneInput, res?.user?.uid, res?.user?.displayName, res?.user?.photoURL)
                             let info = res.user
                             dispatch({
                                 type: "SET_USER",
@@ -100,7 +100,7 @@ function Login() {
                     </div>
                     <Button onClick={sign.in}>
                         Sign In With Google
-                       </Button>
+                    </Button>
                     <div className="login__signUp">
                         <p >Create an account ?</p>
                         <span onClick={() => setUserAlreadyHasAcct(false)}>Sign Up </span>
@@ -127,7 +127,7 @@ function Login() {
                     <p className="login__eg">e.g +234 8141 99 ****</p>
                     <Button onClick={sign.up}>
                         Sign Up With Google
-                       </Button>
+                    </Button>
                     <div className="login__login">
                         <p>Already has an account ?</p>
                         <span onClick={() => setUserAlreadyHasAcct(true)}>Sign In</span>
@@ -140,4 +140,4 @@ function Login() {
 
 
 
-export default React.memo(Login)  
+export default React.memo(Login)

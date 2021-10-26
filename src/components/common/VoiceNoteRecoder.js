@@ -2,9 +2,9 @@ import { IconButton } from '@material-ui/core';
 import { Mic, SendRounded } from '@material-ui/icons';
 import React from 'react'
 import gsap from 'gsap';
-import '../styles/voiceNoteRecoder.css'
-import { setVoiceNoteToDb } from './get&SetDataToDb';
-import { useStateValue } from './StateProvider';
+import '../../styles/voiceNoteRecoder.css'
+import { setVoiceNoteToDb } from '../backend/get&SetDataToDb';
+import { useStateValue } from '../global-state-provider/StateProvider';
 
 // NOTE: THIS VARIABLES AIN'T INSIDE THE VOICE-NOTE-RECODER COMPONENT BECAUSE I NOTICED
 //1.) REACT USE-STATE HOOKS DOESN'T HANDLE SET-INTERVAL CALLBACK FUNCTION PROPERLY
@@ -17,7 +17,7 @@ var micBlinking; //  holds the micBlinking timeInterval variable
 var isRecordingStopByCancel; // holds true or false if voice recording was ended by the user pressing cancel  
 var countDown; //  holds the countDown timeInterval variable
 function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollChatBody }) {
-    const [{ user,currentDisplayConvoInfo }] = useStateValue();
+    const [{ user, currentDisplayConvoInfo }] = useStateValue();
     const recordAudio = { // handles the recording of the audio
         setup: function () { // sets the Media API and gets permission for microphone usage from user device
             var audioChunks = [];
@@ -93,7 +93,7 @@ function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollChatBo
                     } else { // send audio to db and stop recording
                         let min = document.querySelector(".voiceNoteRecoder__min").innerText
                         let sec = document.querySelector(".voiceNoteRecoder__sec").innerText
-                        setVoiceNoteToDb(blob, blob.size, convoId, user, scrollChatBody,currentDisplayConvoInfo,min,sec);
+                        setVoiceNoteToDb(blob, blob.size, convoId, user, scrollChatBody, currentDisplayConvoInfo, min, sec);
                         recordAudio.stop()
                     }
 

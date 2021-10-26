@@ -1,36 +1,34 @@
 import React, { useEffect, useState } from "react";
-import "../styles/sidebar.css";
+import "../../styles/sidebar.css";
 import { Avatar, IconButton } from "@material-ui/core";
 import { DonutLarge, Chat, MoreVert, SearchOutlined } from "@material-ui/icons";
-import { useStateValue } from "./StateProvider";
+import { useStateValue } from "../global-state-provider/StateProvider";
 import {
   getChatsFromDb,
   getRoomsFromDb,
   getUserInfoFromDb,
-} from "./get&SetDataToDb";
-import Loading from "./Loading";
+} from "../backend/get&SetDataToDb";
+import Loading from "../common/Loading";
 import SidebarConvo from "./SidebarConvo";
 import { useHistory } from "react-router-dom";
 
-function Sidebar() {
+function Sidebar(props) {
+  const { setIsFirstRender, isFirstRender, setIsConnectedDisplayed } = props
   const [rooms, setRooms] = useState(null); // keep state for all the rooms received from db
   const [chats, setChats] = useState(null); // keep state for all ther chat received from db
-  const [isFirstRender, setIsFirstRender] = useState(true); // keeps state if Sibebar component is  rending for the first time
   const [convos, setConvos] = useState([]); // keeps state for the combination of chat and rooms
-  const [{ user }] = useStateValue(); // keeps state for current logged in user
+  const [{ user, }] = useStateValue(); // keeps state for current logged in user
   const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
   const urlHistory = useHistory();
   useEffect(() => {
-    // on first render display the first convo on the chat div
-    if (convos.length > 1 && isFirstRender) {
-      let firstConvo = convos[0];
-      let location = firstConvo.data.isRoom
-        ? `/rooms/${firstConvo.id}`
-        : `/chats/${firstConvo.id}`;
+    // on first render display connectedDisplay component on convo side
+    if (isFirstRender) {
+      let location = "/home"
       setIsFirstRender(false);
+      setIsConnectedDisplayed(true)
       urlHistory.push(location);
     }
-  }, [convos, urlHistory, isFirstRender]);
+  }, [urlHistory, isFirstRender, setIsFirstRender, setIsConnectedDisplayed]);
   useEffect(() => {
     // gets the chat and the room convo
     const unsubcribeRooms = getRoomsFromDb(user?.info.uid, setRooms); // gets all rooms from db on first render
@@ -99,6 +97,7 @@ function Sidebar() {
               convoId={convo.id}
               name={convo.data.name}
               isRoom={convo.data.isRoom}
+              setIsConnectedDisplayed={setIsConnectedDisplayed}
             />
           ))
         ) : (

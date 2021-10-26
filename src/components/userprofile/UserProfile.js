@@ -12,28 +12,42 @@ import {
   DoneRounded,
   CameraAltRounded,
   SearchOutlined,
+  ExitToAppRounded,
 } from "@material-ui/icons";
-import "./../styles/userProfile.css";
+import "../../styles/userProfile.css";
 import { Avatar } from "@material-ui/core";
-import { useStateValue } from "./StateProvider";
+import { useStateValue } from "../global-state-provider/StateProvider";
 import Checkbox from "@material-ui/core/Checkbox";
 import gsap from "gsap/gsap-core";
-import { getGroupMemberFromDb, getIfCurrentUserIsGroupAdminFromDb, isConvoMutedOnDb, setNewGroupDescriptionOnDb, setNewGroupNameOnDb } from "./get&SetDataToDb";
-import UserProfileSideBar from "./UserProfileSideBar";
+import {
+  getGroupMemberFromDb,
+  getIfCurrentUserIsGroupAdminFromDb,
+  isConvoMutedOnDb,
+  setNewAviForGroupOnDb,
+  setNewGroupDescriptionOnDb,
+  setNewGroupNameOnDb,
+} from "../backend/get&SetDataToDb";
+// import UserProfileSideBar from "./UserProfileSideBar";
 import Picker from "emoji-picker-react";
 function UserProfile(props) {
-  const { setOpenModal, setModalType, setIsRoom, isUserProfileRoom } = props;
-  const [{ user, currentDisplayConvoInfo, isMuteNotifichecked }, disptach] =
-    useStateValue(); // keeps state for current logged in user
+  const { setOpenModal, setModalType, setIsRoom, isUserProfileRoom, isConnectedDisplayed, isFirstRender } = props;
+  const [
+    {
+      user,
+      currentDisplayConvoInfo,
+      isMuteNotifichecked,
+      isCurrentConvoBlocked,
+    },
+    disptach,
+  ] = useStateValue(); // keeps state for current logged in user
   const [upSidebarType, setUpSidebarType] = useState("STARRED-MESSAGE");
   const [isAdmin, setIsAdmin] = useState(true);
   const [isGroupNameOnEdit, setIsGroupNameOnEdit] = useState(false); // keeps state if a user is currently editing the group name
   const [newNameInput, setNewNameInput] = useState(""); // keeps state for the inputed message by user
   const [isGroupDescripOnEdit, setIsGroupDescripOnEdit] = useState(false); // keeps state if a user is currently editing the group description
   const [newDescripInput, setNewDescripInput] = useState(""); // keeps state for the inputed message by user
-  const [whoseEmoji, setWhoseEmoji]= useState(); // keeps state if opened emoji div if for name input or description input
+  const [whoseEmoji, setWhoseEmoji] = useState(); // keeps state if opened emoji div if for name input or description input
   const [groupMembers, setGroupMemebers] = useState(); // keeps state of all the memebers of a group
-  console.log(groupMembers)
   const handleModalChange = (type, isRoom) => {
     setOpenModal(true);
     setModalType(type);
@@ -48,12 +62,12 @@ function UserProfile(props) {
       if (type === "NAME") {
         setNewNameInput(input);
       } else if (type === "DESCRIPTION") {
-        setNewDescripInput(input)
+        setNewDescripInput(input);
       }
     },
     modify: function (key) {
       switch (key) {
-        case "NAME" :
+        case "NAME":
           if (newNameInput.length < 1) {
             handleModalChange("EMPTY_GROUPNAME", true);
           } else {
@@ -61,19 +75,21 @@ function UserProfile(props) {
             setIsGroupNameOnEdit(false);
           }
           break;
-          case "DESCRIPTION":
-            if (newDescripInput.length < 1) {
-              setIsGroupDescripOnEdit(false);
-            } else {
-              setNewGroupDescriptionOnDb(currentDisplayConvoInfo?.roomId, newDescripInput);
-              setIsGroupDescripOnEdit(false);
-            }
+        case "DESCRIPTION":
+          if (newDescripInput.length < 1) {
+            setIsGroupDescripOnEdit(false);
+          } else {
+            setNewGroupDescriptionOnDb(
+              currentDisplayConvoInfo?.roomId,
+              newDescripInput
+            );
+            setIsGroupDescripOnEdit(false);
+          }
           break;
-      
+
         default:
           break;
       }
-      
     },
   };
   const onEmojiClick = (e, emojiObj) => {
@@ -87,9 +103,9 @@ function UserProfile(props) {
   const showEmojis = (e, userTyping, location) => {
     // show emojis when a user clicks on emoji icon
     if (location === "upbr__editName__emoji") {
-      setWhoseEmoji("NAME")
-    }else {
-      setWhoseEmoji("DESCRIPTION")
+      setWhoseEmoji("NAME");
+    } else {
+      setWhoseEmoji("DESCRIPTION");
     }
     let emojis = document.querySelector(`.${location} > .emoji-picker-react`);
     if (userTyping) {
@@ -103,34 +119,48 @@ function UserProfile(props) {
       }
     }
   };
+  const handleAviFileChange = (e) => {
+    // handles the uploading of the group new avi
+    const selectedAvi = e.target.files[0];
+    if (selectedAvi) {
+      setNewAviForGroupOnDb(selectedAvi, currentDisplayConvoInfo?.roomId);
+    }
+  };
+
   useEffect(() => {
     // on every first render in a group chat always close the isGroupNameOnEdit & isGroupDescripOnEdit also set newDescriptionInput to the data on db
     setIsGroupNameOnEdit(false);
     setIsGroupDescripOnEdit(false);
     setNewDescripInput(currentDisplayConvoInfo?.description);
   }, [currentDisplayConvoInfo?.roomId, currentDisplayConvoInfo?.description]);
-  useEffect(()=>{ // on every render get group memebers of group from db
-    let unsubcribeGroupMembers;
+  useEffect(() => {
+    // on every render get group memebers of group from db
     if (currentDisplayConvoInfo?.roomId) {
-     unsubcribeGroupMembers =  getGroupMemberFromDb(currentDisplayConvoInfo?.roomId, setGroupMemebers);
+      getGroupMemberFromDb(currentDisplayConvoInfo?.roomId, setGroupMemebers);
     }
-    return ()=> {unsubcribeGroupMembers()}
-  },[currentDisplayConvoInfo?.roomId]);
-  useEffect (()=>{ // on every first render check if the current logged in user is an admin of the current displayed group on db
+  }, [currentDisplayConvoInfo?.roomId]);
+  useEffect(() => {
+    // on every first render check if the current logged in user is an admin of the current displayed group on db
     if (user?.info?.uid && currentDisplayConvoInfo?.roomId) {
-      getIfCurrentUserIsGroupAdminFromDb(user?.info?.uid, currentDisplayConvoInfo?.roomId, setIsAdmin);
+      getIfCurrentUserIsGroupAdminFromDb(
+        user?.info?.uid,
+        currentDisplayConvoInfo?.roomId,
+        setIsAdmin
+      );
     }
-  },[user?.info?.uid, currentDisplayConvoInfo?.roomId])
+  }, [user?.info?.uid, currentDisplayConvoInfo?.roomId]);
   useEffect(() => {
     // checks if the current chat has been muted before
-    if (user?.info?.uid && currentDisplayConvoInfo?.uid) { //check if its a chat
+    if (user?.info?.uid && currentDisplayConvoInfo?.uid) {
+      //check if its a chat
       isConvoMutedOnDb(
         user?.info?.uid,
         currentDisplayConvoInfo?.uid,
         false,
         disptach
       );
-    } else if (user?.info?.uid && currentDisplayConvoInfo?.roomId) { // else treat convo as a group
+    } else if (user?.info?.uid && currentDisplayConvoInfo?.roomId) {
+      // else treat convo as a group
       isConvoMutedOnDb(
         user?.info?.uid,
         currentDisplayConvoInfo?.roomId,
@@ -148,7 +178,7 @@ function UserProfile(props) {
   if (isUserProfileRoom) {
     // if the displayed convo is a group display appropriatly
     return (
-      <div className="userProfileRoom__wr">
+      <div className={`userProfileRoom__wr ${(isFirstRender || isConnectedDisplayed) && "hide"}`}>
         <div className="userProfileRoom__container">
           <div className="userProfileRoom__header">
             <CloseRounded
@@ -164,10 +194,15 @@ function UserProfile(props) {
             <section className="userProfileBodyRoom__sec1">
               <div className="userProfileBodyRoom__sec1AviWr">
                 <Avatar src={currentDisplayConvoInfo?.avi} />
-                <div className="upbr__sec1AviChnage">
-                  <CameraAltRounded />
-                  <p>Change Group Icon</p>
-                </div>
+                {isAdmin && (
+                  <input type="file" onChange={(e) => handleAviFileChange(e)} />
+                )}
+                {isAdmin && (
+                  <div className="upbr__sec1AviChnage">
+                    <CameraAltRounded />
+                    <p>Change Group Icon</p>
+                  </div>
+                )}
               </div>
               <div className="userProfileBodyRoom__sec1OuterDiv">
                 <div className="upbr__editName">
@@ -198,7 +233,7 @@ function UserProfile(props) {
                           />
                         </div>
                         <DoneRounded
-                          onClick={()=> editGroupInfo.modify("NAME")}
+                          onClick={() => editGroupInfo.modify("NAME")}
                           className="done"
                         />
                       </div>
@@ -232,7 +267,7 @@ function UserProfile(props) {
             <section className="userProfileBodyRoom__sec2">
               <div className="userProfileBodyRoom__sec2OuterDiv">
                 <div className="upbr__editDescrip">
-                <p>Description</p>
+                  <p>Description</p>
                   {isGroupDescripOnEdit ? (
                     <div>
                       <textarea
@@ -258,13 +293,17 @@ function UserProfile(props) {
                           />
                         </div>
                         <DoneRounded
-                          onClick={() =>editGroupInfo.modify("DESCRIPTION")}
+                          onClick={() => editGroupInfo.modify("DESCRIPTION")}
                           className="done"
                         />
                       </div>
                     </div>
                   ) : (
-                    <span>{currentDisplayConvoInfo?.description === "" ? "Add group description":currentDisplayConvoInfo?.description}</span>
+                    <span>
+                      {currentDisplayConvoInfo?.description === ""
+                        ? "Add group description"
+                        : currentDisplayConvoInfo?.description}
+                    </span>
                   )}
                 </div>
                 {isAdmin ? (
@@ -323,12 +362,28 @@ function UserProfile(props) {
             </section>
             <section className="userProfileBodyRoom__sec5">
               <div className="upbr_sec5_div1">
-                <p>2 participant</p>
+                <p>{`${groupMembers?.length} participant`}</p>
                 <SearchOutlined />
               </div>
               <div className="upbr_sec5_div2">
-
+                {groupMembers?.map((member, index) => (
+                  <div key={index} className="upbr_sec5_div2_memberWr">
+                    <div>
+                      <Avatar src={member?.avi} />
+                      <p>{member?.data?.name}</p>
+                    </div>
+                    {isAdmin && <p>Group Admin</p>}
+                  </div>
+                ))}
               </div>
+            </section>
+            <section className="userProfileBodyRoom__sec6">
+              <ExitToAppRounded />
+              <p>Exit Group</p>
+            </section>
+            <section className="userProfileBodyRoom__sec7">
+              <ThumbDown />
+              <p>Report Group</p>
             </section>
           </div>
         </div>
@@ -337,7 +392,7 @@ function UserProfile(props) {
     );
   } else {
     return (
-      <div className="userProfile__wr">
+      <div className={`userProfile__wr ${(isFirstRender || isConnectedDisplayed) && "hide"}`}>
         <div className="userProfile__container">
           <div className="userProfile__header">
             <CloseRounded onClick={() => userProfile.close(false)} />
@@ -393,17 +448,21 @@ function UserProfile(props) {
             <section className="userProfileBody__sec4">
               <p>About and Phone Number</p>
               <p>Hey there! i'm using whatsapp</p>
-              <p>+234 **** *****</p>
+              <p>{`~${currentDisplayConvoInfo?.phoneNumber}~`}</p>
             </section>
-            <section className="userProfileBody__sec5">
+            <section
+              className={`userProfileBody__sec5 ${(isCurrentConvoBlocked && isCurrentConvoBlocked !== "") && "blocked"
+                }`}
+              onClick={() => handleModalChange("BLOCK_CHAT", false)}
+            >
               <Block />
-              <p>Block</p>
+              <p>{(isCurrentConvoBlocked && isCurrentConvoBlocked !== "") ? "UNBLOCK" : "BLOCK"}</p>
             </section>
-            <section className="userProfileBody__sec6">
+            <section className="userProfileBody__sec6" onClick={() => handleModalChange("REPORT_CONTACT", false)}>
               <ThumbDown />
               <p>Report Contact</p>
             </section>
-            <section className="userProfileBody__sec7">
+            <section className="userProfileBody__sec7" onClick={() => handleModalChange("DELETE_CHAT", false)}>
               <Delete />
               <p>Delete Chat</p>
             </section>

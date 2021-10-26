@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
-import Chat from "./components/Chat";
-import DisplayModal from "./components/DisplayModal";
-import Login from "./components/Login";
-import Room from "./components/Room";
-import Sidebar from "./components/Sidebar";
-import { useStateValue } from "./components/StateProvider";
-import UserProfile from "./components/UserProfile";
+import Chat from "./components/chat/Chat";
+import ConnectedDisplay from "./components/common/ConnectedDisplay";
+import DisplayModal from "./components/common/DisplayModal";
+import Login from "./components/auth/Login";
+import Room from "./components/room/Room";
+import Sidebar from "./components/sidebar/Sidebar";
+import { useStateValue } from "./components/global-state-provider/StateProvider";
+import UserProfile from "./components/userprofile/UserProfile";
 function App() {
   const [{ user }] = useStateValue();
   const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
@@ -15,7 +16,8 @@ function App() {
   const [modalType, setModalType] = useState(""); // keeps state of which type of modal should pop up
   const [isRoom, setIsRoom] = useState(null); // keeps state if the pop up modal is meant for a room or a chat
   const [isUserProfileRoom, setIsUserProfileRoom] = useState(true); // keeps state to display the profile appropriately for chat and room
-  console.log(user);
+  const [isFirstRender, setIsFirstRender] = useState(true); // keeps state if App component is  rending for the first time
+  const [isConnectedDisplayed, setIsConnectedDisplayed] = useState(false); // keeps state if the connectedDisplay component is currently mounted
   return (
     <div className="app">
       {!user ? (
@@ -23,7 +25,11 @@ function App() {
       ) : (
         <Router>
           <div className="app__body">
-            <Sidebar />
+            <Sidebar
+              isFirstRender={isFirstRender}
+              setIsFirstRender={setIsFirstRender}
+              setIsConnectedDisplayed={setIsConnectedDisplayed}
+            />
             <Switch>
               <Route path="/rooms/:roomId">
                 <Room
@@ -41,12 +47,17 @@ function App() {
                   setIsUserProfileRoom={setIsUserProfileRoom}
                 />
               </Route>
+              <Route path="/home">
+                <ConnectedDisplay />
+              </Route>
             </Switch>
             <UserProfile
               setOpenModal={setOpenModal}
               setModalType={setModalType}
               setIsRoom={setIsRoom}
               isUserProfileRoom={isUserProfileRoom}
+              isFirstRender={isFirstRender}
+              isConnectedDisplayed={isConnectedDisplayed}
             />
             <DisplayModal
               modalType={modalType}
@@ -55,6 +66,7 @@ function App() {
               isRoom={isRoom}
               setModalInput={setModalInput}
               setOpenModal={setOpenModal}
+              setIsConnectedDisplayed={setIsConnectedDisplayed}
             />
           </div>
         </Router>
@@ -63,4 +75,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);

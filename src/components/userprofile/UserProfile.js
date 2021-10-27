@@ -35,6 +35,7 @@ function UserProfile(props) {
     {
       user,
       currentDisplayConvoInfo,
+      currentDisplayedConvoMessages,
       isMuteNotifichecked,
       isCurrentConvoBlocked,
     },
@@ -53,6 +54,7 @@ function UserProfile(props) {
     setModalType(type);
     setIsRoom(isRoom);
   };
+  console.log(currentDisplayedConvoMessages)
 
   const editGroupInfo = {
     editName: function () {
@@ -135,46 +137,30 @@ function UserProfile(props) {
   }, [currentDisplayConvoInfo?.roomId, currentDisplayConvoInfo?.description]);
   useEffect(() => {
     // on every render get group memebers of group from db
+    let unsubcribeGetGroupMemberFromDb;
     if (currentDisplayConvoInfo?.roomId) {
-      getGroupMemberFromDb(currentDisplayConvoInfo?.roomId, setGroupMemebers);
+      unsubcribeGetGroupMemberFromDb = getGroupMemberFromDb(currentDisplayConvoInfo?.roomId, setGroupMemebers);
+      return () => unsubcribeGetGroupMemberFromDb();
     }
   }, [currentDisplayConvoInfo?.roomId]);
   useEffect(() => {
     // on every first render check if the current logged in user is an admin of the current displayed group on db
+    let unsubcribeGetIfCurrentUserIsGroupAdminFromDb;
     if (user?.info?.uid && currentDisplayConvoInfo?.roomId) {
-      getIfCurrentUserIsGroupAdminFromDb(
-        user?.info?.uid,
-        currentDisplayConvoInfo?.roomId,
-        setIsAdmin
-      );
+      getIfCurrentUserIsGroupAdminFromDb(user?.info?.uid, currentDisplayConvoInfo?.roomId, setIsAdmin);
     }
+    return () => unsubcribeGetIfCurrentUserIsGroupAdminFromDb();
   }, [user?.info?.uid, currentDisplayConvoInfo?.roomId]);
   useEffect(() => {
     // checks if the current chat has been muted before
     if (user?.info?.uid && currentDisplayConvoInfo?.uid) {
       //check if its a chat
-      isConvoMutedOnDb(
-        user?.info?.uid,
-        currentDisplayConvoInfo?.uid,
-        false,
-        disptach
-      );
+      isConvoMutedOnDb(user?.info?.uid, currentDisplayConvoInfo?.uid, false, disptach);
     } else if (user?.info?.uid && currentDisplayConvoInfo?.roomId) {
       // else treat convo as a group
-      isConvoMutedOnDb(
-        user?.info?.uid,
-        currentDisplayConvoInfo?.roomId,
-        true,
-        disptach
-      );
+      isConvoMutedOnDb(user?.info?.uid, currentDisplayConvoInfo?.roomId, true, disptach);
     }
-  }, [
-    isMuteNotifichecked,
-    disptach,
-    user?.info?.uid,
-    currentDisplayConvoInfo?.uid,
-    currentDisplayConvoInfo?.roomId,
-  ]);
+  }, [isMuteNotifichecked, disptach, user?.info?.uid, currentDisplayConvoInfo?.uid, currentDisplayConvoInfo?.roomId,]);
   if (isUserProfileRoom) {
     // if the displayed convo is a group display appropriatly
     return (

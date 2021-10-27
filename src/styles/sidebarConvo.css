@@ -3,6 +3,9 @@
     justify-content: space-between;
     align-items: center;
 }
+.sidebarConvoWr.current {
+    background-color: #ebebebb2;
+}
 .sidebarConvoWr > p {
 display: none;
  background-color: #06D755;
@@ -28,7 +31,7 @@ display: none;
    border-bottom: 1px solid #f6f6f6;
 }
 .sidebarConvoWr:hover {
-    background-color: #ebebeb;
+    background-color: #ebebebb2;
 }
 .sidebarConvo__info > h2 {
     font-size: 1rem;

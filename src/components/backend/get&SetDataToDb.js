@@ -1,9 +1,9 @@
 import db, { storage } from "./firebase";
-import firebase from "firebase";
+import firebase from "firebase/app";
 export function getUserInfoFromDb(id, hookCallBack, isReducerCallback) {
   if (isReducerCallback) {
     // if its a reducer callback handle it
-    db.collection("registeredUsers")
+    return db.collection("registeredUsers")
       .doc(id)
       .onSnapshot((snapshot) =>
         hookCallBack({
@@ -126,14 +126,7 @@ export function getRoomMembersFromDb(roomId, hookCallback) {
       hookCallback(members);
     });
 }
-export function getMessgFromDb(
-  userId,
-  convoId,
-  isRoom,
-  order,
-  hookCallback,
-  getLastMessage
-) {
+export function getMessgFromDb(userId, convoId, isRoom, order, hookCallback, getLastMessage) {
   // gets all the message in a room fromdb
   if (isRoom) {
     return db
@@ -188,24 +181,14 @@ export function getCurrentChatNameFromDb(userId, chatId, hookCallback) {
     .collection("chats")
     .doc(chatId);
 
-  docRef
-    .get()
+  docRef.get()
     .then((doc) => {
       if (doc.exists) {
         hookCallback(doc.data()?.name);
-      } else {
       }
-    })
-    .catch((e) => { });
+    }).catch((e) => { });
 }
-export function setNewMessageToDb(
-  convoId,
-  text,
-  user,
-  scrollChatBody,
-  isRoom,
-  fileType
-) {
+export function setNewMessageToDb(convoId, text, user, scrollChatBody, isRoom, fileType) {
   // send new sent message to db
   var newMssgKey = firebase.database().ref().child("messages").push().key;
   if (isRoom) {
@@ -300,13 +283,7 @@ export function resetRecieverMssgReadOnDb(recId, senId, value, isRoom) {
       read: value,
     });
 }
-export function getAndComputeNumberOfNewMssgOnDb(
-  userId,
-  isRoom,
-  convoId,
-  setNewMssgNum,
-  currentUrl
-) {
+export function getAndComputeNumberOfNewMssgOnDb(userId, isRoom, convoId, setNewMssgNum, currentUrl) {
   const mssgCallback = (messages) => {
     let numOfNewMessages = 0;
     for (let i = 0; i < messages.length; i++) {
@@ -322,7 +299,7 @@ export function getAndComputeNumberOfNewMssgOnDb(
   };
   if (isRoom) {
     // get it from the rooms in db
-    (db.collection("registeredUsers")
+    return db.collection("registeredUsers")
       .doc(userId)
       .collection("rooms")
       .doc(convoId)
@@ -332,9 +309,9 @@ export function getAndComputeNumberOfNewMssgOnDb(
           // if chat hasn't been read by user commute the amount of message sent by other sender
           getMessgFromDb(userId, convoId, isRoom, "desc", mssgCallback, false);
         }
-      }))();
+      });
   } else {
-    (db.collection("registeredUsers")
+    return db.collection("registeredUsers")
       .doc(userId)
       .collection("chats")
       .doc(convoId)
@@ -344,7 +321,7 @@ export function getAndComputeNumberOfNewMssgOnDb(
           // if chat hasn't been read by user commute the amount of message sent by sender
           getMessgFromDb(userId, convoId, isRoom, "desc", mssgCallback, false);
         }
-      }))();
+      });
   }
 }
 export function uploadFileToDb(file, fileInfo, setFileOnPreview) {
@@ -372,16 +349,7 @@ export function uploadFileToDb(file, fileInfo, setFileOnPreview) {
     }
   );
 }
-export function setVoiceNoteToDb(
-  file,
-  fileSize,
-  chatId,
-  user,
-  scrollChatBody,
-  convoInfo,
-  min,
-  sec
-) {
+export function setVoiceNoteToDb(file, fileSize, chatId, user, scrollChatBody, convoInfo, min, sec) {
   // upload the new created voice note to strorage and send the url to db
   const uploadTask = storage.ref(`audio/voice-note${fileSize}`).put(file);
   uploadTask.on(
@@ -401,22 +369,7 @@ export function setVoiceNoteToDb(
         .child(`voice-note${fileSize}`)
         .getDownloadURL()
         .then((url) => {
-          setNewMessageToDb(
-            chatId,
-            "",
-            user,
-            scrollChatBody,
-            convoInfo?.isRoom,
-            {
-              url,
-              info: {
-                type: "voice-note",
-                min,
-                sec,
-                exten: "mp3",
-                avi: user?.info.photoURL,
-              },
-            }
+          setNewMessageToDb(chatId, "", user, scrollChatBody, convoInfo?.isRoom, { url, info: { type: "voice-note", min, sec, exten: "mp3", avi: user?.info.photoURL, } }
           );
         });
     }
@@ -534,11 +487,7 @@ export function getGroupMemberFromDb(roomId, reactHookCallback) {
       });
     });
 }
-export function getIfCurrentUserIsGroupAdminFromDb(
-  userId,
-  roomId,
-  reactHookCallback
-) {
+export function getIfCurrentUserIsGroupAdminFromDb(userId, roomId, reactHookCallback) {
   // gets if the current logged in user is an admin of the group
   return db
     .collection("registeredUsers")
@@ -647,22 +596,16 @@ export function blockChatOnDb(userId, chatId) {
   blockOncurrentLoggedInUserDb();
   blockOnOtherUserDb();
 }
-export function clearChatOnDb(userId, chatId) {
-  let unsubcribeClearChat;
-  let callBackFunc = () => {
-    // on subcribe from state change on firestore db
-    unsubcribeClearChat();
-  };
-  unsubcribeClearChat = db
-    .collection("registeredUsers")
+export async function clearChatOnDb(userId, chatId) {
+  db.collection("registeredUsers")
     .doc(userId)
     .collection("chats")
     .doc(chatId)
     .collection("messages")
-    .onSnapshot((snapshot) => {
-      callBackFunc();
-      snapshot.docs.forEach((mssg, index) => {
-        // get each message and delete it individualy
+    .get()
+    .then(querySnapshot => {
+      // get each message and delete it individualy
+      querySnapshot.forEach((mssg, index) => {
         db.collection("registeredUsers")
           .doc(userId)
           .collection("chats")
@@ -670,8 +613,9 @@ export function clearChatOnDb(userId, chatId) {
           .collection("messages")
           .doc(mssg.id)
           .delete();
-      });
+      })
     });
+
 }
 export function deleteConvoOnDb(userId, chatId) {
   clearChatOnDb(userId, chatId);

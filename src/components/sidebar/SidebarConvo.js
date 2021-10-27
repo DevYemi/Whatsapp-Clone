@@ -20,6 +20,7 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom, setIsConnectedDispla
     const [totalUserOnDb, setTotalUserOnDb] = useState() // keeps state for the total user on the db
     const [lastMessage, setlastMessage] = useState(); // keeps state for the last message recived or sent
     const [modalType, setModalType] = useState("ADD_CHAT") //keeps state for the type of modal to be displayed
+    const [isCurrentSidebar, setIsCurrentSidebar] = useState(false); // keeps state if a user is current on the displayed sidebar
     const urlLocation = useLocation();
     const addChatBg = { url: "url(/img/chat-bg.svg)", position: "right bottom", size: "contain" } // addchat modal bg-image styles
     const addRoomBg = { url: "url(/img/room-bg.svg)", position: "right bottom", size: "97px" } // addroom modal bg-image styles
@@ -64,19 +65,18 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom, setIsConnectedDispla
         }
     }, [convoId])
     useEffect(() => { // Gets the number of new messages from db
-        let unsubcribegetAndComputeNumberOfNewMssgOnDb;
+        let unsubGetAndComputeNumberOfNewMssgOnDb;
         let currentLocation = isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`;
         // console.log(`Getting numbers for: ${isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`}`)
         if (currentLocation === urlLocation.pathname) {
             setNewMssgNum(0);
             resetRecieverMssgReadOnDb(user?.info?.uid, convoId, true, isRoom);
-            console.log("url resetings")
         } else {
             if (convoId) {
-                unsubcribegetAndComputeNumberOfNewMssgOnDb = getAndComputeNumberOfNewMssgOnDb(user?.info?.uid, isRoom, convoId, setNewMssgNum, urlLocation.pathname);
+                unsubGetAndComputeNumberOfNewMssgOnDb = getAndComputeNumberOfNewMssgOnDb(user?.info?.uid, isRoom, convoId, setNewMssgNum, urlLocation.pathname);
             }
         }
-        return () => { if (unsubcribegetAndComputeNumberOfNewMssgOnDb) unsubcribegetAndComputeNumberOfNewMssgOnDb() };
+        return () => { if (unsubGetAndComputeNumberOfNewMssgOnDb) unsubGetAndComputeNumberOfNewMssgOnDb(); };
     }, [user?.info.uid, convoId, isRoom, urlLocation.pathname, lastMessage])
     useEffect(() => { // gets last sent message from db
         let unsubcribegetMessgFromDb;
@@ -85,9 +85,24 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom, setIsConnectedDispla
         }
         return () => { if (unsubcribegetMessgFromDb) unsubcribegetMessgFromDb(); }
     }, [convoId, user?.info.uid, isRoom])
+    useEffect(() => { // checks if user is on the current side and set state to true or false
+        let sidebarLocation = isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`;
+        if (sidebarLocation === urlLocation.pathname) {
+            setIsCurrentSidebar(true);
+        } else {
+            setIsCurrentSidebar(false)
+        }
+
+    }, [convoId, isRoom, urlLocation])
     return !addNewConvo ? (
         <Link to={isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`}>
-            <div onClick={() => { setNewMssgNum(0); displayConvoForMobile("show"); userProfile.close(currentDisplayConvoInfo?.isRoom ? true : false); setIsConnectedDisplayed(false); }} className="sidebarConvoWr">
+            <div onClick={() => {
+                setNewMssgNum(0);
+                displayConvoForMobile("show");
+                userProfile.close(currentDisplayConvoInfo?.isRoom ? true : false);
+                setIsConnectedDisplayed(false);
+            }}
+                className={`sidebarConvoWr ${isCurrentSidebar ? "current" : ""}`}>
                 <div className="sidebarConvo">
                     <Avatar src={userInfoDb?.avi} />
                     <div className="sidebarConvo__info">

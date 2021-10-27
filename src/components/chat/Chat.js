@@ -94,6 +94,14 @@ function Chat(props) {
             chatBody?.scrollTo(0, chatBody.offsetHeight * 500000);
         }
     }, [messages])
+    useEffect(() => { // map chat messages to global state currentDisplyedConvoMessages
+        if (messages.length > 0) {
+            dispatch({
+                type: "SET_CURRENTDISPLAYEDCONVOMESSAGES",
+                currentDisplayedConvoMessages: messages,
+            });
+        }
+    }, [messages, dispatch])
     useEffect(() => { // reset the user read value to true once a chat is opened
         resetRecieverMssgReadOnDb(user?.info.uid, chatId, true, false);
     }, [chatId, user?.info.uid])
@@ -101,13 +109,14 @@ function Chat(props) {
     useEffect(() => { // gets currentDisplayConvoInfo, isConvoBlockedOnDb  and chatMessages on first render
         let unsubcribeMessages;
         let unsubcribeIsConvoBlockedOnDb;
+        let unsubcribeGetUserInfoFromDb;
         setIsUserProfileRoom(false);
         if (chatId) {
-            getUserInfoFromDb(chatId, dispatch, true);
+            unsubcribeGetUserInfoFromDb = getUserInfoFromDb(chatId, dispatch, true);
             unsubcribeMessages = getMessgFromDb(user?.info?.uid, chatId, false, "asc", setMessages, false);
             unsubcribeIsConvoBlockedOnDb = getIsConvoBlockedOnDb(user?.info.uid, chatId, dispatch);
         }
-        return () => { unsubcribeMessages(); unsubcribeIsConvoBlockedOnDb(); }
+        return () => { unsubcribeMessages(); unsubcribeIsConvoBlockedOnDb(); unsubcribeGetUserInfoFromDb(); }
     }, [chatId, user?.info.uid, setIsUserProfileRoom, dispatch]);
 
     return (

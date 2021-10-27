@@ -1,8 +1,9 @@
 export const initialState = {
-  user: null,
-  currentDisplayConvoInfo: null,
-  isMuteNotifichecked: false,
-  isCurrentConvoBlocked: false,
+  user: null, // state for the current logged in user
+  currentDisplayConvoInfo: null, // state for the current displayed convo either chat or room
+  currentDisplayedConvoMessages: null, // state for the current displayed convo messages either chat or room
+  isMuteNotifichecked: false, // state if the current displayed convo has been muted
+  isCurrentConvoBlocked: false, // state if the current displayed convo has been blocked
 };
 
 function reducer(state, action) {
@@ -11,10 +12,12 @@ function reducer(state, action) {
       return { ...state, user: action.user };
     case "SET_CURRENTDISPLAYCONVOINFO":
       return { ...state, currentDisplayConvoInfo: action.currentDisplayConvoInfo };
-      case "SET_ISMUTENOTIFICHECKED":
+    case "SET_ISMUTENOTIFICHECKED":
       return { ...state, isMuteNotifichecked: action.isMuteNotifichecked };
-      case "SET_ISCURRENTCONVOBLOCKED":
+    case "SET_ISCURRENTCONVOBLOCKED":
       return { ...state, isCurrentConvoBlocked: action.isCurrentConvoBlocked };
+    case "SET_CURRENTDISPLAYEDCONVOMESSAGES":
+      return { ...state, currentDisplayedConvoMessages: action.currentDisplayedConvoMessages };
     default:
       return state;
   }

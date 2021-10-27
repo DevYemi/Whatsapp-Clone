@@ -32,11 +32,7 @@ function Sidebar(props) {
   useEffect(() => {
     // gets the chat and the room convo
     const unsubcribeRooms = getRoomsFromDb(user?.info.uid, setRooms); // gets all rooms from db on first render
-    const unsubcribeUserInfoDb = getUserInfoFromDb(
-      user?.info.uid,
-      setUserInfoDb,
-      false
-    );
+    const unsubcribeUserInfoDb = getUserInfoFromDb(user?.info.uid, setUserInfoDb, false);
     const unsubcribeChats = getChatsFromDb(user?.info.uid, setChats); // gets all chats from db on first render
     return () => {
       unsubcribeRooms();

@@ -91,7 +91,7 @@ function Sidebar(props) {
             <SidebarConvo
               key={convo.id}
               convoId={convo.id}
-              name={convo.data.name}
+              name={convo.data.isRoom ? convo.data.roomName : convo.data.name}
               isRoom={convo.data.isRoom}
               setIsConnectedDisplayed={setIsConnectedDisplayed}
             />

@@ -12,7 +12,7 @@ import db from "../backend/firebase";
 import { getMessgFromDb } from "../backend/get&SetDataToDb";
 import { displayConvoForMobile } from "../sidebar/SidebarConvo";
 import { useStateValue } from "../global-state-provider/StateProvider";
-import { userProfile } from "../userprofile/UserProfile";
+import { profile } from "../profile/Profile";
 
 function ChatHeader(props) {
   const {
@@ -156,8 +156,8 @@ function ChatHeader(props) {
         <IconButton onClick={() => displayConvoForMobile("hide")}>
           <KeyboardBackspaceRounded />
         </IconButton>
-        <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => userProfile.open(false)} />
-        <div className="chat__headerInfo" onClick={() => userProfile.open(false)}>
+        <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => profile.open(false)} />
+        <div className="chat__headerInfo" onClick={() => profile.open(false)}>
           <h3>{currentDisplayConvoInfo?.name}</h3>
           <p>
             Last seen{" "}
@@ -186,7 +186,7 @@ function ChatHeader(props) {
             </IconButton>
             <div className="chatHeaderHelp" id="chatHeaderHelp">
               <ul>
-                <li onClick={() => userProfile.open(false)}>Contact Info</li>
+                <li onClick={() => profile.open(false)}>Contact Info</li>
                 <li>Select Messages</li>
                 <li
                   onClick={() => {

@@ -43,6 +43,7 @@ function UserProfile(props) {
   ] = useStateValue(); // keeps state for current logged in user
   const [upSidebarType, setUpSidebarType] = useState("STARRED-MESSAGE");
   const [isAdmin, setIsAdmin] = useState(true);
+  const [imgMssg, setImgMssg] = useState([]); // keeps state of all the current displayed convo messages that are of image type
   const [isGroupNameOnEdit, setIsGroupNameOnEdit] = useState(false); // keeps state if a user is currently editing the group name
   const [newNameInput, setNewNameInput] = useState(""); // keeps state for the inputed message by user
   const [isGroupDescripOnEdit, setIsGroupDescripOnEdit] = useState(false); // keeps state if a user is currently editing the group description
@@ -128,7 +129,18 @@ function UserProfile(props) {
       setNewAviForGroupOnDb(selectedAvi, currentDisplayConvoInfo?.roomId);
     }
   };
-
+  useEffect(() => {
+    // on first render get all the messages of the current displayed convo and map out the img messages into state
+    let imgMssgArr = []
+    if (currentDisplayedConvoMessages.length > 0) {
+      currentDisplayedConvoMessages.forEach(mssg => {
+        if (mssg.fileType.type === "image") {
+          imgMssgArr.push(mssg)
+        }
+      })
+      setImgMssg(imgMssgArr);
+    }
+  }, [currentDisplayedConvoMessages])
   useEffect(() => {
     // on every first render in a group chat always close the isGroupNameOnEdit & isGroupDescripOnEdit also set newDescriptionInput to the data on db
     setIsGroupNameOnEdit(false);

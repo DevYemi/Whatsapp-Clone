@@ -86,7 +86,8 @@ function Login() {
 
     }
 
-    useEffect(() => {
+
+    useEffect(() => { // Gets the total registertered user on db
         let unsubcribeGetToUserFromDb = getTotalUsersFromDb(setTotalUserOnDb);
         return () => { unsubcribeGetToUserFromDb(); }
     }, [])

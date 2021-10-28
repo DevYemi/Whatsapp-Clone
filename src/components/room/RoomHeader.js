@@ -12,7 +12,7 @@ import db from "../backend/firebase";
 import { getMessgFromDb } from "../backend/get&SetDataToDb";
 import { displayConvoForMobile } from "../sidebar/SidebarConvo";
 import { useStateValue } from "../global-state-provider/StateProvider";
-import { userProfile } from "../userprofile/UserProfile";
+import { profile } from "../profile/Profile";
 
 function RoomHeader(props) {
   const {
@@ -152,7 +152,7 @@ function RoomHeader(props) {
           <KeyboardBackspaceRounded />
         </IconButton>
         <Avatar src={currentDisplayConvoInfo?.avi} />
-        <div className="room__headerInfo" onClick={() => userProfile.open(true)}>
+        <div className="room__headerInfo" onClick={() => profile.open(true)}>
           <h3>{currentDisplayConvoInfo?.roomName}</h3>
           <p>
             {roomMembers.length > 0
@@ -180,7 +180,7 @@ function RoomHeader(props) {
             </IconButton>
             <div className="roomHeaderHelp" id="roomHeaderHelp">
               <ul>
-                <li onClick={() => userProfile.open(true)}>Group Info</li>
+                <li onClick={() => profile.open(true)}>Group Info</li>
                 <li>Select Messages</li>
                 <li
                   onClick={() => {

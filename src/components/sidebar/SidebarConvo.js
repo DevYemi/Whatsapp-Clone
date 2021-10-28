@@ -7,7 +7,7 @@ import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, getTotalUsersFromDb, 
 import SidebarConvoLastMessage from './SidebarConvoLastMessage';
 import { useStateValue } from '../global-state-provider/StateProvider';
 import { useLocation } from "react-router-dom";
-import { userProfile } from '../userprofile/UserProfile';
+import { profile } from '../profile/Profile';
 import { KeyboardArrowDownRounded } from '@material-ui/icons';
 
 
@@ -99,7 +99,7 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom, setIsConnectedDispla
             <div onClick={() => {
                 setNewMssgNum(0);
                 displayConvoForMobile("show");
-                userProfile.close(currentDisplayConvoInfo?.isRoom ? true : false);
+                profile.close(currentDisplayConvoInfo?.isRoom ? true : false);
                 setIsConnectedDisplayed(false);
             }}
                 className={`sidebarConvoWr ${isCurrentSidebar ? "current" : ""}`}>

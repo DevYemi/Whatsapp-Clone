@@ -8,7 +8,7 @@ import Login from "./components/auth/Login";
 import Room from "./components/room/Room";
 import Sidebar from "./components/sidebar/Sidebar";
 import { useStateValue } from "./components/global-state-provider/StateProvider";
-import UserProfile from "./components/userprofile/UserProfile";
+import Profile from "./components/profile/Profile";
 function App() {
   const [{ user }] = useStateValue();
   const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
@@ -51,11 +51,11 @@ function App() {
                 <ConnectedDisplay />
               </Route>
             </Switch>
-            <UserProfile
+            <Profile
               setOpenModal={setOpenModal}
               setModalType={setModalType}
               setIsRoom={setIsRoom}
-              isUserProfileRoom={isUserProfileRoom}
+              isRoom={isUserProfileRoom}
               isFirstRender={isFirstRender}
               isConnectedDisplayed={isConnectedDisplayed}
             />

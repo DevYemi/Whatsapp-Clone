@@ -1,6 +1,6 @@
 import React from 'react'
 import { ArrowBack } from '@material-ui/icons';
-import "../../styles/userProfileSideBar.css"
+import "../../../styles/userProfileSideBar.css"
 
 function UserProfileSideBar(props) {
     const { upSidebarType } = props

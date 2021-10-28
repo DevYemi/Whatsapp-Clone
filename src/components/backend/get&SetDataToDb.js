@@ -37,7 +37,21 @@ export function getRoomsFromDb(id, setRooms) {
     .collection("rooms")
     .orderBy("timestamp", "desc")
     .onSnapshot((snapshot) => {
-      setRooms(snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
+      // now get the info of the room that the logged in user is a memeber of
+      let rooms = snapshot.docs.map((doc) => ({ id: doc.id }));
+      db.collection("rooms")
+        .orderBy("timestamp", "desc")
+        .get()
+        .then(querySnapshot => {
+          let datas = querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }))
+          let array = []
+          rooms.forEach(room => {
+            array = [...array, ...datas.filter(data => data.id === room.id)]
+          })
+          setRooms(array);
+        })
+
+      // setRooms(snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
     });
 }
 
@@ -203,6 +217,7 @@ export function setNewMessageToDb(convoId, text, user, scrollChatBody, isRoom, f
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .then(() => {
+        resetRecieverMssgReadOnDb(user?.info?.uid, convoId, true, isRoom);
         resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
         scrollChatBody.toEnd();
       });
@@ -256,7 +271,7 @@ export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
       });
     db.collection("rooms").doc(recId).update({
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    }).catch(err => console.log(err));
   } else {
     db.collection("registeredUsers") // update receiver
       .doc(recId)
@@ -264,24 +279,25 @@ export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
       .doc(senId)
       .update({
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      }).catch(err => console.log(err));
     db.collection("registeredUsers") // update sender
       .doc(senId)
       .collection("chats")
       .doc(recId)
       .update({
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      }).catch(err => console.log(err));
   }
 }
 export function resetRecieverMssgReadOnDb(recId, senId, value, isRoom) {
+  console.log(recId, senId, value, isRoom);
   db.collection("registeredUsers")
     .doc(recId)
-    .collection(isRoom ? "room" : "chats")
+    .collection(isRoom ? "rooms" : "chats")
     .doc(senId)
     .update({
       read: value,
-    });
+    }).catch(err => console.log(err));
 }
 export function getAndComputeNumberOfNewMssgOnDb(userId, isRoom, convoId, setNewMssgNum, currentUrl) {
   const mssgCallback = (messages) => {
@@ -408,11 +424,10 @@ export function muteConvoOnDb(userId, convoId, isRoom, hookCallback) {
         type: "SET_ISMUTENOTIFICHECKED",
         isMuteNotifichecked: true,
       });
-    });
+    }).catch(err => console.log(err));
 }
 export function unmuteConvoOnDb(userId, convoId, isRoom, hookCallback) {
   // unmute contact chat or room on the db
-
   db.collection("registeredUsers")
     .doc(userId)
     .collection(isRoom ? "rooms" : "chats")
@@ -425,7 +440,7 @@ export function unmuteConvoOnDb(userId, convoId, isRoom, hookCallback) {
         type: "SET_ISMUTENOTIFICHECKED",
         isMuteNotifichecked: false,
       });
-    });
+    }).catch(err => console.log(err));
 }
 export function isConvoMutedOnDb(userId, convoId, isRoom, hookCallback) {
   // checks if a convo is muted or not
@@ -453,13 +468,13 @@ export function setNewGroupNameOnDb(roomId, newRoomName) {
 
   db.collection("rooms").doc(roomId).update({
     roomName: newRoomName,
-  });
+  }).catch(err => console.log(err));
 }
 export function setNewGroupDescriptionOnDb(roomId, newRoomDescription) {
   // set a new description for the group on the db
   db.collection("rooms").doc(roomId).update({
     description: newRoomDescription,
-  });
+  }).catch(err => console.log(err));
 }
 export function getGroupMemberFromDb(roomId, reactHookCallback) {
   let modifiedMemebers = [];
@@ -512,7 +527,7 @@ export function setNewAviForGroupOnDb(image, roomId) {
     // set new avi url on db
     db.collection("rooms").doc(roomId).update({
       avi: url,
-    });
+    }).catch(err => console.log(err));
   };
   const sendImgToStorage = () => {
     // saved new image to storage and create a url for it
@@ -560,7 +575,7 @@ export function unBlockChatOnDb(userId, chatId) {
       .doc(chatId)
       .update({
         isBlocked: "",
-      });
+      }).catch(err => console.log(err));
   };
   const unBlockOnOtherUserDb = () => {
     db.collection("registeredUsers")
@@ -569,7 +584,7 @@ export function unBlockChatOnDb(userId, chatId) {
       .doc(userId)
       .update({
         isBlocked: "",
-      });
+      }).catch(err => console.log(err));
   };
   unBlockOncurrentLoggedInUserDb();
   unBlockOnOtherUserDb();
@@ -582,7 +597,7 @@ export function blockChatOnDb(userId, chatId) {
       .doc(chatId)
       .update({
         isBlocked: userId,
-      });
+      }).catch(err => console.log(err));
   };
   const blockOnOtherUserDb = () => {
     db.collection("registeredUsers")
@@ -591,7 +606,7 @@ export function blockChatOnDb(userId, chatId) {
       .doc(userId)
       .update({
         isBlocked: userId,
-      });
+      }).catch(err => console.log(err));
   };
   blockOncurrentLoggedInUserDb();
   blockOnOtherUserDb();
@@ -612,7 +627,8 @@ export async function clearChatOnDb(userId, chatId) {
           .doc(chatId)
           .collection("messages")
           .doc(mssg.id)
-          .delete();
+          .delete()
+          .catch(err => console.log(err));
       })
     });
 
@@ -623,6 +639,7 @@ export function deleteConvoOnDb(userId, chatId) {
     .doc(userId)
     .collection("chats")
     .doc(chatId)
-    .delete();
+    .delete()
+    .catch(err => console.log(err));
 }
 

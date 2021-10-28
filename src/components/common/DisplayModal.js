@@ -17,7 +17,7 @@ import {
   unBlockChatOnDb,
   unmuteConvoOnDb,
 } from "../backend/get&SetDataToDb";
-import { userProfile } from "../userprofile/UserProfile";
+import { profile } from "../profile/Profile";
 
 const useStylesTextField = makeStyles((theme) => ({
   root: {
@@ -474,7 +474,7 @@ function DisplayModal(props) {
                       currentDisplayConvoInfo?.uid
                     );
                     setIsConnectedDisplayed(true);
-                    userProfile.close(false)
+                    profile.close(false)
                     urlHistory.push("/home");
                     handleClose();
                   }}

@@ -1,11 +1,5 @@
 import { Avatar, IconButton } from "@material-ui/core";
-import {
-  AttachFile,
-  KeyboardBackspaceRounded,
-  LiveHelp,
-  MoreVert,
-  SearchOutlined,
-} from "@material-ui/icons";
+import { AttachFile, KeyboardBackspaceRounded, LiveHelp, MoreVert, SearchOutlined } from "@material-ui/icons";
 import gsap from "gsap";
 import React, { useEffect, useState } from "react";
 import db from "../backend/firebase";
@@ -138,9 +132,6 @@ function ChatHeader(props) {
         chatHeaderHelp.close();
       }
     },
-    clearMssgs: function () {
-
-    }
   };
   useEffect(() => {
     // adds and remove an eventlistener that closes and open the chatHeaderHelp Div

@@ -1,4 +1,3 @@
-import { CloseRounded } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react'
 import '../../styles/chat.css'
 import { useParams } from 'react-router-dom';
@@ -8,7 +7,7 @@ import FilePreview from '../common/FilePreview';
 import ChatHeader from './ChatHeader';
 import ChatBody from './ChatBody';
 import ChatFooter from './ChatFooter';
-import { IconButton } from '@material-ui/core';
+import ImageFullScreen from '../common/ImageFullScreen';
 
 function Chat(props) {
     const { setOpenModal, setModalType, setIsRoom, setIsUserProfileRoom } = props
@@ -51,6 +50,7 @@ function Chat(props) {
     }
     const uploadFile = (e) => { // send selected file storage
         setIsFileOnPreview(true);
+        console.log("file function running");
         const getFileType = (file) => {
             let fileType = file.type
             let arr = fileType.split("/")
@@ -84,17 +84,15 @@ function Chat(props) {
         }
     }
 
-    const closeImageOnFullScreen = () => { // close image on full when a user clicks the cancel icon
-        setImageFullScreen({ isFullScreen: false });
-    }
     useEffect(() => { // makes sure the chat start at the bottom when it renders
         if (messages) {
             let chatBody = document.querySelector(".chat__body");
             chatBody.style.scrollBehavior = "initial"
-            chatBody?.scrollTo(0, chatBody.offsetHeight * 500000);
+            chatBody?.scrollTo(0, chatBody.offsetHeight * 9000000000);
         }
     }, [messages])
     useEffect(() => { // map chat messages to global state currentDisplyedConvoMessages
+
         if (messages.length > 0) {
             dispatch({
                 type: "SET_CURRENTDISPLAYEDCONVOMESSAGES",
@@ -163,18 +161,12 @@ function Chat(props) {
                 onEmojiClick={onEmojiClick}
                 sendMessage={sendMessage}
                 setInput={setInput}
+                isRoom={false}
             />
-            <section className={`chat__imageFullScreen ${imageFullScreen.isFullScreen && "show"}`}>
-                <div className={`chat__imageFullScreen_wr`}>
-                    <IconButton onClick={closeImageOnFullScreen}>
-                        <CloseRounded />
-                    </IconButton>
-                    <div className="chat__imageFullScreenDivWrap">
-                        <img src={imageFullScreen.url} alt="" />
-                        <span className="chat__imageFullScreenCaption">{imageFullScreen.caption}</span>
-                    </div>
-                </div>
-            </section>
+            <ImageFullScreen
+                imageFullScreen={imageFullScreen}
+                setImageFullScreen={setImageFullScreen}
+            />
         </div>
     )
 }

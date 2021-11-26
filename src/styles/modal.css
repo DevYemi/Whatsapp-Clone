@@ -3,7 +3,9 @@
 .modal__addChat .PhoneInput {
     margin: 1em 0;
 }
-.modal__addChat button,.modal__addRoom button {
+
+.modal__addChat button,
+.modal__addRoom button {
     text-align: center;
     width: 50%;
     background-color: #06D755;
@@ -15,7 +17,9 @@
     padding: .5em 0;
     margin: auto;
 }
-.modal__addChat button:hover,.modal__addRoom button:hover {
+
+.modal__addChat button:hover,
+.modal__addRoom button:hover {
     background-color: #06D755;
 }
 
@@ -23,17 +27,20 @@
     margin: 1em 0;
     color: rgba(0, 0, 0, 0.699);
 }
+
 .modal__muteConvo div button {
     padding: 1em 1.2em;
     cursor: pointer;
     outline: none;
     border: none;
 }
+
 .modal__muteConvo div button:nth-of-type(1) {
- color: #06D755;
- background-color: white;
- box-shadow: 1px 1px 8px  black;
+    color: #06D755;
+    background-color: white;
+    box-shadow: 1px 1px 8px black;
 }
+
 .modal__muteConvo div button:nth-of-type(2) {
     margin-left: 1em;
     background-color: #06D755;
@@ -41,12 +48,15 @@
     color: white;
 }
 
-.modal__notAdmin p, .modal__emptyGroupName p {
+.modal__notAdmin p,
+.modal__emptyGroupName p {
     font-size: .9rem;
     font-weight: lighter;
     color: rgba(0, 0, 0, 0.753);
 }
-.modal__notAdmin button, .modal__emptyGroupName button {
+
+.modal__notAdmin button,
+.modal__emptyGroupName button {
     margin: 3em 0 auto 0;
     border: none;
     color: white;
@@ -55,13 +65,22 @@
     float: right;
     border-radius: 4px;
 }
-.modal__blockChat p, .modal__clearMssgs p, .modal__deleteChat p {
+
+.modal__blockChat p,
+.modal__clearMssgs p,
+.modal__deleteChat p,
+.modal__exitGroup p {
     font-size: .9rem;
     font-weight: lighter;
     margin-bottom: 2.5em;
     color: rgba(0, 0, 0, 0.747);
 }
-.modal__blockChat button, .modal__clearMssgs button, .modal__reportContact button, .modal__deleteChat button {
+
+.modal__blockChat button,
+.modal__clearMssgs button,
+.modal__reportContact button,
+.modal__deleteChat button,
+.modal__exitGroup button {
     padding: 1em 1.2em;
     cursor: pointer;
     outline: none;
@@ -69,31 +88,42 @@
     float: right;
     border-radius: 4px;
 }
-.modal__blockChat button:nth-of-type(2), .modal__clearMssgs button:nth-of-type(2), .modal__reportContact button:nth-of-type(2), .modal__deleteChat button:nth-of-type(2) {
- background-color: white;
- color: #06D755;
- margin-right: .5em;
- border: 1px solid rgba(128, 128, 128, 0.151);
+
+.modal__blockChat button:nth-of-type(2),
+.modal__clearMssgs button:nth-of-type(2),
+.modal__reportContact button:nth-of-type(2),
+.modal__deleteChat button:nth-of-type(2),
+.modal__exitGroup button:nth-of-type(2) {
+    background-color: white;
+    color: #06D755;
+    margin-right: .5em;
+    border: 1px solid rgba(128, 128, 128, 0.151);
 }
-.modal__blockChat button:nth-of-type(1), .modal__clearMssgs button:nth-of-type(1), .modal__reportContact button:nth-of-type(1), .modal__deleteChat button:nth-of-type(1) {
+
+.modal__blockChat button:nth-of-type(1),
+.modal__clearMssgs button:nth-of-type(1),
+.modal__reportContact button:nth-of-type(1),
+.modal__deleteChat button:nth-of-type(1),
+.modal__exitGroup button:nth-of-type(1) {
     background-color: #06D755;
     color: white;
 }
-.modal__reportContact > p, .modal__reportContact > div p {
+
+.modal__reportContact>p,
+.modal__reportContact>div p {
     font-size: .9rem;
     color: rgba(0, 0, 0, 0.952);
     font-weight: lighter;
 }
-.modal__reportContact > span {
- font-size: small;
- display: block;
- margin: 1.2em 0;
- color: rgba(0, 0, 0, 0.527);
+
+.modal__reportContact>span {
+    font-size: small;
+    display: block;
+    margin: 1.2em 0;
+    color: rgba(0, 0, 0, 0.527);
 }
-.modal__reportContact > div {
+
+.modal__reportContact>div {
     display: flex;
     align-items: center;
 }
-
-
-

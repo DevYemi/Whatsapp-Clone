@@ -1,4 +1,3 @@
-// DISPLAYS THE PROFILE OF BOTH CHAT CONVO AND GROUP CONVO
 import React, { useEffect, useState } from "react";
 import {
     CloseRounded,
@@ -33,7 +32,6 @@ function RoomProfile(props) {
         {
             user,
             currentDisplayConvoInfo,
-            currentDisplayedConvoMessages,
             isMuteNotifichecked,
         },
         disptach,

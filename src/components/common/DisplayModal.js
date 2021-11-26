@@ -342,7 +342,7 @@ function DisplayModal(props) {
                     }
                   }}
                 >
-                  {isCurrentConvoBlocked !== "" ? "UNBLOCK" : "BLOCK"}
+                  {isCurrentConvoBlocked && isCurrentConvoBlocked !== "" ? "UNBLOCK" : "BLOCK"}
                 </button>
                 <button onClick={handleClose}>CANCEL</button>
               </div>
@@ -367,23 +367,33 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
-              <div className="modal__clearMssgs">
-                <p>Clear this chat ?</p>
-                <button
-                  onClick={() => {
-                    clearChatOnDb(
-                      user?.info?.uid,
-                      currentDisplayConvoInfo?.uid
-                    );
-                    handleClose();
-                  }}
-                >
-                  CLEAR CHAT
-                </button>
-                <button onClick={handleClose}>CANCEL</button>
+            {isRoom ?
+              <div className={classes.paper}>
+                <div className="modal__clearMssgs">
+                  <p>Sorry You Can't Clear Group chat Messages</p>
+                  <button onClick={handleClose}>Close</button>
+                </div>
               </div>
-            </div>
+              :
+              <div className={classes.paper}>
+                <div className="modal__clearMssgs">
+                  <p>Clear this chat ?</p>
+                  <button
+                    onClick={() => {
+                      clearChatOnDb(
+                        user?.info?.uid,
+                        currentDisplayConvoInfo?.uid
+                      );
+                      handleClose();
+                    }}
+                  >
+                    CLEAR CHAT
+                  </button>
+                  <button onClick={handleClose}>CANCEL</button>
+                </div>
+              </div>
+            }
+
           </Fade>
         </Modal>
       </div>
@@ -488,7 +498,44 @@ function DisplayModal(props) {
         </Modal>
       </div>
     );
-  } else {
+  } else if (modalType === "EXIT_GROUP") {
+    return (
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={`${classes.modal} muteConvoModal`}
+          open={openModal}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={classes.paper}>
+              <div className="modal__exitGroup">
+                <p>Exit Group ?</p>
+                <button
+                  onClick={() => {
+                    setIsConnectedDisplayed(true);
+                    profile.close(true)
+                    urlHistory.push("/home");
+                    handleClose();
+                  }}
+                >
+                  Exit Group
+                </button>
+                <button onClick={handleClose}>CANCEL</button>
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+    );
+  }
+  else {
     return [];
   }
 }

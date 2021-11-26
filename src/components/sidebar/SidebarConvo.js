@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import '../../styles/sidebarConvo.css'
 import DisplayModal from '../common/DisplayModal';
-import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, getTotalUsersFromDb, createNewChatInDb, getUserInfoFromDb, createNewRoomInDb, resetRecieverMssgReadOnDb } from '../backend/get&SetDataToDb';
+import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, getTotalUsersFromDb, createNewChatInDb, createNewRoomInDb, resetRecieverMssgReadOnDb, getUserInfoFromDb, getRoomInfoFromDb } from '../backend/get&SetDataToDb';
 import SidebarConvoLastMessage from './SidebarConvoLastMessage';
 import { useStateValue } from '../global-state-provider/StateProvider';
 import { useLocation } from "react-router-dom";
@@ -11,9 +11,9 @@ import { profile } from '../profile/Profile';
 import { KeyboardArrowDownRounded } from '@material-ui/icons';
 
 
-function SidebarConvo({ addNewConvo, convoId, name, isRoom, setIsConnectedDisplayed }) {
+function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed }) {
     const [{ user, isMuteNotifichecked, currentDisplayConvoInfo }] = useStateValue(); // keeps state for current logged in user
-    const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
+    const [convoDirectInfo, setConvoDirectInfo] = useState(); // keeps state of the info of user or room who is associated with the convo
     const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
     const [modalInput, setModalInput] = useState("") // keeps state of user input in the modal
     const [newMssgNum, setNewMssgNum] = useState(0); // keeps stste for the number of new messages
@@ -58,12 +58,22 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom, setIsConnectedDispla
         }
 
     }
-    useEffect(() => { //Gets total users from db and get logged in user info from db
+    useEffect(() => { //Gets total users from db 
         getTotalUsersFromDb(setTotalUserOnDb)
+    }, [convoId]);
+    useEffect(() => { // Get the info of the convo user
+        let unsubGetUserInfoFromDb;
+        let unsubGetRoomInfoFromDb;
         if (convoId) {
-            getUserInfoFromDb(convoId, setUserInfoDb, false)
+            if (isRoom) {
+                unsubGetRoomInfoFromDb = getRoomInfoFromDb(convoId, setConvoDirectInfo, false)
+            } else {
+                unsubGetUserInfoFromDb = getUserInfoFromDb(convoId, setConvoDirectInfo, false)
+            }
         }
-    }, [convoId])
+
+        return () => { unsubGetUserInfoFromDb && unsubGetUserInfoFromDb(); unsubGetRoomInfoFromDb && unsubGetRoomInfoFromDb(); }
+    }, [convoId, isRoom])
     useEffect(() => { // Gets the number of new messages from db
         let unsubGetAndComputeNumberOfNewMssgOnDb;
         let currentLocation = isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`;
@@ -93,7 +103,8 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom, setIsConnectedDispla
             setIsCurrentSidebar(false)
         }
 
-    }, [convoId, isRoom, urlLocation])
+    }, [convoId, isRoom, urlLocation]);
+
     return !addNewConvo ? (
         <Link to={isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`}>
             <div onClick={() => {
@@ -104,9 +115,9 @@ function SidebarConvo({ addNewConvo, convoId, name, isRoom, setIsConnectedDispla
             }}
                 className={`sidebarConvoWr ${isCurrentSidebar ? "current" : ""}`}>
                 <div className="sidebarConvo">
-                    <Avatar src={userInfoDb?.avi} />
+                    <Avatar src={convoDirectInfo?.avi} />
                     <div className="sidebarConvo__info">
-                        <h2>{name}</h2>
+                        <h2>{isRoom ? convoDirectInfo?.roomName : convoDirectInfo?.name}</h2>
                         {lastMessage ? <SidebarConvoLastMessage lastMessage={lastMessage} /> : <p>Chat is currently empty</p>}
                     </div>
                 </div>

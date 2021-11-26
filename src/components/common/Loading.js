@@ -3,11 +3,11 @@ import React from 'react'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 function Loading(props) {
-    const { size, color, classname, visible} = props
+    const { size, color, classname, visible, type } = props
     return (
         <Loader
             visible={visible}
-            type="ThreeDots"
+            type={type}
             color={color}
             height={size}
             width={size}
@@ -16,4 +16,4 @@ function Loading(props) {
     )
 }
 
-export default React.memo(Loading)  
+export default React.memo(Loading)

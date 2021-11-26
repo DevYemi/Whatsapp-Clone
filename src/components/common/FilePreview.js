@@ -7,12 +7,17 @@ import FilePreviewFileType from './FilePreviewFileType';
 import Loading from './Loading';
 
 function FilePreview(props) {
-    const { showEmojis, isFileOnPreview, setFileOnPreview, input, fileOnPreview, sendMessage, setInput, onEmojiClick, setIsFileOnPreview } = props
+    const { showEmojis, isFileOnPreview, setFileOnPreview, input, fileOnPreview, sendMessage, setInput, onEmojiClick, setIsFileOnPreview, isRoom } = props
     const closeFilePreview = () => { // Closes file on preview
-        let fileInput = document.querySelector(".chat__headerRight input");
+        let fileInput = document.querySelector(`.${isRoom ? "room" : "chat"}__headerRight input`);
         fileInput.value = ""
         setIsFileOnPreview(false)
         setFileOnPreview(null);
+    }
+    const sendFileOnPreview = () => {
+        if (fileOnPreview) {
+            sendMessage(null, "file", fileOnPreview);
+        }
     }
     return (
         <section className={`chat__filePreview ${isFileOnPreview && "show"}`} >
@@ -23,7 +28,7 @@ function FilePreview(props) {
                     </IconButton>
                 </div>
                 <div className="filePreviewType">
-                    {fileOnPreview ? <FilePreviewFileType fileOnPreview={fileOnPreview} /> : <Loading size={50} visible={fileOnPreview ? "Hide" : "Show"} color={"#00BFFF"} class={"filePreviewType__loading"} />}
+                    {fileOnPreview ? <FilePreviewFileType fileOnPreview={fileOnPreview} /> : <Loading size={50} type={'ThreeDots'} visible={fileOnPreview ? "Hide" : "Show"} color={"#00BFFF"} class={"filePreviewType__loading"} />}
                 </div>
                 <div className="filePreviewFooter">
                     <div className="filePreviewFooterEmoji">
@@ -37,9 +42,9 @@ function FilePreview(props) {
                             onChange={e => setInput(e.target.value)}
                             onFocus={e => showEmojis(e, true, "filePreviewFooterEmoji")}
                             placeholder="Add a input...." />
-                        <button onClick={() => sendMessage(null, "file", fileOnPreview)} type="submit">Send a message</button>
+                        <button onClick={sendFileOnPreview} type="submit">Send a message</button>
                     </form>
-                    <IconButton onClick={() => sendMessage(null, "file", fileOnPreview)}>
+                    <IconButton onClick={sendFileOnPreview}>
                         <Send />
                     </IconButton>
                 </div>

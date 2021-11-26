@@ -1,11 +1,5 @@
 import { Avatar, IconButton } from "@material-ui/core";
-import {
-  AttachFile,
-  KeyboardBackspaceRounded,
-  LiveHelp,
-  MoreVert,
-  SearchOutlined,
-} from "@material-ui/icons";
+import { AttachFile, KeyboardBackspaceRounded, LiveHelp, MoreVert, SearchOutlined, } from "@material-ui/icons";
 import gsap from "gsap";
 import React, { useEffect, useState } from "react";
 import db from "../backend/firebase";
@@ -29,7 +23,7 @@ function RoomHeader(props) {
   } = props;
   const [searchInput, setSearchInput] = useState("");
   const [{ user, currentDisplayConvoInfo }] = useStateValue(); // new logged in user
-  const [isroomHeaderHelpOpened, setIsroomHeaderHelpOpened] = useState(false);
+  const [isroomHeaderHelpOpened, setIsroomHeaderHelpOpened] = useState(false); // keeps state if the room help div is opened or not
   const roomHeaderSearchBar = {
     open: function () {
       let headerContent = document.querySelector(".room__headerWr");
@@ -49,7 +43,7 @@ function RoomHeader(props) {
       setSearchInput("");
       setTotalRoomWordFound(0);
       setFoundWordIndex(0);
-      getMessgFromDb(user?.info.uid, roomId, false, "asc", setMessages, false); // get a new snapshot of message from db
+      getMessgFromDb(user?.info.uid, roomId, true, "asc", setMessages, false); // get a new snapshot of message from db
       let headerContent = document.querySelector(".room__headerWr");
       let headerSearchBar = document.querySelector(".room__headerSearch");
       let roomHeader = document.querySelector(".room__header");
@@ -68,8 +62,6 @@ function RoomHeader(props) {
     search: function () {
       if (searchInput === "") return;
       let unsubcribeModifyMssg = db
-        .collection("registeredUsers")
-        .doc(user?.info?.uid)
         .collection("rooms")
         .doc(roomId)
         .collection("messages")
@@ -112,7 +104,7 @@ function RoomHeader(props) {
     },
   };
   const roomHeaderHelp = {
-    // handling the opeeninga and closing of the HelpIcon
+    // handling the opening and closing of the HelpIcon
     open: function () {
       let roomHeaderHelpDiv = document.querySelector(".roomHeaderHelp");
       roomHeaderHelpDiv.style.display = "flex";
@@ -125,7 +117,7 @@ function RoomHeader(props) {
     },
     handle: function (e) {
       // checks if the roomHeaderHelp Div is open and closes it vice versa
-      let roomHeaderHelpDiv = document.querySelector(".roomHeaderHelp");
+      let roomHeaderHelpDiv = document.querySelector(".roomHeaderHelp__wr");
       if (e.target === null || roomHeaderHelpDiv === null) return;
       let isDecendent = roomHeaderHelpDiv.contains(e.target);
       if (
@@ -174,7 +166,7 @@ function RoomHeader(props) {
             />
             <AttachFile />
           </IconButton>
-          <div>
+          <div className="roomHeaderHelp__wr">
             <IconButton onClick={roomHeaderHelp.open}>
               <MoreVert />
             </IconButton>
@@ -186,14 +178,26 @@ function RoomHeader(props) {
                   onClick={() => {
                     setOpenModal(true);
                     setModalType("MUTE__CONVO");
-                    setIsRoom(false);
+                    setIsRoom(true);
                     roomHeaderHelp.close();
                   }}
                 >
                   Mute Notification
                 </li>
-                <li>Clear Messages</li>
-                <li>Delelct Chat</li>
+                <li onClick={() => {
+                  setOpenModal(true);
+                  setModalType("CLEAR__MESSAGES");
+                  setIsRoom(true);
+                  roomHeaderHelp.close();
+                }}
+                >Clear Messages</li>
+                <li onClick={() => {
+                  setOpenModal(true);
+                  setModalType("EXIT_GROUP");
+                  setIsRoom(true);
+                  roomHeaderHelp.close();
+                }}
+                >Exit Group</li>
               </ul>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import db, { storage } from "./firebase";
 import firebase from "firebase/app";
+
 export function getUserInfoFromDb(id, hookCallBack, isReducerCallback) {
   if (isReducerCallback) {
     // if its a reducer callback handle it
@@ -175,17 +176,27 @@ export function getMessgFromDb(userId, convoId, isRoom, order, hookCallback, get
   }
 }
 
-export function getRoomInfoFromDb(roomId, hookCallBack) {
+export function getRoomInfoFromDb(id, hookCallBack, isReducerCallback) {
   // gets the name of a specific room from db
-  return db
-    .collection("rooms")
-    .doc(roomId)
-    .onSnapshot((snapshot) => {
-      hookCallBack({
-        type: "SET_CURRENTDISPLAYCONVOINFO",
-        currentDisplayConvoInfo: snapshot.data(),
+  if (isReducerCallback) {
+    // if its a reducer callback handle it
+    return db
+      .collection("rooms")
+      .doc(id)
+      .onSnapshot((snapshot) => {
+        hookCallBack({
+          type: "SET_CURRENTDISPLAYCONVOINFO",
+          currentDisplayConvoInfo: snapshot.data(),
+        });
       });
-    });
+  } else {
+    //handle it like a react state callback
+    return db
+      .collection("rooms")
+      .doc(id)
+      .onSnapshot((snapshot) => hookCallBack(snapshot.data()));
+  }
+
 }
 export function getCurrentChatNameFromDb(userId, chatId, hookCallback) {
   // gets the name of a specific room from db
@@ -202,7 +213,7 @@ export function getCurrentChatNameFromDb(userId, chatId, hookCallback) {
       }
     }).catch((e) => { });
 }
-export function setNewMessageToDb(convoId, text, user, scrollChatBody, isRoom, fileType) {
+export function setNewMessageToDb(convoId, text, user, scrollConvoBody, isRoom, fileType) {
   // send new sent message to db
   var newMssgKey = firebase.database().ref().child("messages").push().key;
   if (isRoom) {
@@ -219,7 +230,7 @@ export function setNewMessageToDb(convoId, text, user, scrollChatBody, isRoom, f
       .then(() => {
         resetRecieverMssgReadOnDb(user?.info?.uid, convoId, true, isRoom);
         resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
-        scrollChatBody.toEnd();
+        scrollConvoBody.toEnd();
       });
   } else {
     db.collection("registeredUsers") // set to sender
@@ -255,7 +266,7 @@ export function setNewMessageToDb(convoId, text, user, scrollChatBody, isRoom, f
           .then(() => {
             resetRecieverMssgReadOnDb(convoId, user?.info?.uid, false, isRoom);
             resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
-            scrollChatBody.toEnd();
+            scrollConvoBody.toEnd();
           });
       });
   }
@@ -290,7 +301,6 @@ export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
   }
 }
 export function resetRecieverMssgReadOnDb(recId, senId, value, isRoom) {
-  console.log(recId, senId, value, isRoom);
   db.collection("registeredUsers")
     .doc(recId)
     .collection(isRoom ? "rooms" : "chats")
@@ -365,7 +375,7 @@ export function uploadFileToDb(file, fileInfo, setFileOnPreview) {
     }
   );
 }
-export function setVoiceNoteToDb(file, fileSize, chatId, user, scrollChatBody, convoInfo, min, sec) {
+export function setVoiceNoteToDb(file, fileSize, chatId, user, scrollConvoBody, convoInfo, min, sec) {
   // upload the new created voice note to strorage and send the url to db
   const uploadTask = storage.ref(`audio/voice-note${fileSize}`).put(file);
   uploadTask.on(
@@ -385,7 +395,7 @@ export function setVoiceNoteToDb(file, fileSize, chatId, user, scrollChatBody, c
         .child(`voice-note${fileSize}`)
         .getDownloadURL()
         .then((url) => {
-          setNewMessageToDb(chatId, "", user, scrollChatBody, convoInfo?.isRoom, { url, info: { type: "voice-note", min, sec, exten: "mp3", avi: user?.info.photoURL, } }
+          setNewMessageToDb(chatId, "", user, scrollConvoBody, convoInfo?.isRoom, { url, info: { type: "voice-note", min, sec, exten: "mp3", avi: user?.info.photoURL, } }
           );
         });
     }
@@ -394,12 +404,13 @@ export function setVoiceNoteToDb(file, fileSize, chatId, user, scrollChatBody, c
 export function registerNewUserInDb(email, phoneNumber, uid, name, avi) {
   // register a new user on the db
   // registers a new user to the db
+  let about = "Hey there! I am using WhatsApp."
   db.collection("totalUsers")
     .doc(uid)
     .set({ email, phoneNumber, uid, name, avi });
   db.collection("registeredUsers")
     .doc(uid)
-    .set({ email, phoneNumber, uid, name, avi });
+    .set({ email, phoneNumber, uid, name, avi, about });
 }
 export function getTotalUsersFromDb(setTotalUserOnDb) {
   // gets the total number of users on the db
@@ -641,5 +652,50 @@ export function deleteConvoOnDb(userId, chatId) {
     .doc(chatId)
     .delete()
     .catch(err => console.log(err));
+}
+
+export function setNewLoggedInUserNameOnDb(userId, newName) {
+  // Set a new name for Logged in user on db
+
+  db.collection("registeredUsers")
+    .doc(userId)
+    .update({
+      name: newName,
+    }).catch(err => console.log(err));
+}
+export function setNewLoggedInUserAboutOnDb(userId, newAbout) {
+  // Set a new about for Logged in user on db
+
+  db.collection("registeredUsers")
+    .doc(userId)
+    .update({
+      about: newAbout,
+    }).catch(err => console.log(err));
+}
+export function setNewLoggedInUserAviOnDb(userId, newAvi, hookCallback) {
+  // Set a new avi for Logged in user on db
+
+  const uploadTask = storage.ref(`image/${newAvi.name}`).put(newAvi); // saved new image to storage
+  uploadTask.on("state_changed", (snapshot) => {
+    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+    console.log(progress);
+  },
+    (error) => { alert(error.message); },
+    () => {
+      storage
+        .ref('image')
+        .child(newAvi.name)
+        .getDownloadURL()
+        .then(async (url) => {
+          await db.collection("registeredUsers")
+            .doc(userId)
+            .update({
+              avi: url,
+            }).catch(err => console.log(err));
+          hookCallback(false);
+        });
+    }
+  );
+
 }
 

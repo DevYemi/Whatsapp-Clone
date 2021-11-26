@@ -1,27 +1,23 @@
 import React from 'react'
-import { ArrowBack } from '@material-ui/icons';
 import "../../../styles/userProfileSideBar.css"
+import UpsbDisappearingMessage from './UpsbDisappearingMessage'
+import UpsbMediaDocs from './UpsbMediaDocs'
+import UpsbStarMessage from './UpsbStarMessage'
+
 
 function UserProfileSideBar(props) {
-    const { upSidebarType } = props
-    if (upSidebarType === "STARRED-MESSAGE") {
-        return (
-            <div className="userProfileSidebar__wr">
-                <div className="UPSB_starMessage">
-                    <div className="UPSB_starMessage__header">
-                        <div>
-                            <ArrowBack />
-                            <p>Starred messages</p>
-                        </div>
-                    </div>
-                    <div className="UPSB_starMessage__body">
-                        <p>No starred message</p>
-                    </div>
-                </div>
+    const { upSidebarType, imgMssgAll } = props
+    return (
+        <div className="userProfileSidebar__wr">
+            {upSidebarType === "STARRED-MESSAGE" ?
+                <UpsbStarMessage />
+                : upSidebarType === 'DISAPPEARING-MESSAGE' ?
+                    <UpsbDisappearingMessage />
+                    : <UpsbMediaDocs imgMssgAll={imgMssgAll} />
+            }
 
-            </div>
-        )
-    }
+        </div>
+    )
 }
 
 export default UserProfileSideBar

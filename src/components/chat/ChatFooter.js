@@ -107,7 +107,7 @@ function ChatFooter(props) {
           setVnIsRecoding={setVnIsRecoding}
           convoId={chatId}
           convoInfo={currentDisplayConvoInfo}
-          scrollChatBody={scrollChatBody}
+          scrollConvoBody={scrollChatBody}
         />
       </section>
     );

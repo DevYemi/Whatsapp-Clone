@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import VoiceNoteRecoder from '../common/VoiceNoteRecoder'
 
 function RoomFooter(props) {
-    const { showEmojis, onEmojiClick, input, setFoundWordIndex, setInput, foundWordIndex, sendMessage, roomId, scrollroomBody, isroomSearchBarOpen, totalroomWordFound } = props
+    const { showEmojis, onEmojiClick, input, setFoundWordIndex, setInput, foundWordIndex, sendMessage, roomId, scrollRoomBody, isroomSearchBarOpen, totalroomWordFound } = props
     const [vnIsRecoding, setVnIsRecoding] = useState(false); // keeps state if the user is currently recording a voice note
     const navigateToFoundWord = (key) => {
         let newIndex;
@@ -13,13 +13,13 @@ function RoomFooter(props) {
             case "PLUS":
                 newIndex = foundWordIndex + 1
                 if (newIndex > totalroomWordFound) return
-                scrollroomBody.toSearchedMssg(newIndex, totalroomWordFound);
+                scrollRoomBody.toSearchedMssg(newIndex, totalroomWordFound);
                 setFoundWordIndex(newIndex);
                 break;
             case "MINUS":
                 newIndex = foundWordIndex - 1
                 if (newIndex < 1) return
-                scrollroomBody.toSearchedMssg(newIndex, totalroomWordFound);
+                scrollRoomBody.toSearchedMssg(newIndex, totalroomWordFound);
                 setFoundWordIndex(newIndex);
                 break;
 
@@ -66,7 +66,7 @@ function RoomFooter(props) {
                     vnIsRecoding={vnIsRecoding}
                     setVnIsRecoding={setVnIsRecoding}
                     convoId={roomId}
-                    scrollroomBody={scrollroomBody}
+                    scrollConvoBody={scrollRoomBody}
                 />
             </section>
         )

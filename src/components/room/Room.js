@@ -108,7 +108,7 @@ function Room(props) {
         setSeed(Math.floor(Math.random() * 5000));
         setIsUserProfileRoom(true);
         if (roomId) {
-            unsubcribeRoomInfo = getRoomInfoFromDb(roomId, dispatch);
+            unsubcribeRoomInfo = getRoomInfoFromDb(roomId, dispatch, true);
             unsubcribeMessages = getMessgFromDb(null, roomId, true, "asc", setMessages, false);
             unsubcribeRoomMembers = getRoomMembersFromDb(roomId, setRoomMembers)
         }
@@ -160,6 +160,7 @@ function Room(props) {
                 onEmojiClick={onEmojiClick}
                 sendMessage={sendMessage}
                 setInput={setInput}
+                isRoom={true}
             />
             <section className={`room__imageFullScreen ${imageFullScreen.isFullScreen && "show"}`}>
                 <div className={`room__imageFullScreen_wr`}>

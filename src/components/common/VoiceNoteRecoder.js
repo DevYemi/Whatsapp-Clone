@@ -16,7 +16,7 @@ var onRecordState; // takes in a object from the "new MediaRecorder"
 var micBlinking; //  holds the micBlinking timeInterval variable
 var isRecordingStopByCancel; // holds true or false if voice recording was ended by the user pressing cancel  
 var countDown; //  holds the countDown timeInterval variable
-function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollChatBody }) {
+function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollConvoBody }) {
     const [{ user, currentDisplayConvoInfo }] = useStateValue();
     const recordAudio = { // handles the recording of the audio
         setup: function () { // sets the Media API and gets permission for microphone usage from user device
@@ -93,7 +93,7 @@ function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollChatBo
                     } else { // send audio to db and stop recording
                         let min = document.querySelector(".voiceNoteRecoder__min").innerText
                         let sec = document.querySelector(".voiceNoteRecoder__sec").innerText
-                        setVoiceNoteToDb(blob, blob.size, convoId, user, scrollChatBody, currentDisplayConvoInfo, min, sec);
+                        setVoiceNoteToDb(blob, blob.size, convoId, user, scrollConvoBody, currentDisplayConvoInfo, min, sec);
                         recordAudio.stop()
                     }
 

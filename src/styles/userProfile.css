@@ -80,10 +80,23 @@ margin-top: 1em;
 .userProfileBody__sec2Info {
     display: flex;
     justify-content: space-between;
+    cursor: pointer;
 }
 .userProfileBody__sec2Info p {
     font-size: .9rem;
     color: #009688;
+}
+.media_grid_wr {
+    display: grid;
+    grid-template-columns: 100px 100px 100px;
+    grid-column-gap: 10px;
+    margin-top: .5em;
+}
+.media_grid_wr div img {
+    object-fit: contain;
+    max-height: 100px;
+    width: 100%;
+    height: 100%;
 }
 .userProfileBody__sec2Info .MuiSvgIcon-root, .starMessg .MuiSvgIcon-root, .disappearingMessg .MuiSvgIcon-root {
     color: rgba(0, 0, 0, 0.527);
@@ -130,6 +143,7 @@ margin-top: 1em;
 }
 .userProfileBody__sec5, .userProfileBody__sec6, .userProfileBody__sec7 {
     display: flex;
+    cursor: pointer;
     align-items: center;
     background-color: white;
     padding: 1em;
@@ -142,3 +156,5 @@ margin-top: 1em;
 .userProfileBody__sec5.blocked {
     color: #07BC4C !important;
 }
+
+

@@ -69,11 +69,13 @@
 .modal__blockChat p,
 .modal__clearMssgs p,
 .modal__deleteChat p,
-.modal__exitGroup p {
+.modal__exitGroup p,
+.modal__aPConfirmation p {
     font-size: .9rem;
     font-weight: lighter;
     margin-bottom: 2.5em;
     color: rgba(0, 0, 0, 0.747);
+    word-wrap: break-word;
 }
 
 .modal__blockChat button,
@@ -81,6 +83,7 @@
 .modal__reportContact button,
 .modal__reportGroup button,
 .modal__deleteChat button,
+.modal__aPConfirmation button,
 .modal__exitGroup button {
     padding: 1em 1.2em;
     cursor: pointer;
@@ -95,6 +98,7 @@
 .modal__reportContact button:nth-of-type(2),
 .modal__reportGroup button:nth-of-type(2),
 .modal__deleteChat button:nth-of-type(2),
+.modal__aPConfirmation button:nth-of-type(2),
 .modal__exitGroup button:nth-of-type(2) {
     background-color: white;
     color: #06D755;
@@ -107,6 +111,7 @@
 .modal__reportContact button:nth-of-type(1),
 .modal__reportGroup button:nth-of-type(1),
 .modal__deleteChat button:nth-of-type(1),
+.modal__aPConfirmation button:nth-of-type(1),
 .modal__exitGroup button:nth-of-type(1) {
     background-color: #06D755;
     color: white;
@@ -298,9 +303,13 @@
 .modal_addparticipant_members .member {
     display: flex;
     align-items: center;
-    margin-top: 1em;
-    border-top: 1px solid #8080802b;
-    padding-top: 1em;
+    border-top: 1px solid #EDEDED;
+    cursor: pointer;
+    padding: 1em 0;
+}
+
+.modal_addparticipant_members .member:hover {
+    background-color: #EDEDED;
 }
 
 .modal_addparticipant_members .member .MuiAvatar-root {
@@ -314,4 +323,8 @@
     font-weight: 100;
     color: grey;
     margin-top: .5em;
+}
+
+.modal__aPConfirmation.loading {
+    text-align: center;
 }

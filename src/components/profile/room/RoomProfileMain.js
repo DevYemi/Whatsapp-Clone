@@ -335,7 +335,7 @@ function RoomProfileMain(props) {
                         <SearchOutlined />
                     </div>
                     <div className="rpb_sec5_div2">
-                        <div onClick={() => handleModalChange("ADD_PARTICIPANT", true)}>
+                        <div onClick={() => isAdmin && handleModalChange("ADD_PARTICIPANT", true)}>
                             <PersonAddRounded />
                             <p>Add participant</p>
                         </div>

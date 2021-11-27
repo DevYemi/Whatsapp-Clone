@@ -14,7 +14,7 @@ function SidebarMain(props) {
     const [rooms, setRooms] = useState(null); // keep state for all the rooms received from db
     const [chats, setChats] = useState(null); // keep state for all ther chat received from db
     const [convos, setConvos] = useState([]); // keeps state for the combination of chat and rooms
-    const [{ user, }] = useStateValue(); // keeps state for current logged in user
+    const [{ user }, dispatch] = useStateValue(); // keeps state for current logged in user
     const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
     const urlHistory = useHistory();
     useEffect(() => {
@@ -38,6 +38,13 @@ function SidebarMain(props) {
         };
     }, [user?.info.uid]);
     useEffect(() => {
+        // maps current logged in user chat to global state
+        dispatch({
+            type: "SET_CURRENTLOGGEDINUSERCHATS",
+            currentLoggedInUserChats: chats
+        })
+    }, [chats, dispatch])
+    useEffect(() => {
         // makes sure the latest convo show at the up
         if (chats && rooms) {
             let mutedConvos = [...chats, ...rooms].filter((convo) => {
@@ -53,6 +60,7 @@ function SidebarMain(props) {
                 let chat2 = new Date(y?.data?.timestamp?.seconds);
                 return chat2 - chat1;
             });
+            console.log([...unmutedConvos, ...mutedConvos])
             setConvos([...unmutedConvos, ...mutedConvos]);
         }
     }, [chats, rooms]);

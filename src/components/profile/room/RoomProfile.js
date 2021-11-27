@@ -20,9 +20,7 @@ function RoomProfile(props) {
         if (currentDisplayedConvoMessages?.length > 0) {
             for (let i = 0; i < currentDisplayedConvoMessages.length; i++) { // get only the 3 images for the chat media preview
                 const mssg = currentDisplayedConvoMessages[i];
-                console.log(mssg, i)
                 if (mssg?.fileType?.info?.type === "image") {
-                    console.log(mssg)
                     imgMssgArrPreview.unshift(mssg.fileType)
 
                 }

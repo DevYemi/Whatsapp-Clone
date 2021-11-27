@@ -67,6 +67,7 @@ function App() {
               setModalInput={setModalInput}
               setOpenModal={setOpenModal}
               setIsConnectedDisplayed={setIsConnectedDisplayed}
+              setModalType={setModalType}
             />
           </div>
         </Router>

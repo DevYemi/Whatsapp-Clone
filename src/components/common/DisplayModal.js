@@ -23,6 +23,7 @@ import { ArrowBackRounded, CheckRounded, CloseRounded, SearchOutlined } from "@m
 import gsap from "gsap";
 import ModalAddParticipant from "./ModalAddParticipant";
 import { Avatar } from "@material-ui/core";
+import Loading from "./Loading";
 
 const useStylesTextField = makeStyles((theme) => ({
   root: {
@@ -44,16 +45,9 @@ function DisplayModal(props) {
     setModalInput,
     modalInput,
     setIsConnectedDisplayed,
+    setModalType,
   } = props;
-  const [
-    {
-      user,
-      currentDisplayConvoInfo,
-      isMuteNotifichecked,
-      isCurrentConvoBlocked,
-    },
-    dispatch,
-  ] = useStateValue(); // React context API
+  const [{ user, currentLoggedInUserChats, currentDisplayConvoInfo, isMuteNotifichecked, isCurrentConvoBlocked, }, dispatch] = useStateValue(); // React context API
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -75,8 +69,10 @@ function DisplayModal(props) {
   }));
   const classes = useStyles();
   const classesTextField = useStylesTextField();
-  const [isBlockAndClearChecked, setIsBlockAndClearChecked] = useState(true); // keeps state if report chat block&clear check box is checked
-  const [isExitAndClearChecked, setIsExitAndClearChecked] = useState(true); // keeps state if report group exit&clear check box is checked
+  const [isBlockAndClearChecked, setIsBlockAndClearChecked] = useState(true); // keeps state if report chat block&clear check box is checked in BLOCK_CHAT modal
+  const [isExitAndClearChecked, setIsExitAndClearChecked] = useState(true); // keeps state if report group exit&clear check box is checked in EXIT_GROUP modal
+  const [selectedParticipant, setSelectedParticipant] = useState([]) // keeps state of the list of chats that has been checked in add participant modal
+  const [successSP, setSuccessSP] = useState({ loading: false, success: false }) // keeps loading and success state when selectedParticipant is being added in db
   const urlHistory = useHistory();
   const handleClose = () => {
     setOpenModal(false);
@@ -94,6 +90,11 @@ function DisplayModal(props) {
     }
 
   }
+  const handleRemoveParticipant = (chatId) => {
+    let newSelected = selectedParticipant.filter(chat => chatId !== chat.uid);
+    setSelectedParticipant(newSelected);
+  }
+
   if (modalType === "ADD_CHAT") {
     return (
       <div>
@@ -341,10 +342,8 @@ function DisplayModal(props) {
                 </p>
                 <button
                   onClick={() => {
-                    console.log("running");
                     if (isCurrentConvoBlocked && isCurrentConvoBlocked !== "") {
                       // chat has already been blocked, unblock chat
-                      console.log("unblocking");
                       unBlockChatOnDb(
                         user?.info?.uid,
                         currentDisplayConvoInfo?.uid
@@ -352,7 +351,6 @@ function DisplayModal(props) {
                       handleClose();
                     } else {
                       // block chat
-                      console.log("blocking");
                       blockChatOnDb(
                         user?.info?.uid,
                         currentDisplayConvoInfo?.uid
@@ -614,7 +612,7 @@ function DisplayModal(props) {
           aria-describedby="transition-modal-description"
           className={`${classes.modal} addParticipant`}
           open={openModal}
-          onClose={handleClose}
+          onClose={() => { handleClose(); setSelectedParticipant([]) }}
           closeAfterTransition
           BackdropComponent={Backdrop}
           BackdropProps={{
@@ -625,7 +623,7 @@ function DisplayModal(props) {
             <div className={`${classes.paper} modal__addParticipant_wr`}>
               <div className="modal__addParticipant">
                 <section className="modal_addparticipant_header">
-                  <CloseRounded onClick={handleClose} />
+                  <CloseRounded onClick={() => { handleClose(); setSelectedParticipant([]) }} />
                   <p>Add Participant</p>
                 </section>
                 <section className="modal_addparticipant_search">
@@ -643,51 +641,78 @@ function DisplayModal(props) {
                 </section>
                 <section className="modal_addparticipant_selectedWr">
                   <div className="modal_addparticipant_selected">
-                    <div>
-                      <Avatar />
-                      <span>Adeyanju Adeyemiiiiiiiiiiiii</span>
-                      <CloseRounded />
-                    </div>
-                    <div>
-                      <Avatar />
-                      <span>Adeyanju Adeyemi</span>
-                      <CloseRounded />
-                    </div>
-                    <div>
-                      <Avatar />
-                      <span>Adeyanju Adeyemi</span>
-                      <CloseRounded />
-                    </div>
-                    <div>
-                      <Avatar />
-                      <span>Adeyanju Adeyemi</span>
-                      <CloseRounded />
-                    </div>
+                    {selectedParticipant.length > 0 &&
+                      selectedParticipant.map(participant => (
+                        <div key={participant.uid}>
+                          <Avatar src={participant.avi} />
+                          <span>{participant.name}</span>
+                          <CloseRounded onClick={() => handleRemoveParticipant(participant.uid)} />
+                        </div>
+                      ))
 
+                    }
                   </div>
                 </section>
                 <section className="modal_addparticipant_membersWr">
                   <div className="modal_addparticipant_members">
                     <h3>Contacts</h3>
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
-                    <ModalAddParticipant />
+                    {currentLoggedInUserChats.length > 0 ?
+                      currentLoggedInUserChats.map(chat => (
+                        <ModalAddParticipant
+                          key={chat?.id}
+                          chatId={chat?.id}
+                          setSelectedParticipant={setSelectedParticipant}
+                          selectedParticipant={selectedParticipant}
+                        />
+                      ))
+                      :
+                      (
+                        <p>You currently dont have any active chats</p>
+                      )
+
+                    }
                   </div>
                 </section>
-                <CheckRounded />
+                {selectedParticipant.length > 0 && <CheckRounded onClick={() => setModalType("A_P_CONFIRMATION")} />}
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+    );
+  } else if (modalType === "A_P_CONFIRMATION") {
+    return (
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={`${classes.modal}`}
+          open={openModal}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={classes.paper}>
+              <div className={`modal__aPConfirmation ${successSP.loading && 'loading'}`}>
+                {successSP.loading ?
+                  <Loading
+                    size={50}
+                    type={'ThreeDots'}
+                    color={"#00BFFF"}
+                    class={"modal__aPConfirmation_loading"} />
+                  : <>
+                    <p>{`Add ${selectedParticipant.map(participant => participant.name).toString()} to "${currentDisplayConvoInfo.roomName}" Group`}</p>
+                    <button onClick={() => { }}>
+                      ADD PARTICIPANT
+                    </button>
+                    <button onClick={() => setModalType("ADD_PARTICIPANT")}>CANCEL</button>
+                  </>
+                }
+
+
               </div>
             </div>
           </Fade>

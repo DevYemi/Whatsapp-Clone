@@ -79,6 +79,7 @@
 .modal__blockChat button,
 .modal__clearMssgs button,
 .modal__reportContact button,
+.modal__reportGroup button,
 .modal__deleteChat button,
 .modal__exitGroup button {
     padding: 1em 1.2em;
@@ -92,6 +93,7 @@
 .modal__blockChat button:nth-of-type(2),
 .modal__clearMssgs button:nth-of-type(2),
 .modal__reportContact button:nth-of-type(2),
+.modal__reportGroup button:nth-of-type(2),
 .modal__deleteChat button:nth-of-type(2),
 .modal__exitGroup button:nth-of-type(2) {
     background-color: white;
@@ -103,6 +105,7 @@
 .modal__blockChat button:nth-of-type(1),
 .modal__clearMssgs button:nth-of-type(1),
 .modal__reportContact button:nth-of-type(1),
+.modal__reportGroup button:nth-of-type(1),
 .modal__deleteChat button:nth-of-type(1),
 .modal__exitGroup button:nth-of-type(1) {
     background-color: #06D755;
@@ -110,20 +113,205 @@
 }
 
 .modal__reportContact>p,
-.modal__reportContact>div p {
+.modal__reportGroup>p,
+.modal__reportContact>div p,
+.modal__reportGroup>div p {
     font-size: .9rem;
     color: rgba(0, 0, 0, 0.952);
     font-weight: lighter;
 }
 
-.modal__reportContact>span {
+.modal__reportContact>span,
+.modal__reportGroup>span {
     font-size: small;
     display: block;
     margin: 1.2em 0;
     color: rgba(0, 0, 0, 0.527);
 }
 
-.modal__reportContact>div {
+.modal__reportContact>div,
+.modal__reportGroup>div {
     display: flex;
     align-items: center;
+}
+
+/* SELECTED */
+.modal_addparticipant_selectedWr {
+    max-height: 131px;
+    overflow-y: scroll;
+}
+
+.modal_addparticipant_selected {
+    padding: 1.2em;
+    display: grid;
+    grid-template-columns: auto auto;
+    width: fit-content;
+    grid-gap: 5px;
+}
+
+.modal_addparticipant_selected>div {
+    display: flex;
+    align-items: center;
+    background-color: #E6E6E6;
+    width: fit-content;
+    border-radius: 15px;
+    padding: 0 .1em;
+}
+
+.modal_addparticipant_selected>div>span {
+    font-size: .8rem;
+    font-weight: 100;
+    margin: 0.5em;
+    color: rgba(0, 0, 0, 0.836);
+}
+
+.modal_addparticipant_selected>div>.MuiSvgIcon-root {
+    color: rgba(128, 128, 128, 0.719);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.modal_addparticipant_selected>div>.MuiSvgIcon-root:hover {
+    border: 1px solid white;
+    padding: .1em;
+    font-size: 1.2rem;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.modal_addparticipant_selected>div>.MuiAvatar-root {
+    width: 24px;
+    height: 24px;
+}
+
+/* ADD PARTICIPANT */
+
+.modal_addparticipant_header {
+    display: flex;
+    align-items: center;
+    padding: 1em 1.2em;
+    background-color: #009688;
+}
+
+.modal_addparticipant_header>P {
+    margin-left: 1.2em;
+    color: white;
+}
+
+.modal__addParticipant_wr {
+    position: relative;
+    padding: 0 !important;
+    min-width: 450px !important;
+    max-height: 730px;
+    overflow-y: hidden;
+}
+
+.modal__addParticipant>.MuiSvgIcon-root {
+    position: absolute;
+    bottom: 40px;
+    font-size: 4rem;
+    border-radius: 50%;
+    padding: 0.2em;
+    background-color: #09E85E;
+    color: white;
+    border: 1px solid #09E85E;
+    right: 40px;
+    cursor: pointer;
+}
+
+.modal_addparticipant_header>.MuiSvgIcon-root {
+    color: white;
+    cursor: pointer;
+}
+
+.modal_addparticipant_search {
+    display: flex;
+    align-items: center;
+    background-color: #F1F1F1;
+    height: 39px;
+    padding: 30px 15px;
+}
+
+.modal_addparticipant_searchContainer {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    width: 100%;
+    height: 35px;
+    border-radius: 20px;
+}
+
+.modal_addparticipant_searchContainer>input {
+    border: none;
+    height: 100%;
+    outline: none;
+    width: 75%;
+}
+
+.modal_addparticipant_searchContainer .icons {
+    position: relative;
+}
+
+.modal_addparticipant_searchContainer .icons>.back {
+    color: #45BBF4;
+    margin: 10px;
+    display: none;
+    transform: rotate(-100deg);
+    cursor: pointer;
+}
+
+.modal_addparticipant_searchContainer .icons>.search {
+    color: gray;
+    margin: 10px;
+}
+
+.modal_addparticipant_membersWr {
+    margin-top: 2em;
+}
+
+.modal_addparticipant_members {
+    padding: 1em;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+.modal_addparticipant_selectedWr::-webkit-scrollbar,
+.modal_addparticipant_members::-webkit-scrollbar {
+    width: .5em;
+}
+
+.modal_addparticipant_selectedWr::-webkit-scrollbar-track,
+.modal_addparticipant_members::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(128, 128, 128, 0);
+}
+
+.modal_addparticipant_selectedWr::-webkit-scrollbar-thumb,
+.modal_addparticipant_members::-webkit-scrollbar-thumb {
+    background: rgba(73, 72, 72, 0.466);
+}
+
+.modal_addparticipant_members>h3 {
+    font-weight: 100;
+    color: #009688;
+}
+
+.modal_addparticipant_members .member {
+    display: flex;
+    align-items: center;
+    margin-top: 1em;
+    border-top: 1px solid #8080802b;
+    padding-top: 1em;
+}
+
+.modal_addparticipant_members .member .MuiAvatar-root {
+    margin: 0 .7em;
+    width: 45px !important;
+    height: 45px !important;
+}
+
+.memberAbout {
+    font-size: .8rem;
+    font-weight: 100;
+    color: grey;
+    margin-top: .5em;
 }

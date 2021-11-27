@@ -1,4 +1,5 @@
 import React from 'react'
+import "../../../styles/userProfileMain.css";
 import { CloseRounded, ArrowForwardIos, Block, ThumbDown, Delete } from "@material-ui/icons";
 import { Avatar } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";

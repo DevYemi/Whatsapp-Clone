@@ -1,0 +1,154 @@
+/* STARRED MESSAGE STYLES */
+.roomProfileSidebar__wr {
+    height: 100%;
+    display: none;
+    width: 0%;
+}
+
+.RPSB_starMessage {
+    height: 100%;
+}
+
+.RPSB_starMessage__header {
+    background-color: #00BFA5;
+    display: flex;
+    padding: 0 0 1em 1em;
+    height: 100px;
+    align-items: flex-end;
+    color: white
+}
+
+.RPSB_starMessage__header>div {
+    display: flex;
+    align-items: center;
+}
+
+.RPSB_starMessage__header>div p {
+    margin-left: 1.3em;
+    font-weight: 700;
+}
+
+.RPSB_starMessage__body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: small;
+    color: grey;
+}
+
+
+/* MEDIA AND DOCS STYLES */
+.RPSB_mediaDocs {
+    height: 100%;
+}
+
+.RPSB_mediaDocs_header {
+    background-color: #00BFA5;
+    padding: 15px 15px 0 15px;
+    position: relative;
+    color: white;
+}
+
+.RPSB_mediaDocs_header>.MuiSvgIcon-root {
+    font-size: 1.9rem;
+    cursor: pointer;
+}
+
+.RPSB_mediaDocs_headerNav {
+    margin-top: 1em;
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 0.5em;
+    font-size: 1rem;
+    font-weight: lighter;
+}
+
+.RPSB_mediaDocs_headerNav p {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+}
+
+.RPSB_mediaDocs_headerNav>.slide {
+    display: block;
+    position: absolute;
+    height: 3px;
+    background-color: #6DEA91;
+    bottom: 0;
+    left: 0;
+}
+
+.RPSB_mediaDocs_body {
+    height: 100%;
+}
+
+.RPSB_mediaDocs_body .media.filled {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* height: 90%; */
+    padding: 1em;
+    padding-top: 2em;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: .5em;
+}
+
+.RPSB_mediaDocs_body img {
+    width: 100%;
+}
+
+.RPSB_mediaDocs_body .media.filled .imgDiv {
+    max-width: 90px;
+    max-height: 90px;
+}
+
+.RPSB_mediaDocs_body .media.filled .imgDiv img {
+    object-fit: cover;
+    border-radius: 10px;
+    height: 100%;
+}
+
+.RPSB_mediaDocs_body .media.empty,
+.RPSB_mediaDocs_body .docs,
+.RPSB_mediaDocs_body .links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: rgba(117, 114, 114, 0.692);
+}
+
+
+/* Disappearing Messages */
+.RPSB_disappearingMessage {
+    height: 100%;
+}
+
+.RPSB_disappearingMessage__header {
+    background-color: #00BFA5;
+    display: flex;
+    padding: 0 0 1em 1em;
+    height: 100px;
+    align-items: flex-end;
+    color: white
+}
+
+.RPSB_disappearingMessage__header>div {
+    display: flex;
+    align-items: center;
+}
+
+.RPSB_disappearingMessage__header>div p {
+    margin-left: 1.3em;
+    font-weight: 700;
+}
+
+.RPSB_disappearingMessage__body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: small;
+    color: grey;
+}

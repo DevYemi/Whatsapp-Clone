@@ -13,11 +13,16 @@ import {
   blockChatOnDb,
   clearChatOnDb,
   deleteConvoOnDb,
+  exitFromGroupOnDb,
   muteConvoOnDb,
   unBlockChatOnDb,
   unmuteConvoOnDb,
 } from "../backend/get&SetDataToDb";
 import { profile } from "../profile/Profile";
+import { ArrowBackRounded, CheckRounded, CloseRounded, SearchOutlined } from "@material-ui/icons";
+import gsap from "gsap";
+import ModalAddParticipant from "./ModalAddParticipant";
+import { Avatar } from "@material-ui/core";
 
 const useStylesTextField = makeStyles((theme) => ({
   root: {
@@ -71,10 +76,24 @@ function DisplayModal(props) {
   const classes = useStyles();
   const classesTextField = useStylesTextField();
   const [isBlockAndClearChecked, setIsBlockAndClearChecked] = useState(true); // keeps state if report chat block&clear check box is checked
+  const [isExitAndClearChecked, setIsExitAndClearChecked] = useState(true); // keeps state if report group exit&clear check box is checked
   const urlHistory = useHistory();
   const handleClose = () => {
     setOpenModal(false);
   };
+  const addParticipantAnimation = {
+    focus: function () {
+      let tl = gsap.timeline({ defaults: { duration: .2, ease: 'power2' } });
+      tl.to('.modal_addparticipant_searchContainer > .icons > .search ', { rotation: 100, display: 'none' })
+        .to('.modal_addparticipant_searchContainer > .icons > .back ', { rotation: 0, display: 'inline-block' })
+    },
+    blur: function () {
+      let tl = gsap.timeline({ defaults: { duration: .2, ease: 'power2' } });
+      tl.to('.modal_addparticipant_searchContainer > .icons > .back ', { rotation: -100, display: 'none' })
+        .to('.modal_addparticipant_searchContainer > .icons > .search ', { rotation: 0, display: 'inline-block' })
+    }
+
+  }
   if (modalType === "ADD_CHAT") {
     return (
       <div>
@@ -424,9 +443,7 @@ function DisplayModal(props) {
                 <div>
                   <Checkbox
                     checked={isBlockAndClearChecked}
-                    style={{
-                      color: "#009688",
-                    }}
+                    style={{ color: "#009688" }}
                     onChange={() =>
                       setIsBlockAndClearChecked(!isBlockAndClearChecked)
                     }
@@ -437,14 +454,10 @@ function DisplayModal(props) {
                 <button
                   onClick={() => {
                     if (isBlockAndClearChecked) {
-                      blockChatOnDb(
-                        user?.info?.uid,
-                        currentDisplayConvoInfo?.uid
-                      );
-                      clearChatOnDb(
-                        user?.info?.uid,
-                        currentDisplayConvoInfo?.uid
-                      );
+                      blockChatOnDb(user?.info?.uid, currentDisplayConvoInfo?.uid);
+                      clearChatOnDb(user?.info?.uid, currentDisplayConvoInfo?.uid);
+                      handleClose();
+                    } else {
                       handleClose();
                     }
                   }}
@@ -519,6 +532,7 @@ function DisplayModal(props) {
                 <p>Exit Group ?</p>
                 <button
                   onClick={() => {
+                    exitFromGroupOnDb(user?.info?.uid, currentDisplayConvoInfo?.roomId);
                     setIsConnectedDisplayed(true);
                     profile.close(true)
                     urlHistory.push("/home");
@@ -528,6 +542,152 @@ function DisplayModal(props) {
                   Exit Group
                 </button>
                 <button onClick={handleClose}>CANCEL</button>
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+    );
+  } else if (modalType === "REPORT_GROUP") {
+    return (
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={`${classes.modal} muteConvoModal`}
+          open={openModal}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={classes.paper}>
+              <div className="modal__reportGroup">
+                <p>Report this group to whatsApp ?</p>
+                <span>
+                  The last 5 messages in the group will br forwarded to Whatsapp
+                </span>
+                <span>
+                  No one in this group will be notified
+                </span>
+                <div>
+                  <Checkbox
+                    checked={isExitAndClearChecked}
+                    style={{ color: "#009688" }}
+                    onChange={() =>
+                      setIsExitAndClearChecked(!isExitAndClearChecked)
+                    }
+                    inputProps={{ "aria-label": "primary checkbox" }}
+                  />
+                  <p>Exit group and clear Chat</p>
+                </div>
+                <button
+                  onClick={() => {
+                    if (isExitAndClearChecked) {
+                      exitFromGroupOnDb(user?.info?.uid, currentDisplayConvoInfo?.roomId);
+                      setIsConnectedDisplayed(true);
+                      profile.close(true)
+                      urlHistory.push("/home");
+                      handleClose();
+                    } else {
+                      handleClose();
+                    }
+                  }}
+                >
+                  REPORT
+                </button>
+                <button onClick={handleClose}>CANCEL</button>
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+    );
+  } else if (modalType === "ADD_PARTICIPANT") {
+    return (
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={`${classes.modal} addParticipant`}
+          open={openModal}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={`${classes.paper} modal__addParticipant_wr`}>
+              <div className="modal__addParticipant">
+                <section className="modal_addparticipant_header">
+                  <CloseRounded onClick={handleClose} />
+                  <p>Add Participant</p>
+                </section>
+                <section className="modal_addparticipant_search">
+                  <div className="modal_addparticipant_searchContainer">
+                    <div className='icons'>
+                      <SearchOutlined className='search' />
+                      <ArrowBackRounded className="back" />
+                    </div>
+                    <input
+                      type="text"
+                      onFocus={() => addParticipantAnimation.focus()}
+                      onBlur={() => addParticipantAnimation.blur()}
+                      placeholder="Search or start a new group" />
+                  </div>
+                </section>
+                <section className="modal_addparticipant_selectedWr">
+                  <div className="modal_addparticipant_selected">
+                    <div>
+                      <Avatar />
+                      <span>Adeyanju Adeyemiiiiiiiiiiiii</span>
+                      <CloseRounded />
+                    </div>
+                    <div>
+                      <Avatar />
+                      <span>Adeyanju Adeyemi</span>
+                      <CloseRounded />
+                    </div>
+                    <div>
+                      <Avatar />
+                      <span>Adeyanju Adeyemi</span>
+                      <CloseRounded />
+                    </div>
+                    <div>
+                      <Avatar />
+                      <span>Adeyanju Adeyemi</span>
+                      <CloseRounded />
+                    </div>
+
+                  </div>
+                </section>
+                <section className="modal_addparticipant_membersWr">
+                  <div className="modal_addparticipant_members">
+                    <h3>Contacts</h3>
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                    <ModalAddParticipant />
+                  </div>
+                </section>
+                <CheckRounded />
               </div>
             </div>
           </Fade>

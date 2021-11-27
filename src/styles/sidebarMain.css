@@ -1,6 +1,7 @@
 .sidebarMain {
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .sidebarMain__headerLeft {

@@ -1,14 +1,14 @@
-import { ArrowBack } from '@material-ui/icons'
-import React, { useEffect, useState } from 'react';
-import { userprofileSidebar as animate } from "../../utils/userProfileUtils";
-import { mediaDocsNav } from '../../utils/userProfileUtils'
+import { ArrowBack } from '@material-ui/icons';
+import React, { useEffect, useState } from 'react'
+import { roomProfileSidebar as animate } from '../../utils/roomProfileUtils';
+import { mediaDocsNav } from '../../utils/roomProfileUtils';
 
-function UpsbMediaDocs({ imgMssgAll }) {
+function RpsbMediaDocs({ imgMssgAll }) {
     const [mediaDocsNavType, setMediaDocsNavType] = useState('MEDIA');
     useEffect(() => {
         const resizeListener = () => {
-            const navWidth = document.querySelector(".UPSB_mediaDocs_headerNav p").offsetWidth
-            const slideSpan = document.querySelector('.UPSB_mediaDocs_headerNav >.slide');
+            const navWidth = document.querySelector(".RPSB_mediaDocs_headerNav p").offsetWidth
+            const slideSpan = document.querySelector('.RPSB_mediaDocs_headerNav >.slide');
             slideSpan.style.width = `${navWidth}px`
         }
         window.addEventListener('resize', resizeListener)
@@ -17,17 +17,17 @@ function UpsbMediaDocs({ imgMssgAll }) {
         }
     }, [])
     return (
-        <div className='UPSB_mediaDocs'>
-            <div className="UPSB_mediaDocs_header">
+        <div className='RPSB_mediaDocs'>
+            <div className="RPSB_mediaDocs_header">
                 <ArrowBack onClick={animate.close} />
-                <div className="UPSB_mediaDocs_headerNav">
+                <div className="RPSB_mediaDocs_headerNav">
                     <p onClick={() => { mediaDocsNav.slideTo(0); setMediaDocsNavType('MEDIA') }}>Media</p>
                     <p onClick={() => { mediaDocsNav.slideTo(1); setMediaDocsNavType('DOCS') }}>Docs</p>
                     <p onClick={() => { mediaDocsNav.slideTo(2); setMediaDocsNavType('LINKS') }}>Links</p>
                     <span className='slide'></span>
                 </div>
             </div>
-            <div className="UPSB_mediaDocs_body">
+            <div className="RPSB_mediaDocs_body">
                 {mediaDocsNavType === 'MEDIA' ?
                     <div className={`media ${imgMssgAll.length > 0 ? 'filled' : 'empty'}`}>
                         {imgMssgAll.length > 0 ?
@@ -56,4 +56,4 @@ function UpsbMediaDocs({ imgMssgAll }) {
     )
 }
 
-export default UpsbMediaDocs
+export default RpsbMediaDocs

@@ -98,6 +98,11 @@ function Chat(props) {
                 type: "SET_CURRENTDISPLAYEDCONVOMESSAGES",
                 currentDisplayedConvoMessages: messages,
             });
+        } else {
+            dispatch({
+                type: "SET_CURRENTDISPLAYEDCONVOMESSAGES",
+                currentDisplayedConvoMessages: [],
+            });
         }
     }, [messages, dispatch])
     useEffect(() => { // reset the user read value to true once a chat is opened

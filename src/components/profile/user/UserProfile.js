@@ -1,16 +1,13 @@
-// DISPLAYS THE PROFILE OF BOTH CHAT CONVO AND GROUP CONVO
+
 import React, { useEffect, useState } from "react";
-import "../../../styles/userProfile.css";
 import { useStateValue } from "../../global-state-provider/StateProvider";
 import { isConvoMutedOnDb } from "../../backend/get&SetDataToDb";
 import UserProfileSideBar from "./UserProfileSideBar";
 import UserProfileMain from "./UserProfileMain";
 
-
-// import UserProfileSideBar from "./UserProfileSideBar";
 function UserProfile(props) {
     const { setOpenModal, setModalType, setIsRoom, isConnectedDisplayed, isFirstRender } = props;
-    const [{ user, currentDisplayConvoInfo, currentDisplayedConvoMessages, isMuteNotifichecked }, disptach,] = useStateValue(); // keeps state for current logged in user
+    const [{ user, currentDisplayConvoInfo, currentDisplayedConvoMessages, isMuteNotifichecked }, disptach] = useStateValue(); // keeps state for current logged in user
     const [upSidebarType, setUpSidebarType] = useState();
     const [imgMssgPreview, setImgMssgPreview] = useState([]); // keeps state for the 3 images that will be previewed on the chat profile
     const [imgMssgAll, setImgMssgAll] = useState([]); // keeps state of current displayed convo message that are of image type
@@ -32,7 +29,7 @@ function UserProfile(props) {
                 if (mssg?.fileType?.info?.type === "image") {
                     imgMssgArrPreview.unshift(mssg.fileType)
                 }
-                if (i === 2) i = currentDisplayedConvoMessages.length + 1
+                if (imgMssgArrPreview.length === 3) i = currentDisplayedConvoMessages.length + 1
             }
             currentDisplayedConvoMessages.forEach(mssg => { // gets all the image messages
                 if (mssg?.fileType?.info?.type === "image") {

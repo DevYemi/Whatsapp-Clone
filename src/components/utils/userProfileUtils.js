@@ -11,7 +11,7 @@ export const userprofileSidebar = { // handles the smooth animation of the user 
         tl.to(userProfileContainerDiv, { display: "none", width: 0 }, 'in')
             .to(userProfileSideBarDiv, { display: 'initial', width: '100%' }, 'in')
     },
-    close: function () {
+    close: function (isRoom) {
         const userProfileContainerDiv = document.querySelector(".userProfile__container");
         const userProfileSideBarDiv = document.querySelector(".userProfileSidebar__wr");
         const tl = gsap.timeline({ defaults: { duration: .2, ease: "power2" } })

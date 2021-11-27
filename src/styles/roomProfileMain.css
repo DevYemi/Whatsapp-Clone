@@ -4,71 +4,84 @@
     height: 100%;
     display: flex;
 }
+
 .roomProfile__wr.hide {
     display: none;
 }
 
-  .roomProfile__container {
-      height: 86%;
-      width: 100%;
-  }
+.roomProfile__container {
+    height: 86%;
+    width: 100%;
+}
+
 .roomProfile__header {
     display: flex;
     align-items: center;
     padding: 1.8em;
     border-bottom: 1px solid #80808036;
     background-color: #ededed;
-    
+
 }
+
 .roomProfile__header .MuiSvgIcon-root {
     cursor: pointer;
 }
-.roomProfile__header > p {
+
+.roomProfile__header>p {
     margin-left: 1em;
 }
+
 .roomProfile__body {
     opacity: 0;
     overflow-y: scroll;
     height: 100%;
     margin-top: -30px;
 }
+
 .roomProfile__body::-webkit-scrollbar {
     width: .4em;
-  }
-  .roomProfile__body::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px #EFEFEF; 
-  } 
-  .roomProfile__body::-webkit-scrollbar-thumb {
-    background: #BFBFBF; 
-  }
+}
+
+.roomProfile__body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #EFEFEF;
+}
+
+.roomProfile__body::-webkit-scrollbar-thumb {
+    background: #BFBFBF;
+}
+
 .roomProfileBody__sec1 {
     display: flex;
     background-color: white;
     padding: 1.3em;
     flex-direction: column;
 }
+
 .roomProfileBody__sec1 .MuiAvatar-root {
-width: 180px;
-height: 180px;
-align-self: center;
-margin-top: 1em;
-cursor: pointer;
+    width: 180px;
+    height: 180px;
+    align-self: center;
+    margin-top: 1em;
+    cursor: pointer;
 }
+
 .roomProfileBody__sec1AviWr {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
 }
-.roomProfileBody__sec1AviWr > input {
+
+.roomProfileBody__sec1AviWr>input {
     position: absolute;
     height: 100%;
     cursor: pointer;
     opacity: 0;
     width: 100%;
 }
-.roomProfileBody__sec1AviWr  input:hover + .rpb__sec1AviChnage {
- opacity: 1;
+
+.roomProfileBody__sec1AviWr input:hover+.rpb__sec1AviChnage {
+    opacity: 1;
 }
 
 
@@ -79,51 +92,64 @@ cursor: pointer;
     cursor: pointer;
     opacity: 0;
 }
+
 .rpb__sec1AviChnage .MuiSvgIcon-root {
     color: grey;
 }
+
 .rpb__sec1AviChnage p {
     color: grey;
 }
+
 .roomProfileBody__sec1 div {
     margin-top: 1em;
 }
+
 .roomProfileBody__sec1OuterDiv {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .roomProfileBody__sec1OuterDiv .MuiSvgIcon-root.hide {
     display: none;
 }
+
 .roomProfileBody__sec1OuterDiv .MuiSvgIcon-root {
     color: grey;
     cursor: pointer;
 }
+
 .roomProfileBody__sec1 div p {
     margin-top: .5em;
     font-size: .8rem;
     color: rgba(0, 0, 0, 0.493);
 }
+
 .roomProfileBody__sec1 div p:first-child {
     font-size: 1.1rem;
     color: black;
 }
+
 .rpb__editName {
     flex: 1;
 }
-.rpb__editName > div {
+
+.rpb__editName>div {
     position: relative;
 }
-.rpb__editName > div .MuiSvgIcon-root.done {
+
+.rpb__editName>div .MuiSvgIcon-root.done {
     color: grey;
 }
+
 .rpb__editName input {
     outline: none;
     width: 100%;
     border: none;
     border-bottom: 2px solid #00BFA5;
 }
+
 .rpb__editNameIconWr {
     display: flex;
     position: absolute;
@@ -132,17 +158,20 @@ cursor: pointer;
     align-items: center;
     margin-top: 0 !important;
 }
+
 .rpb__editNameIconWr p {
     font-size: 1rem !important;
     color: rgba(0, 0, 0, 0.555) !important;
     margin-top: 0 !important;
 }
+
 .rpb__editName__emoji {
     position: relative;
     transition: all 1s ease-in-out;
     margin: 0 .4em !important;
 }
-.rpb__editName__emoji > .emoji-picker-react {
+
+.rpb__editName__emoji>.emoji-picker-react {
     display: none;
     z-index: 2;
     position: absolute;
@@ -151,6 +180,7 @@ cursor: pointer;
     max-height: 251px;
     max-width: 231px
 }
+
 .roomProfileBody__sec2OuterDiv {
     display: flex;
     justify-content: space-between;
@@ -159,29 +189,35 @@ cursor: pointer;
     margin-top: .5em;
     padding: 1.3em;
 }
+
 .roomProfileBody__sec2OuterDiv .MuiSvgIcon-root.hide {
     display: none;
 }
+
 .roomProfileBody__sec2OuterDiv .MuiSvgIcon-root {
     color: grey;
     align-self: flex-start;
 }
+
 .rpb__editDescrip p {
     font-size: small;
     color: #3BAEA4;
     margin-bottom: .5em;
 }
+
 .rpb__editDescrip span {
     font-size: small;
     color: grey;
     word-break: break-all;
 }
+
 .rpb__editDescrip__emoji {
     position: relative;
     transition: all 1s ease-in-out;
     margin: 0 .4em !important;
 }
-.rpb__editDescrip__emoji > .emoji-picker-react {
+
+.rpb__editDescrip__emoji>.emoji-picker-react {
     display: none;
     z-index: 2;
     position: absolute;
@@ -190,23 +226,27 @@ cursor: pointer;
     max-height: 251px;
     max-width: 231px
 }
+
 .rpb__editDescrip {
     flex: 1;
 }
-.rpb__editDescrip > div {
+
+.rpb__editDescrip>div {
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     flex: 1;
 }
-.rpb__editDescrip > div textarea {
+
+.rpb__editDescrip>div textarea {
     flex: .7;
     outline: none;
     border: none;
     resize: none;
     border-bottom: 2px solid #00BFA5;
 }
+
 .rpb__editDescripIconWr {
     display: flex;
     justify-content: space-between;
@@ -214,32 +254,57 @@ cursor: pointer;
     position: absolute;
     right: 0;
 }
-.roomProfileBody__sec3, .roomProfileBody__sec4, .roomProfileBody__sec5{
+
+.roomProfileBody__sec3,
+.roomProfileBody__sec4,
+.roomProfileBody__sec5 {
     display: flex;
     background-color: white;
     padding: 1em;
     flex-direction: column;
     margin-top: .5em;
 }
-.roomProfileBody__sec3 > p {
+
+.roomProfileBody__sec3>p {
     font-size: .8rem;
     align-self: center;
     color: rgba(0, 0, 0, 0.473);
     margin-top: 1.1em;
 }
+
+.media_grid_wr {
+    display: grid;
+    grid-template-columns: 100px 100px 100px;
+    grid-column-gap: 10px;
+    margin-top: .5em;
+}
+
+.media_grid_wr div img {
+    object-fit: contain;
+    max-height: 100px;
+    width: 100%;
+    height: 100%;
+}
+
 .roomProfileBody__sec3Info {
     display: flex;
     justify-content: space-between;
+    cursor: pointer;
 }
+
 .roomProfileBody__sec3Info p {
     font-size: .9rem;
     color: #00BFA5;
 }
-.roomProfileBody__sec3Info .MuiSvgIcon-root, .starMessg .MuiSvgIcon-root, .disappearingMessg .MuiSvgIcon-root {
+
+.roomProfileBody__sec3Info .MuiSvgIcon-root,
+.starMessg .MuiSvgIcon-root,
+.disappearingMessg .MuiSvgIcon-root {
     color: rgba(0, 0, 0, 0.527);
     width: .7em;
     height: .7em;
 }
+
 .rpb_sec5_div1 {
     display: flex;
     justify-content: space-between;
@@ -247,40 +312,75 @@ cursor: pointer;
     border-bottom: 1px solid rgba(0, 0, 0, 0.082);
     padding-bottom: .9em;
 }
+
 .rpb_sec5_div1 p {
     font-size: small;
     color: #00BFA5;
 }
+
 .rpb_sec5_div1 .MuiSvgIcon-root {
     color: rgba(128, 128, 128, 0.712);
     width: .8em;
     height: .8em;
 }
-.rpb_sec5_div2_memberWr {
+
+.rpb_sec5_div2 {
+    margin-top: 1em;
+}
+
+.rpb_sec5_div2>div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.4em;
+    cursor: pointer;
+}
+
+.rpb_sec5_div2>div .MuiSvgIcon-root {
+    color: white;
+    background-color: #00A884;
+    border: 1px solid #00A884;
+    padding: 10px;
+    border-radius: 50%;
+    font-size: 2.5rem;
+}
+
+.rpb_sec5_div2>div p {
+    margin-left: 1.4em;
+    font-size: 1rem;
+    font-weight: 100;
+
+}
+
+.rpb_sec5_div3_memberWr {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid rgba(0, 0, 0, 0.082);
     padding-bottom: .9em;
 }
-.rpb_sec5_div2_memberWr > div {
+
+.rpb_sec5_div3_memberWr>div {
     display: flex;
     align-items: center;
 }
-.rpb_sec5_div2_memberWr > div p {
+
+.rpb_sec5_div3_memberWr>div p {
     font-size: small;
     color: grey;
     margin-left: 1em;
 }
-.rpb_sec5_div2_memberWr > p {
-    border: 1px solid #12BF54 ;
+
+.rpb_sec5_div3_memberWr>p {
+    border: 1px solid #12BF54;
     padding: .1em;
     border-radius: 3px;
     text-align: center;
     font-size: x-small;
     color: #12BF54;
 }
-.roomProfileBody__sec6, .roomProfileBody__sec7 {
+
+.roomProfileBody__sec6,
+.roomProfileBody__sec7 {
     display: flex;
     align-items: center;
     background-color: white;
@@ -288,78 +388,8 @@ cursor: pointer;
     margin-top: .5em;
     color: red !important;
 }
-.roomProfileBody__sec6 p, .roomProfileBody__sec7 p {
+
+.roomProfileBody__sec6 p,
+.roomProfileBody__sec7 p {
     margin-left: 1.6em;
 }
-
-/* .roomProfileBody__sec2, .roomProfileBody__sec3, .roomProfileBody__sec4{
-    display: flex;
-    background-color: white;
-    padding: 1em;
-    flex-direction: column;
-    margin-top: .5em;
-}
-.roomProfileBody__sec2 > p {
-    font-size: .8rem;
-    align-self: center;
-    color: rgba(0, 0, 0, 0.473);
-    margin-top: 1.1em;
-}
-.roomProfileBody__sec2Info {
-    display: flex;
-    justify-content: space-between;
-}
-.roomProfileBody__sec2Info p {
-    font-size: .9rem;
-    color: #009688;
-}
-.roomProfileBody__sec2Info .MuiSvgIcon-root, .starMessg .MuiSvgIcon-root, .disappearingMessg .MuiSvgIcon-root {
-    color: rgba(0, 0, 0, 0.527);
-    width: .7em;
-    height: .7em;
-}
-
-.muteNotifi, .starMessg, .disappearingMessg {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.082);
-    padding-bottom: .9em;
-}
-.starMessg {
-    margin: 1.3em 0;
-    padding-bottom: 1em !important;
-}
-.disappearingMessg {
-    border-bottom: none !important;
-}
-.disappearingMessg p {
-    display: flex;
-    flex-direction: column;
-}
-.disappearingMessg p span:last-child {
-  color: rgba(128, 128, 128, 0.562);
-  margin-top: .5em;
-}
-.roomProfileBody__sec4 p:first-child {
-    font-size: .9rem;
-    color: #009688;
-}
-.roomProfileBody__sec4 p:nth-of-type(2) {
-    margin: 1.2em 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.082);
-    font-size: 1.1rem;
-    color: rgb(61, 57, 57);
-    padding-bottom: 1em;
-}
-.roomProfileBody__sec5, .roomProfileBody__sec6, .roomProfileBody__sec7 {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 1em;
-    margin-top: .5em;
-    color: red !important;
-}
-.roomProfileBody__sec5 p, .roomProfileBody__sec6 p, .roomProfileBody__sec7 p {
-    margin-left: 1.6em;
-} */

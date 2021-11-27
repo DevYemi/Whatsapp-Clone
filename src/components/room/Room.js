@@ -97,6 +97,20 @@ function Room(props) {
             roomBody?.scrollTo(0, roomBody.offsetHeight * 500000);
         }
     }, [messages]);
+    useEffect(() => { // map Room messages to global state currentDisplyedConvoMessages
+
+        if (messages.length > 0) {
+            dispatch({
+                type: "SET_CURRENTDISPLAYEDCONVOMESSAGES",
+                currentDisplayedConvoMessages: messages,
+            });
+        } else {
+            dispatch({
+                type: "SET_CURRENTDISPLAYEDCONVOMESSAGES",
+                currentDisplayedConvoMessages: [],
+            });
+        }
+    }, [messages, dispatch])
     useEffect(() => { // reset the user read value to true once a room is opened
         resetRecieverMssgReadOnDb(user?.info.uid, roomId, true, true)
     }, [roomId, user?.info.uid])

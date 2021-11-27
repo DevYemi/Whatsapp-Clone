@@ -699,3 +699,20 @@ export function setNewLoggedInUserAviOnDb(userId, newAvi, hookCallback) {
 
 }
 
+export function exitFromGroupOnDb(userId, roomId) {
+  // Delete Room Info from user Data
+  db.collection('registeredUsers')
+    .doc(userId)
+    .collection('rooms')
+    .doc(roomId)
+    .delete()
+    .then(() => {
+      // Delete User Info As A Group Members On Db
+      db.collection('rooms')
+        .doc(roomId)
+        .collection('members')
+        .doc(userId)
+        .delete()
+    })
+}
+

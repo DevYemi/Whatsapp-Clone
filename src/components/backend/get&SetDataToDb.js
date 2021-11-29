@@ -1,5 +1,5 @@
 import db, { storage } from "./firebase";
-import firebase, { functions } from "firebase/app";
+import firebase from "firebase/app";
 
 export function getUserInfoFromDb(id, hookCallBack, isReducerCallback) {
   if (isReducerCallback) {
@@ -20,13 +20,13 @@ export function getUserInfoFromDb(id, hookCallBack, isReducerCallback) {
       .onSnapshot((snapshot) => hookCallBack(snapshot.data()))
   }
 }
-export async function getChatsFromDb(id, setChats) {
+export function getChatsFromDb(id, setChats) {
   return db
     .collection("registeredUsers")
     .doc(id)
     .collection("chats")
     .orderBy("timestamp", "desc")
-    .onSnapshot(async (snapshot) => {
+    .onSnapshot((snapshot) => {
       setChats(snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })));
     })
 }
@@ -38,16 +38,27 @@ export function getRoomsFromDb(id, setRooms) {
     .collection("rooms")
     .orderBy("timestamp", "desc")
     .onSnapshot((snapshot) => {
-      // now get the info of the room that the logged in user is a memeber of
-      let rooms = snapshot.docs.map((doc) => ({ id: doc.id }));
+      // get rooms where user belong to
+      let roomsInfo = snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
       db.collection("rooms")
         .orderBy("timestamp", "desc")
         .get()
         .then(querySnapshot => {
+          // then get all the rooms in db
           let datas = querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }))
-          let array = []
-          rooms.forEach(room => {
+          let array = [];
+          roomsInfo.forEach(room => { // loop through all the rooms in db and pull out the ones where user belong to
             array = [...array, ...datas.filter(data => data.id === room.id)]
+          })
+          array.forEach((arr, arrIndex) => { // loop through room info and merge with user room info 
+            for (let i = 0; i < roomsInfo.length; i++) {
+              const roomInfo = roomsInfo[i];
+              if (arr.id === roomInfo.id) {
+                array[arrIndex].data.muted = roomsInfo[i].data.muted
+                i = roomsInfo.length + 1
+              }
+
+            }
           })
           setRooms(array);
         }).catch(e => console.log(e))
@@ -67,7 +78,7 @@ export function createNewChatInDb(user, chatUser) {
       isBlocked: "",
       isRoom: false,
       email: chatUser.email,
-      read: false,
+      isRead: true,
       muted: false,
       phoneNumber: chatUser.phoneNumber,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -81,7 +92,7 @@ export function createNewChatInDb(user, chatUser) {
       isRoom: false,
       muted: false,
       email: user?.info.email,
-      read: false,
+      isRead: false,
       phoneNumber: user?.phoneNumber,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     }).catch(e => console.log(e))
@@ -95,8 +106,8 @@ export function createNewRoomInDb(user, roomName) {
     .set({
       id: newRoomKey,
       isRoom: true,
-      admin: true,
-      read: false,
+      isAdmin: true,
+      isRead: true,
       muted: false,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     }).catch(e => console.log(e))
@@ -108,7 +119,6 @@ export function createNewRoomInDb(user, roomName) {
       roomId: newRoomKey,
       isRoom: true,
       dateCreated: firebase.firestore.FieldValue.serverTimestamp(),
-      read: false,
       muted: false,
       description: "",
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -123,32 +133,39 @@ export function addNewMemberToRoomToDb(roomId, user, admin) {
     .collection("members")
     .doc(user?.info.uid)
     .set({
-      phoneNumber: user?.phoneNumber,
+      phoneNumber: user?.phoneNumber || user.info.phoneNumber,
       id: user?.info.uid,
       isAdmin: admin,
     }).catch(e => console.log(e))
 }
-export function addRoomToUserConvoInDb(roomId, users, admin) {
+export function addRoomToUserConvoInDb(roomId, users, admin, hookCallback) {
   if (Array.isArray(users)) {
-    users.forEach((item, index) => {
-      // add room to user convo in db
-      db.collection("registeredUsers")
-        .doc(users?.info.uid)
-        .collection("rooms")
-        .doc(roomId)
-        .set({
-          id: roomId,
-          isRoom: true,
-          admin: admin,
-          read: false,
-          muted: false,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        }).then(() => {
-          // add user to room members in db
-          addNewMemberToRoomToDb(roomId, users, admin);
-        })
-        .catch(e => console.log(e))
-    });
+    try {
+      users.forEach((user, index) => {
+        // add room to user convo in db
+        db.collection("registeredUsers")
+          .doc(user?.info.uid)
+          .collection("rooms")
+          .doc(roomId)
+          .set({
+            id: roomId,
+            isRoom: true,
+            isAdmin: admin,
+            isRead: false,
+            muted: false,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          }).then(() => {
+            // add user to room members in db
+            addNewMemberToRoomToDb(roomId, user, admin);
+          })
+          .catch(e => { console.log(e) })
+        if (index === users.length - 1) hookCallback({ loading: false, success: true })
+      })
+    } catch (e) {
+      console.log(e)
+      hookCallback({ loading: false, success: false })
+    }
+
   }
 }
 export function getRoomMembersFromDb(roomId, hookCallback) {
@@ -251,6 +268,7 @@ export function setNewMessageToDb(convoId, text, user, scrollConvoBody, isRoom, 
       })
       .then(() => {
         resetRecieverMssgReadOnDb(user?.info?.uid, convoId, true, isRoom);
+        resetOtherMembersReadOnDbToFalse(user?.info?.uid, convoId)
         resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
         scrollConvoBody.toEnd();
       })
@@ -265,6 +283,7 @@ export function setNewMessageToDb(convoId, text, user, scrollConvoBody, isRoom, 
       .set({
         message: text,
         senderId: user?.info.uid,
+        isRead: true,
         receiverId: convoId,
         fileType: fileType,
         name: user?.info.displayName,
@@ -281,19 +300,40 @@ export function setNewMessageToDb(convoId, text, user, scrollConvoBody, isRoom, 
           .set({
             message: text,
             senderId: user?.info?.uid,
+            isRead: false,
             receiverId: convoId,
             fileType: fileType,
             name: user?.info.displayName,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           })
           .then(() => {
-            resetRecieverMssgReadOnDb(convoId, user?.info?.uid, false, isRoom);
             resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
             scrollConvoBody.toEnd();
           })
           .catch(e => console.log(e))
       });
   }
+}
+export function resetOtherMembersReadOnDbToFalse(userId, convoId) {
+  // gets all the members of a room in db except current logged in user
+  db.collection("rooms")
+    .doc(convoId)
+    .collection("members")
+    .where("id", "!=", userId)
+    .get()
+    .then(snapshot => {
+      // then set their isRead to false
+      let membersId = snapshot.docs.map(doc => ({ id: doc.id }))
+      membersId.forEach(memId => {
+        db.collection("registeredUsers")
+          .doc(memId.id)
+          .collection("rooms")
+          .doc(convoId)
+          .update({
+            isRead: false
+          })
+      })
+    })
 }
 export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
   if (isRoom) {
@@ -326,28 +366,42 @@ export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
   }
 }
 export function resetRecieverMssgReadOnDb(recId, senId, value, isRoom) {
-  db.collection("registeredUsers")
-    .doc(recId)
-    .collection(isRoom ? "rooms" : "chats")
-    .doc(senId)
-    .update({
-      read: value,
-    }).catch(err => console.log(err));
+  // resets all user isRead messages to true when user opens or is on current chat or room
+  if (isRoom) { // handles as a room
+    db.collection("registeredUsers")
+      .doc(recId)
+      .collection("rooms")
+      .doc(senId)
+      .update({
+        isRead: value,
+      }).catch(err => console.log(err));
+  } else { // else handle has a chat
+    // gets all messages where isRead is false
+    db.collection("registeredUsers")
+      .doc(recId)
+      .collection("chats")
+      .doc(senId)
+      .collection("messages")
+      .where("isRead", "==", false)
+      .get()
+      .then(snapshot => {
+        // then update isRead of such messages to true
+        let messagesId = snapshot.docs.map(doc => ({ id: doc.id }))
+        messagesId.forEach(mssgId => {
+          db.collection("registeredUsers")
+            .doc(recId)
+            .collection("chats")
+            .doc(senId)
+            .collection("messages")
+            .doc(mssgId.id)
+            .update({
+              isRead: true,
+            })
+        })
+      })
+  }
 }
 export function getAndComputeNumberOfNewMssgOnDb(userId, isRoom, convoId, setNewMssgNum, currentUrl) {
-  const mssgCallback = (messages) => {
-    let numOfNewMessages = 0;
-    for (let i = 0; i < messages.length; i++) {
-      const message = messages[i];
-      if (message.senderId !== userId) {
-        numOfNewMessages++;
-      } else {
-        i = messages.length + 1;
-      }
-    }
-    setNewMssgNum(numOfNewMessages);
-    resetRecieverMssgReadOnDb(userId, convoId, false, isRoom);
-  };
   if (isRoom) {
     // get it from the rooms in db
     return db.collection("registeredUsers")
@@ -355,23 +409,23 @@ export function getAndComputeNumberOfNewMssgOnDb(userId, isRoom, convoId, setNew
       .collection("rooms")
       .doc(convoId)
       .onSnapshot((snapshot) => {
-        let isChatRead = snapshot.data()?.read;
+        let isChatRead = snapshot.data()?.isRead;
         if (!isChatRead) {
-          // if chat hasn't been read by user commute the amount of message sent by other sender
-          getMessgFromDb(userId, convoId, isRoom, "desc", mssgCallback, false);
+          setNewMssgNum(1);
+        } else {
+          setNewMssgNum(0);
         }
       })
   } else {
+    // get it from the chats in db
     return db.collection("registeredUsers")
       .doc(userId)
       .collection("chats")
       .doc(convoId)
+      .collection("messages")
+      .where("isRead", "==", false)
       .onSnapshot((snapshot) => {
-        let isChatRead = snapshot.data()?.read;
-        if (!isChatRead) {
-          // if chat hasn't been read by user commute the amount of message sent by sender
-          getMessgFromDb(userId, convoId, isRoom, "desc", mssgCallback, false);
-        }
+        setNewMssgNum(snapshot.docs.length);
       });
   }
 }
@@ -439,13 +493,16 @@ export function registerNewUserInDb(email, phoneNumber, uid, name, avi) {
     .set({ email, phoneNumber, uid, name, avi, about })
     .catch(e => console.log(e));
 }
-export function getTotalUsersFromDb(setTotalUserOnDb) {
-  // gets the total number of users on the db
+export function getTotalUsersFromDb(reducerCallback) {
   // gets all the total registered users on db
-  return db.collection("totalUsers").onSnapshot((snapshot) => {
-    let data = snapshot.docs.map((doc) => doc.data());
-    setTotalUserOnDb(data);
-  })
+  return db
+    .collection("totalUsers").onSnapshot((snapshot) => {
+      let data = snapshot.docs.map((doc) => doc.data());
+      reducerCallback({
+        type: "SET_TOTALUSERONDB",
+        totalUserOnDb: data
+      })
+    })
 }
 
 export function muteConvoOnDb(userId, convoId, isRoom, hookCallback) {
@@ -528,13 +585,15 @@ export function getGroupMemberFromDb(roomId, reactHookCallback) {
           .doc(member.id)
           .onSnapshot((snapshot) => {
             modifiedMemebers.push({
-              avi: snapshot.data().avi,
               id: member.id,
-              data: member.data(),
+              data: snapshot.data(),
+              isAdmin: member.data().isAdmin
             });
             if (upperSnapshot.length - 1 === index) {
               // at the last index call reactHookCallback with modifieldMembers
+              console.log(modifiedMemebers)
               reactHookCallback(modifiedMemebers);
+              modifiedMemebers = [];
             }
           });
       });
@@ -548,7 +607,7 @@ export function getIfCurrentUserIsGroupAdminFromDb(userId, roomId, reactHookCall
     .collection("rooms")
     .doc(roomId)
     .onSnapshot((snapshot) => {
-      reactHookCallback(snapshot.data()?.admin);
+      reactHookCallback(snapshot.data()?.isAdmin);
     });
 }
 export function exitFromGroupOnDb(userId, roomId) {
@@ -684,7 +743,7 @@ export async function clearChatOnDb(userId, chatId) {
           .doc(mssg.id)
           .delete()
           .catch(err => console.log(err));
-      }).catch(e => console.log(e));
+      })
     });
 
 }

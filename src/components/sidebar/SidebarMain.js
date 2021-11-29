@@ -10,13 +10,15 @@ import { useHistory } from "react-router-dom";
 import { sidebarProfile } from '../utils/sidebarUtils';
 
 function SidebarMain(props) {
-    const { setIsFirstRender, isFirstRender, setIsConnectedDisplayed } = props
+    const { setIsFirstRender, isFirstRender, setIsConnectedDisplayed, setOpenModal, setModalType } = props
     const [rooms, setRooms] = useState(null); // keep state for all the rooms received from db
     const [chats, setChats] = useState(null); // keep state for all ther chat received from db
     const [convos, setConvos] = useState([]); // keeps state for the combination of chat and rooms
     const [{ user }, dispatch] = useStateValue(); // keeps state for current logged in user
     const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
     const urlHistory = useHistory();
+
+
     useEffect(() => {
         // on first render display connectedDisplay component on convo side
         if (isFirstRender) {
@@ -60,7 +62,6 @@ function SidebarMain(props) {
                 let chat2 = new Date(y?.data?.timestamp?.seconds);
                 return chat2 - chat1;
             });
-            console.log([...unmutedConvos, ...mutedConvos])
             setConvos([...unmutedConvos, ...mutedConvos]);
         }
     }, [chats, rooms]);
@@ -90,7 +91,10 @@ function SidebarMain(props) {
                 </div>
             </section>
             <section className="sidebarMain__convos">
-                <SidebarConvo addNewConvo />
+                <SidebarConvo
+                    addNewConvo
+                    setOpenModal={setOpenModal}
+                    setModalType={setModalType} />
                 {convos.length > 0 ? (
                     convos.map((convo) => (
                         <SidebarConvo
@@ -98,6 +102,8 @@ function SidebarMain(props) {
                             convoId={convo.id}
                             isRoom={convo.data.isRoom}
                             setIsConnectedDisplayed={setIsConnectedDisplayed}
+                            setOpenModal={setOpenModal}
+                            setModalType={setModalType}
                         />
                     ))
                 ) : (

@@ -149,7 +149,7 @@ function RoomHeader(props) {
           <p>
             {roomMembers.length > 0
               ? roomMembers.map((member, index) => (
-                <small key={index}>{member.name}</small>
+                <small key={index}>{`${member.data.name}, `}</small>
               ))
               : "There are no member in this room"}
           </p>

@@ -10,6 +10,7 @@ import "../../styles/modal.css";
 import { useStateValue } from "../global-state-provider/StateProvider";
 import { useHistory } from "react-router-dom";
 import {
+  addRoomToUserConvoInDb,
   blockChatOnDb,
   clearChatOnDb,
   deleteConvoOnDb,
@@ -20,10 +21,10 @@ import {
 } from "../backend/get&SetDataToDb";
 import { profile } from "../profile/Profile";
 import { ArrowBackRounded, CheckRounded, CloseRounded, SearchOutlined } from "@material-ui/icons";
-import gsap from "gsap";
 import ModalAddParticipant from "./ModalAddParticipant";
 import { Avatar } from "@material-ui/core";
 import Loading from "./Loading";
+import { addParticipantAnimation, getChatThatAreNotMembers, handleRemoveParticipant } from '../utils/displayModalUtils'
 
 const useStylesTextField = makeStyles((theme) => ({
   root: {
@@ -47,7 +48,14 @@ function DisplayModal(props) {
     setIsConnectedDisplayed,
     setModalType,
   } = props;
-  const [{ user, currentLoggedInUserChats, currentDisplayConvoInfo, isMuteNotifichecked, isCurrentConvoBlocked, }, dispatch] = useStateValue(); // React context API
+  const [{
+    user,
+    currentLoggedInUserChats: currentUserChats,
+    currentDisplayConvoInfo,
+    isMuteNotifichecked,
+    currentDisplayedRoomMembers: roomMembers,
+    totalUserOnDb,
+    isCurrentConvoBlocked, }, dispatch] = useStateValue(); // React context API
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -73,27 +81,11 @@ function DisplayModal(props) {
   const [isExitAndClearChecked, setIsExitAndClearChecked] = useState(true); // keeps state if report group exit&clear check box is checked in EXIT_GROUP modal
   const [selectedParticipant, setSelectedParticipant] = useState([]) // keeps state of the list of chats that has been checked in add participant modal
   const [successSP, setSuccessSP] = useState({ loading: false, success: false }) // keeps loading and success state when selectedParticipant is being added in db
+
   const urlHistory = useHistory();
   const handleClose = () => {
     setOpenModal(false);
   };
-  const addParticipantAnimation = {
-    focus: function () {
-      let tl = gsap.timeline({ defaults: { duration: .2, ease: 'power2' } });
-      tl.to('.modal_addparticipant_searchContainer > .icons > .search ', { rotation: 100, display: 'none' })
-        .to('.modal_addparticipant_searchContainer > .icons > .back ', { rotation: 0, display: 'inline-block' })
-    },
-    blur: function () {
-      let tl = gsap.timeline({ defaults: { duration: .2, ease: 'power2' } });
-      tl.to('.modal_addparticipant_searchContainer > .icons > .back ', { rotation: -100, display: 'none' })
-        .to('.modal_addparticipant_searchContainer > .icons > .search ', { rotation: 0, display: 'inline-block' })
-    }
-
-  }
-  const handleRemoveParticipant = (chatId) => {
-    let newSelected = selectedParticipant.filter(chat => chatId !== chat.uid);
-    setSelectedParticipant(newSelected);
-  }
 
   if (modalType === "ADD_CHAT") {
     return (
@@ -132,7 +124,7 @@ function DisplayModal(props) {
                 <button
                   onClick={() => {
                     if (modalInput === "") return;
-                    add.chat();
+                    add.chat(setModalInput, modalInput, user, totalUserOnDb);
                     handleClose();
                   }}
                 >
@@ -180,7 +172,7 @@ function DisplayModal(props) {
                 <button
                   onClick={() => {
                     if (modalInput === "") return;
-                    add.room();
+                    add.room(setModalInput, modalInput, user, totalUserOnDb);
                     handleClose();
                   }}
                 >
@@ -643,10 +635,10 @@ function DisplayModal(props) {
                   <div className="modal_addparticipant_selected">
                     {selectedParticipant.length > 0 &&
                       selectedParticipant.map(participant => (
-                        <div key={participant.uid}>
-                          <Avatar src={participant.avi} />
-                          <span>{participant.name}</span>
-                          <CloseRounded onClick={() => handleRemoveParticipant(participant.uid)} />
+                        <div key={participant?.info.uid}>
+                          <Avatar src={participant?.info.avi} />
+                          <span>{participant?.info.name}</span>
+                          <CloseRounded onClick={() => handleRemoveParticipant(participant?.info.uid, selectedParticipant, setSelectedParticipant)} />
                         </div>
                       ))
 
@@ -656,8 +648,8 @@ function DisplayModal(props) {
                 <section className="modal_addparticipant_membersWr">
                   <div className="modal_addparticipant_members">
                     <h3>Contacts</h3>
-                    {currentLoggedInUserChats.length > 0 ?
-                      currentLoggedInUserChats.map(chat => (
+                    {getChatThatAreNotMembers(currentUserChats, roomMembers).length > 0 ?
+                      getChatThatAreNotMembers(currentUserChats, roomMembers).map(chat => (
                         <ModalAddParticipant
                           key={chat?.id}
                           chatId={chat?.id}
@@ -703,13 +695,21 @@ function DisplayModal(props) {
                     type={'ThreeDots'}
                     color={"#00BFFF"}
                     class={"modal__aPConfirmation_loading"} />
-                  : <>
-                    <p>{`Add ${selectedParticipant.map(participant => participant.name).toString()} to "${currentDisplayConvoInfo.roomName}" Group`}</p>
-                    <button onClick={() => { }}>
-                      ADD PARTICIPANT
-                    </button>
-                    <button onClick={() => setModalType("ADD_PARTICIPANT")}>CANCEL</button>
-                  </>
+                  : successSP.success ?
+                    <>
+                      <p>{`${selectedParticipant.map(participant => participant?.info.name).toString()} has been added to "${currentDisplayConvoInfo.roomName}" Group Successfully`}</p>
+                      <button onClick={() => { handleClose(); setSelectedParticipant([]); setSuccessSP({ loading: false, success: false }) }}>Okay</button>
+                    </>
+                    : <>
+                      <p>{`Add ${selectedParticipant.map(participant => participant?.info.name).toString()} to "${currentDisplayConvoInfo.roomName}" Group`}</p>
+                      <button onClick={() => {
+                        setSuccessSP({ ...successSP, loading: true })
+                        addRoomToUserConvoInDb(currentDisplayConvoInfo?.roomId, selectedParticipant, false, setSuccessSP)
+                      }}>
+                        ADD PARTICIPANT
+                      </button>
+                      <button onClick={() => setModalType("ADD_PARTICIPANT")}>CANCEL</button>
+                    </>
                 }
 
 

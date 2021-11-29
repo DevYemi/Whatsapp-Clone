@@ -8,8 +8,7 @@ import { useStateValue } from '../global-state-provider/StateProvider';
 import { getTotalUsersFromDb, registerNewUserInDb } from '../backend/get&SetDataToDb'
 
 function Login() {
-    const [, dispatch] = useStateValue();
-    const [totalUserOnDb, setTotalUserOnDb] = useState()
+    const [{ totalUserOnDb }, dispatch] = useStateValue();
     const [userAlreadyHasAcct, setUserAlreadyHasAcct] = useState(false);
     const [phoneInput, setPhoneInput] = useState("");
 
@@ -88,9 +87,9 @@ function Login() {
 
 
     useEffect(() => { // Gets the total registertered user on db
-        let unsubcribeGetToUserFromDb = getTotalUsersFromDb(setTotalUserOnDb);
+        let unsubcribeGetToUserFromDb = getTotalUsersFromDb(dispatch);
         return () => { unsubcribeGetToUserFromDb(); }
-    }, [])
+    }, [dispatch])
     if (userAlreadyHasAcct) {
         return (
             <div className="login">

@@ -20,7 +20,7 @@ import { Avatar } from "@material-ui/core";
 import Picker from "emoji-picker-react";
 import { profile } from "../Profile";
 import Checkbox from "@material-ui/core/Checkbox";
-import { roomProfileSidebar as animate } from '../../utils/roomProfileUtils';
+import { rearrangeForAdmin, roomProfileSidebar as animate } from '../../utils/roomProfileUtils';
 
 function RoomProfileMain(props) {
     const { setOpenModal, setModalType, setIsRoom, setUpSidebarType, imgMssgPreview } = props;
@@ -111,6 +111,24 @@ function RoomProfileMain(props) {
             setNewAviForGroupOnDb(selectedAvi, currentDisplayConvoInfo?.roomId);
         }
     };
+    useEffect(() => {
+        // Map current displayed members to global state
+        if (groupMembers) {
+            disptach({
+                type: "SET_CURRENTDISPLAYEDROOMMEMBERS",
+                currentDisplayedRoomMembers: groupMembers
+            })
+        } else {
+            disptach({
+                type: "SET_CURRENTDISPLAYEDROOMMEMBERS",
+                currentDisplayedRoomMembers: []
+            })
+        }
+
+
+        return () => disptach({ type: "SET_CURRENTDISPLAYEDROOMMEMBERS", currentDisplayedRoomMembers: [] })
+
+    }, [groupMembers, disptach])
     useEffect(() => {
         // on every first render in a group chat always close the isGroupNameOnEdit & isGroupDescripOnEdit also set newDescriptionInput to the data on db
         setIsGroupNameOnEdit(false);
@@ -345,13 +363,13 @@ function RoomProfileMain(props) {
                         </div>
                     </div>
                     <div className="rpb_sec5_div3">
-                        {groupMembers?.map((member, index) => (
+                        {rearrangeForAdmin(groupMembers)?.map((member, index) => (
                             <div key={index} className="rpb_sec5_div3_memberWr">
                                 <div>
-                                    <Avatar src={member?.avi} />
+                                    <Avatar src={member?.data.avi} />
                                     <p>{member?.data?.name}</p>
                                 </div>
-                                {isAdmin && <p>Group Admin</p>}
+                                {member?.isAdmin && <p>Group Admin</p>}
                             </div>
                         ))}
                     </div>

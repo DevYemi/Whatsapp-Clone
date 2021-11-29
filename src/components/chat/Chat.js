@@ -104,6 +104,7 @@ function Chat(props) {
                 currentDisplayedConvoMessages: [],
             });
         }
+        return () => dispatch({ type: "SET_CURRENTDISPLAYEDCONVOMESSAGES", currentDisplayedConvoMessages: [] });
     }, [messages, dispatch])
     useEffect(() => { // reset the user read value to true once a chat is opened
         resetRecieverMssgReadOnDb(user?.info.uid, chatId, true, false);

@@ -2,8 +2,7 @@ import { Avatar } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import '../../styles/sidebarConvo.css'
-import DisplayModal from '../common/DisplayModal';
-import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, getTotalUsersFromDb, createNewChatInDb, createNewRoomInDb, resetRecieverMssgReadOnDb, getUserInfoFromDb, getRoomInfoFromDb } from '../backend/get&SetDataToDb';
+import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, resetRecieverMssgReadOnDb, getUserInfoFromDb, getRoomInfoFromDb } from '../backend/get&SetDataToDb';
 import SidebarConvoLastMessage from './SidebarConvoLastMessage';
 import { useStateValue } from '../global-state-provider/StateProvider';
 import { useLocation } from "react-router-dom";
@@ -11,56 +10,14 @@ import { profile } from '../profile/Profile';
 import { KeyboardArrowDownRounded } from '@material-ui/icons';
 
 
-function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed }) {
+function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, setOpenModal, setModalType }) {
     const [{ user, isMuteNotifichecked, currentDisplayConvoInfo }] = useStateValue(); // keeps state for current logged in user
     const [convoDirectInfo, setConvoDirectInfo] = useState(); // keeps state of the info of user or room who is associated with the convo
-    const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
-    const [modalInput, setModalInput] = useState("") // keeps state of user input in the modal
     const [newMssgNum, setNewMssgNum] = useState(0); // keeps stste for the number of new messages
-    const [totalUserOnDb, setTotalUserOnDb] = useState() // keeps state for the total user on the db
     const [lastMessage, setlastMessage] = useState(); // keeps state for the last message recived or sent
-    const [modalType, setModalType] = useState("ADD_CHAT") //keeps state for the type of modal to be displayed
     const [isCurrentSidebar, setIsCurrentSidebar] = useState(false); // keeps state if a user is current on the displayed sidebar
     const urlLocation = useLocation();
-    const addChatBg = { url: "url(/img/chat-bg.svg)", position: "right bottom", size: "contain" } // addchat modal bg-image styles
-    const addRoomBg = { url: "url(/img/room-bg.svg)", position: "right bottom", size: "97px" } // addroom modal bg-image styles
-    const add = { // create new chat,room and a send to db
-        chat: function () {// add new chat
-            setModalInput("")
-            let res = add.isNumberRegistered(modalInput);
-            if (res.status) {
-                createNewChatInDb(user, res.chatUser)
-            } else {
-                alert("Sorry User Is Not Registered On Our Database")
-            }
-        },
-        room: function () { // create a new room
-            setModalInput("")
-            if (modalInput !== "") {
-                createNewRoomInDb(user, modalInput)
-            }
-        },
-        isNumberRegistered: function (number) {
-            let res = { status: false }
-            if (totalUserOnDb.length > 0) {
-                for (let i = 0; i < totalUserOnDb.length; i++) {
-                    const user = totalUserOnDb[i];
-                    if (user.phoneNumber === number) {
-                        res = { status: true, chatUser: user };
-                        i = totalUserOnDb.length + 1
-                    } else {
-                        res = { status: false }
-                    }
 
-                }
-            }
-            return res;
-        }
-
-    }
-    useEffect(() => { //Gets total users from db 
-        getTotalUsersFromDb(setTotalUserOnDb)
-    }, [convoId]);
     useEffect(() => { // Get the info of the convo user
         let unsubGetUserInfoFromDb;
         let unsubGetRoomInfoFromDb;
@@ -77,11 +34,12 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed })
     useEffect(() => { // Gets the number of new messages from db
         let unsubGetAndComputeNumberOfNewMssgOnDb;
         let currentLocation = isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`;
-        // console.log(`Getting numbers for: ${isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`}`)
         if (currentLocation === urlLocation.pathname) {
+            // if convo is alteady opened by user reset newMessages to 0 & reset newMessages on db
             setNewMssgNum(0);
             resetRecieverMssgReadOnDb(user?.info?.uid, convoId, true, isRoom);
         } else {
+            // else get and commpute new messages
             if (convoId) {
                 unsubGetAndComputeNumberOfNewMssgOnDb = getAndComputeNumberOfNewMssgOnDb(user?.info?.uid, isRoom, convoId, setNewMssgNum, urlLocation.pathname);
             }
@@ -121,7 +79,8 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed })
                         {lastMessage ? <SidebarConvoLastMessage lastMessage={lastMessage} /> : <p>Chat is currently empty</p>}
                     </div>
                 </div>
-                <p className={newMssgNum > 0 && !isMuteNotifichecked ? "show" : ""}>{newMssgNum}</p>
+                <p className={newMssgNum > 0 && !isMuteNotifichecked && !isRoom ? "show chat" : ""}>{newMssgNum}</p>
+                <p className={newMssgNum > 0 && !isMuteNotifichecked && isRoom ? "show room" : ""}>{""}</p>
                 <KeyboardArrowDownRounded />
             </div>
         </Link>
@@ -129,15 +88,6 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed })
         <div className="sidebarConvo__add">
             <p onClick={() => { setModalType("ADD_CHAT"); setOpenModal(true) }} className="sidebarConvo__addChat">Add New Chat</p>
             <p onClick={() => { setModalType("ADD_ROOM"); setOpenModal(true) }} className="sidebarConvo__addRoom">Create Room</p>
-            <DisplayModal
-                modalType={modalType}
-                openModal={openModal}
-                bgStyles={modalType === "ADD_CHAT" ? addChatBg : addRoomBg}
-                add={add}
-                modalInput={modalInput}
-                setModalInput={setModalInput}
-                setOpenModal={setOpenModal}
-            />
         </div>
     )
 }

@@ -8,12 +8,12 @@ function ModalAddParticipant({ chatId, setSelectedParticipant, selectedParticipa
     const handleOnChange = () => {
         if (isChecked) {
             // REMOVE CHAT FROM SELECTED PARTICIPANT IF CHAT IS CHECKED
-            let newSelected = selectedParticipant.filter(chat => chatId !== chat.uid);
+            let newSelected = selectedParticipant.filter(chat => chatId !== chat.info.uid);
             setSelectedParticipant(newSelected);
             setIsChecked(!isChecked);
         } else {
             //ADD CHAT TO SELECTED PARTICIPANT IF CHAT ISN'T CHECKED
-            setSelectedParticipant([...selectedParticipant, chatDirectInfo]);
+            setSelectedParticipant([...selectedParticipant, { info: chatDirectInfo }]);
             setIsChecked(!isChecked);
         }
     }
@@ -27,7 +27,7 @@ function ModalAddParticipant({ chatId, setSelectedParticipant, selectedParticipa
     }, [chatId])
     useEffect(() => {
         // On every first render check if user has been checked
-        let selected = selectedParticipant.filter(chat => chat.uid === chatId);
+        let selected = selectedParticipant.filter(chat => chat.info.uid === chatId);
         if (selected.length > 0) {
             setIsChecked(true)
         } else {

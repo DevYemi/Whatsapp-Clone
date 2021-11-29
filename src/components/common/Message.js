@@ -6,7 +6,7 @@ import { useStateValue } from "../global-state-provider/StateProvider";
 
 function Message({ convo, setImageFullScreen }) {
   const { message, name, fileType, timestamp, senderId } = convo;
-  const [{ user }] = useStateValue();
+  const [{ user, currentDisplayConvoInfo }] = useStateValue();
   const openImageFullScreen = () => {
     // Open image on full screen when a user clicks on a message
     setImageFullScreen({
@@ -23,7 +23,8 @@ function Message({ convo, setImageFullScreen }) {
           }`} />
         <div className="message-wr">
           <span className="message__name">
-            {user?.info.uid === senderId ? "" : name}
+            {user?.info.uid === senderId ? "" : currentDisplayConvoInfo?.name}
+            {(user?.info.uid === senderId) && currentDisplayConvoInfo?.isRoom ? "" : "Room member"}
           </span>
           <div
             className={`message__text ${user?.info.uid === senderId && "message__sender"

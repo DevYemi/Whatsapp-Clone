@@ -33,3 +33,17 @@ export const mediaDocsNav = { // handles MediaDocs nav icon slide animation
         gsap.to(slideSpan, { duration: .2, left: position })
     }
 }
+
+export const rearrangeForAdmin = (members) => {
+    let notAdmin = [];
+    let admin = [];
+    let returnValue = []
+    if (members) {
+        members.forEach(mem => {
+            mem.isAdmin ? admin.push(mem) : notAdmin.push(mem)
+        });
+        returnValue = [...admin, ...notAdmin]
+    }
+
+    return returnValue;
+}

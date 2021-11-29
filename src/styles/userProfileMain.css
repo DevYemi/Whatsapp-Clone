@@ -4,132 +4,165 @@
     height: 100%;
     display: flex;
 }
+
 .userProfile__wr.hide {
     display: none;
 }
 
-  .userProfile__container {
-      height: 86%;
-      width: 100%;
-  }
+.userProfile__container {
+    height: 86%;
+    width: 100%;
+}
+
 .userProfile__header {
     display: flex;
     align-items: center;
     padding: 1.8em;
     border-bottom: 1px solid #80808036;
     background-color: #ededed;
-    
+
 }
+
 .userProfile__header .MuiSvgIcon-root {
     cursor: pointer;
 }
-.userProfile__header > p {
+
+.userProfile__header>p {
     margin-left: 1em;
 }
+
 .userProfile__body {
     opacity: 0;
     overflow-y: scroll;
     height: 100%;
     margin-top: -30px;
 }
+
 .userProfile__body::-webkit-scrollbar {
     width: .4em;
-  }
-  .userProfile__body::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px #EFEFEF; 
-  } 
-  .userProfile__body::-webkit-scrollbar-thumb {
-    background: #BFBFBF; 
-  }
+}
+
+.userProfile__body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #EFEFEF;
+}
+
+.userProfile__body::-webkit-scrollbar-thumb {
+    background: #BFBFBF;
+}
+
 .userProfileBody__sec1 {
     display: flex;
     background-color: white;
     padding: 1.3em;
     flex-direction: column;
 }
+
 .userProfileBody__sec1 .MuiAvatar-root {
-width: 200px;
-height: 200px;
-align-self: center;
-margin-top: 1em;
+    width: 200px;
+    height: 200px;
+    align-self: center;
+    margin-top: 1em;
 }
+
 .userProfileBody__sec1 div {
     margin-top: 1em;
 }
+
 .userProfileBody__sec1 div p {
     margin-top: .5em;
     color: rgba(0, 0, 0, 0.493);
 }
+
 .userProfileBody__sec1 div p:first-child {
     font-size: 1.2rem;
     color: rgba(0, 0, 0, 0.781);
 }
-.userProfileBody__sec2, .userProfileBody__sec3, .userProfileBody__sec4{
+
+.userProfileBody__sec2,
+.userProfileBody__sec3,
+.userProfileBody__sec4 {
     display: flex;
     background-color: white;
     padding: 1em;
     flex-direction: column;
     margin-top: .5em;
 }
-.userProfileBody__sec2 > p {
+
+.userProfileBody__sec2>p {
     font-size: .8rem;
     align-self: center;
     color: rgba(0, 0, 0, 0.473);
     margin-top: 1.1em;
 }
+
 .userProfileBody__sec2Info {
     display: flex;
     justify-content: space-between;
     cursor: pointer;
 }
+
 .userProfileBody__sec2Info p {
     font-size: .9rem;
     color: #009688;
 }
+
 .media_grid_wr {
     display: grid;
     grid-template-columns: 100px 100px 100px;
     grid-column-gap: 10px;
     margin-top: .5em;
 }
+
 .media_grid_wr div img {
     object-fit: contain;
     max-height: 100px;
     width: 100%;
     height: 100%;
 }
-.userProfileBody__sec2Info .MuiSvgIcon-root, .starMessg .MuiSvgIcon-root, .disappearingMessg .MuiSvgIcon-root {
+
+.userProfileBody__sec2Info .MuiSvgIcon-root,
+.starMessg .MuiSvgIcon-root,
+.disappearingMessg .MuiSvgIcon-root {
     color: rgba(0, 0, 0, 0.527);
     width: .7em;
     height: .7em;
 }
 
-.muteNotifi, .starMessg, .disappearingMessg {
+.muteNotifi,
+.starMessg,
+.disappearingMessg {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid rgba(0, 0, 0, 0.082);
     padding-bottom: .9em;
+    cursor: pointer;
 }
+
 .starMessg {
     margin: 1.3em 0;
     padding-bottom: 1em !important;
 }
+
 .disappearingMessg {
     border-bottom: none !important;
 }
+
 .disappearingMessg p {
     display: flex;
     flex-direction: column;
 }
+
 .disappearingMessg p span:last-child {
-  color: rgba(128, 128, 128, 0.562);
-  margin-top: .5em;
+    color: rgba(128, 128, 128, 0.562);
+    margin-top: .5em;
 }
+
 .userProfileBody__sec4 p:first-child {
     font-size: .9rem;
     color: #009688;
 }
+
 .userProfileBody__sec4 p:nth-of-type(2) {
     margin: 1.2em 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.082);
@@ -137,11 +170,15 @@ margin-top: 1em;
     color: rgb(61, 57, 57);
     padding-bottom: 1em;
 }
+
 .userProfileBody__sec4 p:nth-of-type(3) {
     font-size: small;
     color: rgb(61, 57, 57);
 }
-.userProfileBody__sec5, .userProfileBody__sec6, .userProfileBody__sec7 {
+
+.userProfileBody__sec5,
+.userProfileBody__sec6,
+.userProfileBody__sec7 {
     display: flex;
     cursor: pointer;
     align-items: center;
@@ -150,11 +187,13 @@ margin-top: 1em;
     margin-top: .5em;
     color: red !important;
 }
-.userProfileBody__sec5 p, .userProfileBody__sec6 p, .userProfileBody__sec7 p {
+
+.userProfileBody__sec5 p,
+.userProfileBody__sec6 p,
+.userProfileBody__sec7 p {
     margin-left: 1.6em;
 }
+
 .userProfileBody__sec5.blocked {
     color: #07BC4C !important;
 }
-
-

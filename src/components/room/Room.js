@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import '../../styles/room.css'
 import { useParams } from 'react-router-dom';
 import { useStateValue } from '../global-state-provider/StateProvider';
-import { getRoomInfoFromDb, getMessgFromDb, setNewMessageToDb, uploadFileToDb, getRoomMembersFromDb, resetRecieverMssgReadOnDb } from '../backend/get&SetDataToDb';
+import { getRoomInfoFromDb, getMessgFromDb, setNewMessageToDb, uploadFileToDb, resetRecieverMssgReadOnDb, getGroupMemberFromDb } from '../backend/get&SetDataToDb';
 import FilePreview from '../common/FilePreview';
 import RoomHeader from './RoomHeader';
 import RoomBody from './RoomBody';
@@ -124,7 +124,7 @@ function Room(props) {
         if (roomId) {
             unsubcribeRoomInfo = getRoomInfoFromDb(roomId, dispatch, true);
             unsubcribeMessages = getMessgFromDb(null, roomId, true, "asc", setMessages, false);
-            unsubcribeRoomMembers = getRoomMembersFromDb(roomId, setRoomMembers)
+            unsubcribeRoomMembers = getGroupMemberFromDb(roomId, setRoomMembers)
         }
         return () => { unsubcribeRoomInfo(); unsubcribeMessages(); unsubcribeRoomMembers(); }
     }, [roomId, setIsUserProfileRoom, dispatch]);

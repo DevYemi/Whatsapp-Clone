@@ -46,7 +46,7 @@ function UserProfileMain(props) {
                     <div className="userProfileBody__sec2Doc"></div>
                 </section>
                 <section className="userProfileBody__sec3">
-                    <div className="muteNotifi">
+                    <div className="muteNotifi" onClick={() => handleModalChange("MUTE__CONVO", false)}>
                         <p>Mute Notification</p>
                         <div>
                             <Checkbox

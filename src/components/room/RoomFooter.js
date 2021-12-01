@@ -5,21 +5,32 @@ import React, { useState } from 'react'
 import VoiceNoteRecoder from '../common/VoiceNoteRecoder'
 
 function RoomFooter(props) {
-    const { showEmojis, onEmojiClick, input, setFoundWordIndex, setInput, foundWordIndex, sendMessage, roomId, scrollRoomBody, isroomSearchBarOpen, totalroomWordFound } = props
+    const {
+        showEmojis,
+        onEmojiClick,
+        input,
+        setFoundWordIndex,
+        setInput,
+        foundWordIndex,
+        sendMessage,
+        roomId,
+        scrollRoomBody,
+        isRoomSearchBarOpen,
+        totalRoomWordFound } = props
     const [vnIsRecoding, setVnIsRecoding] = useState(false); // keeps state if the user is currently recording a voice note
     const navigateToFoundWord = (key) => {
         let newIndex;
         switch (key) {
             case "PLUS":
                 newIndex = foundWordIndex + 1
-                if (newIndex > totalroomWordFound) return
-                scrollRoomBody.toSearchedMssg(newIndex, totalroomWordFound);
+                if (newIndex > totalRoomWordFound) return
+                scrollRoomBody.toSearchedMssg(newIndex, totalRoomWordFound);
                 setFoundWordIndex(newIndex);
                 break;
             case "MINUS":
                 newIndex = foundWordIndex - 1
                 if (newIndex < 1) return
-                scrollRoomBody.toSearchedMssg(newIndex, totalroomWordFound);
+                scrollRoomBody.toSearchedMssg(newIndex, totalRoomWordFound);
                 setFoundWordIndex(newIndex);
                 break;
 
@@ -27,9 +38,7 @@ function RoomFooter(props) {
                 break;
         }
     }
-
-
-    if (isroomSearchBarOpen) {
+    if (isRoomSearchBarOpen) {
 
         return (
             <section className="room__footer searching">
@@ -42,7 +51,7 @@ function RoomFooter(props) {
                     </IconButton>
                 </div>
                 <div className="room__footerSearchDetails">
-                    <span>{foundWordIndex} of {totalroomWordFound} matches</span>
+                    <span>{foundWordIndex} of {totalRoomWordFound} matches</span>
                 </div>
             </section>
         )

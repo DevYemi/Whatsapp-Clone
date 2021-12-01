@@ -1,8 +1,27 @@
 import { SentimentDissatisfiedRounded } from '@material-ui/icons'
 import React from 'react'
 
-function FilePreviewFileType({ fileOnPreview }) { // gets the type of file to be previewed e.g image, audio, video
-    if (fileOnPreview?.info?.type === "image") {
+function FilePreviewFileType({ fileOnPreview, isFileSupported, isFileTooBig }) { // gets the type of file to be previewed e.g image, audio, video
+    console.log(isFileTooBig)
+    if (isFileTooBig) {
+        return (
+            <div className="filePreviewIsTooBig">
+                <div>
+                    <h3>File is Too Big, "File bigger than 15mb isn't supported" <SentimentDissatisfiedRounded /></h3>
+                </div>
+            </div>
+        )
+    }
+    else if (!isFileSupported) {
+        return (
+            <div className="filePreviewNotSupported">
+                <div>
+                    <h3>The file type you selected is not supported <SentimentDissatisfiedRounded /></h3>
+                </div>
+            </div>
+        )
+    }
+    else if (fileOnPreview?.info?.type === "image") {
         return (
             <div className="filePreviewImage">
                 <div>
@@ -11,7 +30,7 @@ function FilePreviewFileType({ fileOnPreview }) { // gets the type of file to be
             </div>
         )
     }
-    if (fileOnPreview?.info?.type === "audio") {
+    else if (fileOnPreview?.info?.type === "audio") {
         return (
             <div className="filePreviewAudio">
                 <div>
@@ -20,7 +39,7 @@ function FilePreviewFileType({ fileOnPreview }) { // gets the type of file to be
             </div>
         )
     }
-    if (fileOnPreview?.info?.type === "video") {
+    else if (fileOnPreview?.info?.type === "video") {
         return (
             <div className="filePreviewVideo">
                 <div>
@@ -40,4 +59,4 @@ function FilePreviewFileType({ fileOnPreview }) { // gets the type of file to be
 
 }
 
-export default React.memo(FilePreviewFileType)  
+export default React.memo(FilePreviewFileType)

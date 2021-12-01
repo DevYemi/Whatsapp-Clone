@@ -35,6 +35,38 @@
     font-size: 24px !important;
 }
 
+.sidebarMain__headerHelp {
+    position: absolute;
+    display: none;
+    z-index: 10000;
+    right: 35px;
+    width: max-content;
+    flex-direction: column;
+    box-shadow: 1px 1px 9px grey;
+    border-radius: 5px;
+}
+
+.sidebarMain__headerHelp>ul {
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    list-style: none;
+    align-items: flex-start;
+    background-color: white;
+    font-size: .9rem;
+}
+
+.sidebarMain__headerHelp>ul li {
+    color: rgb(0 0 0 / 68%);
+    width: 100%;
+    cursor: pointer;
+    padding: 1.1em 4.5em .9em 1.1em;
+}
+
+.sidebarMain__headerHelp>ul li:hover {
+    background-color: rgba(0, 0, 0, 0.123);
+}
+
 .sidebarMain__search {
     display: flex;
     align-items: center;
@@ -68,6 +100,7 @@
     flex: 1;
     background-color: white;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .sidebarMain__convos::-webkit-scrollbar {

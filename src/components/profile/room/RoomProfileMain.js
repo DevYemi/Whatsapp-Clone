@@ -21,6 +21,7 @@ import Picker from "emoji-picker-react";
 import { profile } from "../Profile";
 import Checkbox from "@material-ui/core/Checkbox";
 import { rearrangeForAdmin, roomProfileSidebar as animate } from '../../utils/roomProfileUtils';
+import Loading from '../../common/Loading';
 
 function RoomProfileMain(props) {
     const { setOpenModal, setModalType, setIsRoom, setUpSidebarType, imgMssgPreview } = props;
@@ -32,6 +33,7 @@ function RoomProfileMain(props) {
     const [newDescripInput, setNewDescripInput] = useState(""); // keeps state for the inputed message by user
     const [whoseEmoji, setWhoseEmoji] = useState(); // keeps state if opened emoji div if for name input or description input
     const [groupMembers, setGroupMemebers] = useState(); // keeps state of all the memebers of a group
+    const [loadingChangeAvi, setLoadingChangeAvi] = useState(false) // keeps state if new avi data is being sent to db
     const handleModalChange = (type, isRoom) => {
         setOpenModal(true);
         setModalType(type);
@@ -108,7 +110,8 @@ function RoomProfileMain(props) {
         // handles the uploading of the group new avi
         const selectedAvi = e.target.files[0];
         if (selectedAvi) {
-            setNewAviForGroupOnDb(selectedAvi, currentDisplayConvoInfo?.roomId);
+            setLoadingChangeAvi(true)
+            setNewAviForGroupOnDb(selectedAvi, currentDisplayConvoInfo?.roomId, setLoadingChangeAvi);
         }
     };
     useEffect(() => {
@@ -185,6 +188,15 @@ function RoomProfileMain(props) {
                                 <p>Change Group Icon</p>
                             </div>
                         )}
+                        {loadingChangeAvi &&
+                            <Loading
+                                size={150}
+                                type={'Rings'}
+                                visible={loadingChangeAvi ? "Show" : "Hide"}
+                                color={"#00BFA5"}
+                                classname={"roomProfileBodyAvi__loading"}
+                            />
+                        }
                     </div>
                     <div className="roomProfileBody__sec1OuterDiv">
                         <div className="rpb__editName">
@@ -364,7 +376,18 @@ function RoomProfileMain(props) {
                     </div>
                     <div className="rpb_sec5_div3">
                         {rearrangeForAdmin(groupMembers)?.map((member, index) => (
-                            <div key={index} className="rpb_sec5_div3_memberWr">
+                            <div
+                                key={index}
+                                onClick={() => {
+                                    if (member.id !== user?.info?.uid || !member.isAdmin) {
+                                        disptach({
+                                            type: "SET_SELECTEDPREVIEWMEMBER",
+                                            selectedPreviewMember: member
+                                        })
+                                        handleModalChange("CLICKED_ROOM_MEMBER", true)
+                                    }
+                                }}
+                                className="rpb_sec5_div3_memberWr">
                                 <div>
                                     <Avatar src={member?.data.avi} />
                                     <p>{member?.data?.name}</p>

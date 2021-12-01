@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { createNewChatInDb, createNewRoomInDb } from "../backend/get&SetDataToDb";
 
 export const addParticipantAnimation = {
     // ADD PARTICIPANT INPUT ICON ANIMATION
@@ -27,4 +28,59 @@ export const getChatThatAreNotMembers = (chats, members) => {
         chatsClone = chatsClone.filter(chat => chat.id !== mem.id)
     });
     return chatsClone
+}
+
+export const add = { // create new chat,room and a send to db
+    chat: function (setModalInput, modalInput, user, totalUserOnDb) {// add new chat
+        setModalInput("")
+        let res = add.isNumberRegistered(modalInput, totalUserOnDb);
+        if (res.status) {
+            createNewChatInDb(user, res.chatUser)
+        } else {
+            alert("Sorry User Is Not Registered On Our Database")
+        }
+    },
+    room: function (setModalInput, modalInput, user) { // create a new room
+        setModalInput("")
+        if (modalInput !== "") {
+            createNewRoomInDb(user, modalInput)
+        }
+    },
+    isNumberRegistered: function (number, totalUserOnDb) {
+        let res = { status: false }
+        if (totalUserOnDb.length > 0) {
+            for (let i = 0; i < totalUserOnDb.length; i++) {
+                const user = totalUserOnDb[i];
+                if (user.phoneNumber === number) {
+                    res = { status: true, chatUser: user };
+                    i = totalUserOnDb.length + 1
+                } else {
+                    res = { status: false }
+                }
+
+            }
+        }
+        return res;
+    }
+
+}
+
+export const clickedRoomMember = {
+    startChat: function (user, userChats, clickedMember, handleClose, setIsAddChatFromRoomProfile) {
+        const openChat = () => {
+            setIsAddChatFromRoomProfile(true);
+            handleClose();
+        }
+        let chat = userChats.filter(chat => chat.id === clickedMember.id)
+        console.log(chat)
+        if (chat.length > 0) {
+            handleClose();
+            setIsAddChatFromRoomProfile(true);
+        } else {
+            createNewChatInDb(user, clickedMember, openChat)
+        }
+    },
+    makeAdmin: function () {
+
+    }
 }

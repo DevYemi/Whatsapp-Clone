@@ -47,6 +47,7 @@
 .sidebarConvo__info>h2 {
     font-size: 1rem;
     margin-bottom: 8px;
+    font-weight: lighter;
 }
 
 .sidebarConvo__info {
@@ -55,6 +56,10 @@
 
 .sidebarConvo__info>p {
     font-size: small;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: flex;
     color: #00000094;
     align-items: center;

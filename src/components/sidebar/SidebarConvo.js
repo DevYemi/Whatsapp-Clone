@@ -10,7 +10,7 @@ import { profile } from '../profile/Profile';
 import { KeyboardArrowDownRounded } from '@material-ui/icons';
 
 
-function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, setOpenModal, setModalType }) {
+function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, setOpenModal, setModalType, setIsConvoSearchBarOpen }) {
     const [{ user, isMuteNotifichecked, currentDisplayConvoInfo }] = useStateValue(); // keeps state for current logged in user
     const [convoDirectInfo, setConvoDirectInfo] = useState(); // keeps state of the info of user or room who is associated with the convo
     const [newMssgNum, setNewMssgNum] = useState(0); // keeps stste for the number of new messages
@@ -70,13 +70,14 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
                 displayConvoForMobile("show");
                 profile.close(currentDisplayConvoInfo?.isRoom ? true : false);
                 setIsConnectedDisplayed(false);
+                setIsConvoSearchBarOpen(false);
             }}
                 className={`sidebarConvoWr ${isCurrentSidebar ? "current" : ""}`}>
                 <div className="sidebarConvo">
                     <Avatar src={convoDirectInfo?.avi} />
                     <div className="sidebarConvo__info">
                         <h2>{isRoom ? convoDirectInfo?.roomName : convoDirectInfo?.name}</h2>
-                        {lastMessage ? <SidebarConvoLastMessage lastMessage={lastMessage} /> : <p>Chat is currently empty</p>}
+                        {lastMessage ? <SidebarConvoLastMessage lastMessage={lastMessage} /> : <p>{isRoom ? "Room" : "Chat"} is currently empty</p>}
                     </div>
                 </div>
                 <p className={newMssgNum > 0 && !isMuteNotifichecked && !isRoom ? "show chat" : ""}>{newMssgNum}</p>

@@ -7,11 +7,30 @@ import FilePreviewFileType from './FilePreviewFileType';
 import Loading from './Loading';
 
 function FilePreview(props) {
-    const { showEmojis, isFileOnPreview, setFileOnPreview, input, fileOnPreview, sendMessage, setInput, onEmojiClick, setIsFileOnPreview, isRoom } = props
+    const {
+        showEmojis,
+        isFileOnPreview,
+        setFileOnPreview,
+        input,
+        fileOnPreview,
+        sendMessage,
+        setInput,
+        onEmojiClick,
+        setIsFileOnPreview,
+        isFileSupported,
+        setIsFileSupported,
+        isFileTooBig,
+        setIsFileTooBig,
+        setIsFileOnPreviewLoading,
+        isFileOnPreviewLoading,
+        isRoom } = props
     const closeFilePreview = () => { // Closes file on preview
         let fileInput = document.querySelector(`.${isRoom ? "room" : "chat"}__headerRight input`);
         fileInput.value = ""
-        setIsFileOnPreview(false)
+        setIsFileOnPreview(false);
+        setIsFileOnPreviewLoading(false);
+        setIsFileSupported(true);
+        setIsFileTooBig(false);
         setFileOnPreview(null);
     }
     const sendFileOnPreview = () => {
@@ -28,7 +47,11 @@ function FilePreview(props) {
                     </IconButton>
                 </div>
                 <div className="filePreviewType">
-                    {fileOnPreview ? <FilePreviewFileType fileOnPreview={fileOnPreview} /> : <Loading size={50} type={'ThreeDots'} visible={fileOnPreview ? "Hide" : "Show"} color={"#00BFFF"} class={"filePreviewType__loading"} />}
+                    {!isFileOnPreviewLoading ? <FilePreviewFileType
+                        isFileSupported={isFileSupported}
+                        isFileTooBig={isFileTooBig}
+                        fileOnPreview={fileOnPreview} />
+                        : <Loading size={50} type={'ThreeDots'} visible={fileOnPreview ? "Hide" : "Show"} color={"#00BFFF"} class={"filePreviewType__loading"} />}
                 </div>
                 <div className="filePreviewFooter">
                     <div className="filePreviewFooterEmoji">

@@ -1,12 +1,14 @@
 import { Avatar } from "@material-ui/core";
-import { Mic, ArrowDropDownRounded } from "@material-ui/icons";
-import React from "react";
+import { Mic, ArrowDropDownRounded, Check } from "@material-ui/icons";
+import React, { useState, useEffect } from "react";
 import "../../styles/message.css";
+import { getIfMessageHasBeenReadFromDb } from "../backend/get&SetDataToDb";
 import { useStateValue } from "../global-state-provider/StateProvider";
 
 function Message({ convo, setImageFullScreen }) {
-  const { message, name, fileType, timestamp, senderId } = convo;
-  const [{ user, currentDisplayConvoInfo }] = useStateValue();
+  const { message, name, fileType, timestamp, senderId, receiverId, id } = convo;
+  const [{ user, currentDisplayedConvoMessages }] = useStateValue();
+  const [isRead, setIsRead] = useState(false);
   const openImageFullScreen = () => {
     // Open image on full screen when a user clicks on a message
     setImageFullScreen({
@@ -15,16 +17,26 @@ function Message({ convo, setImageFullScreen }) {
       caption: message ? message : "",
     });
   };
-
-  if (fileType?.type === "text") {
+  useEffect(() => { // checks if receiver has seen or read this message
+    let unsubGetIfMessageHasBeenReadFromDb;
+    if (senderId && receiverId && id) {
+      unsubGetIfMessageHasBeenReadFromDb = getIfMessageHasBeenReadFromDb(receiverId, senderId, id, setIsRead)
+    }
+    return () => unsubGetIfMessageHasBeenReadFromDb && unsubGetIfMessageHasBeenReadFromDb();
+  }, [senderId, receiverId, id])
+  if (currentDisplayedConvoMessages.length === 0) {
+    return (
+      <></>
+    )
+  }
+  else if (fileType?.type === "text") {
     return (
       <div className="message">
         <ArrowDropDownRounded className={`${user?.info.uid === senderId ? "sender" : "receiver"
           }`} />
         <div className="message-wr">
           <span className="message__name">
-            {user?.info.uid === senderId ? "" : currentDisplayConvoInfo?.name}
-            {(user?.info.uid === senderId) && currentDisplayConvoInfo?.isRoom ? "" : "Room member"}
+            {(user?.info.uid === senderId) ? "" : name}
           </span>
           <div
             className={`message__text ${user?.info.uid === senderId && "message__sender"
@@ -34,9 +46,15 @@ function Message({ convo, setImageFullScreen }) {
               {user?.info.uid === senderId ? "You" : ""}
             </span>
             <p dangerouslySetInnerHTML={{ __html: message }}></p>
-            <span className="message__timeStamp">
-              {new Date(timestamp?.toDate()).toUTCString()}
-            </span>
+            <div className="message__timeStamp">
+              <span>
+                {new Date(timestamp?.toDate()).toUTCString()}
+              </span>
+              <div className={`message__check ${isRead && "read"}`}>
+                <Check />
+                <Check />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -64,9 +82,15 @@ function Message({ convo, setImageFullScreen }) {
               dangerouslySetInnerHTML={{ __html: message }}
               className="message__caption"
             ></p>
-            <span className="message__timeStamp">
-              {new Date(timestamp?.toDate()).toUTCString()}
-            </span>
+            <div className="message__timeStamp">
+              <span>
+                {new Date(timestamp?.toDate()).toUTCString()}
+              </span>
+              <div className={`message__check ${isRead && "read"}`}>
+                <Check />
+                <Check />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -92,9 +116,15 @@ function Message({ convo, setImageFullScreen }) {
               dangerouslySetInnerHTML={{ __html: message }}
               className="message__caption"
             ></p>
-            <span className="message__timeStamp">
-              {new Date(timestamp?.toDate()).toUTCString()}
-            </span>
+            <div className="message__timeStamp">
+              <span>
+                {new Date(timestamp?.toDate()).toUTCString()}
+              </span>
+              <div className={`message__check ${isRead && "read"}`}>
+                <Check />
+                <Check />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -120,9 +150,15 @@ function Message({ convo, setImageFullScreen }) {
               dangerouslySetInnerHTML={{ __html: message }}
               className="message__caption"
             ></p>
-            <span className="message__timeStamp">
-              {new Date(timestamp?.toDate()).toUTCString()}
-            </span>
+            <div className="message__timeStamp">
+              <span>
+                {new Date(timestamp?.toDate()).toUTCString()}
+              </span>
+              <div className={`message__check ${isRead && "read"}`}>
+                <Check />
+                <Check />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -150,9 +186,15 @@ function Message({ convo, setImageFullScreen }) {
               </div>
               <audio controls src={fileType?.url}></audio>
             </div>
-            <span className="message__timeStamp">
-              {new Date(timestamp?.toDate()).toUTCString()}
-            </span>
+            <div className="message__timeStamp">
+              <span>
+                {new Date(timestamp?.toDate()).toUTCString()}
+              </span>
+              <div className={`message__check ${isRead && "read"}`}>
+                <Check />
+                <Check />
+              </div>
+            </div>
           </div>
         </div>
       </div>

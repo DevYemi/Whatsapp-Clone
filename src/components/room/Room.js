@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import '../../styles/room.css'
 import { useParams } from 'react-router-dom';
 import { useStateValue } from '../global-state-provider/StateProvider';
-import { getRoomInfoFromDb, getMessgFromDb, setNewMessageToDb, uploadFileToDb, resetRecieverMssgReadOnDb, getGroupMemberFromDb } from '../backend/get&SetDataToDb';
+import { getRoomInfoFromDb, getMessgFromDb, setNewMessageToDb, uploadFileToDb, resetRecieverMssgReadOnDb, getGroupMemberFromDb, resetUserRoomOnScreenInDb } from '../backend/get&SetDataToDb';
 import FilePreview from '../common/FilePreview';
 import RoomHeader from './RoomHeader';
 import RoomBody from './RoomBody';
@@ -11,14 +11,23 @@ import RoomFooter from './RoomFooter';
 import { IconButton } from '@material-ui/core';
 
 function Room(props) {
-    const { setOpenModal, setModalType, setIsRoom, setIsUserProfileRoom } = props
+    const {
+        setOpenModal,
+        setModalType,
+        setIsRoom,
+        isRoomSearchBarOpen,
+        setIsRoomSearchBarOpen,
+        setIsUserProfileRoom } = props
     const [seed, setSeed] = useState(""); // keeps state get new id for every new group
+    const [roomFirstRender, setRoomFirstRender] = useState(false); // keeps state if room is rendering for the first time
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
     const [isFileOnPreview, setIsFileOnPreview] = useState(false); // keeps state if there currently a file on preview
+    const [isFileTooBig, setIsFileTooBig] = useState(false); // keeps state if file picked is more than 15mb
+    const [isFileSupported, setIsFileSupported] = useState(true) // keeps state if file picked is supported
+    const [isFileOnPreviewLoading, setIsFileOnPreviewLoading] = useState(false) // keeps state if file on preview data is loading
     const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
     const [{ user }, dispatch] = useStateValue(); // new logged in user
     const [messages, setMessages] = useState([]); // keeps state for the messages in a room
-    const [isRoomSearchBarOpen, setIsRoomSearchBarOpen] = useState(false) // keeps state if the roomheader search bar is open
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
     const [totalRoomWordFound, setTotalRoomWordFound] = useState(0); // keeps state of total word found when a user search on the header search bar
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
@@ -39,9 +48,10 @@ function Room(props) {
 
     }
     const scrollRoomBody = { // Scroll room body 
-        toEnd: function () {
+        toEnd: function (isNotSmooth) {
+            if (isRoomSearchBarOpen) return
             let roomBody = document.querySelector(".room__body");
-            roomBody.style.scrollBehavior = "smooth"
+            roomBody.style.scrollBehavior = isNotSmooth ? "initial" : "smooth"
             roomBody?.scrollTo(0, roomBody.offsetHeight * 10000);
         },
         toSearchedMssg: function (index, limit) {
@@ -54,7 +64,10 @@ function Room(props) {
     }
     const uploadFile = (e) => { // send selected file storage
         setIsFileOnPreview(true);
-        const getFileType = (file) => {
+        let file = e.target.files[0];
+        if (!file) return
+        if (file.size > 15731592) return setIsFileTooBig(true) // check if file is greater than 15mb
+        const getFileType = (file) => { // get file type
             let fileType = file.type
             let arr = fileType.split("/")
             return {
@@ -62,10 +75,13 @@ function Room(props) {
                 exten: arr[1]
             }
         }
-        if (e.target.files[0]) {
-            let file = e.target.files[0]
-            let fileInfo = getFileType(file);
-            uploadFileToDb(file, fileInfo, setFileOnPreview);
+        let fileInfo = getFileType(file);
+        if (fileInfo.type === "image" || fileInfo.type === "audio" || fileInfo.type === "video") {
+            setIsFileOnPreviewLoading(true)
+            uploadFileToDb(file, fileInfo, setFileOnPreview, setIsFileOnPreviewLoading);
+        } else {
+            setIsFileOnPreviewLoading(false)
+            setIsFileSupported(false);
         }
 
     }
@@ -90,12 +106,14 @@ function Room(props) {
     const closeImageOnFullScreen = () => { // close image on full when a user clicks the cancel icon
         setImageFullScreen({ isFullScreen: false });
     }
+    useEffect(() => {
+        // if user is on room screen reset on db
+        resetUserRoomOnScreenInDb(user?.info.uid, roomId, true)
+        return () => resetUserRoomOnScreenInDb(user?.info.uid, roomId, false)
+    }, [user, roomId])
     useEffect(() => { // makes sure the room start at the bottom when it renders
-        if (messages) {
-            let roomBody = document.querySelector(".room__body");
-            roomBody.style.scrollBehavior = "initial"
-            roomBody?.scrollTo(0, roomBody.offsetHeight * 500000);
-        }
+        setRoomFirstRender(true);
+        return () => setRoomFirstRender(false)
     }, [messages]);
     useEffect(() => { // map Room messages to global state currentDisplyedConvoMessages
 
@@ -131,6 +149,7 @@ function Room(props) {
     useEffect(() => {
         setSeed(Math.floor(Math.random() * 5000));
     }, [])
+    if (roomFirstRender) scrollRoomBody.toEnd(true) // scroll room body to bottom if room is rendering for the first time
     return (
         <div className="room convo">
             <RoomHeader
@@ -145,6 +164,7 @@ function Room(props) {
                 setOpenModal={setOpenModal}
                 setModalType={setModalType}
                 setIsRoom={setIsRoom}
+                isRoomSearchBarOpen={isRoomSearchBarOpen}
             />
             <RoomBody
                 messages={messages}
@@ -175,6 +195,12 @@ function Room(props) {
                 sendMessage={sendMessage}
                 setInput={setInput}
                 isRoom={true}
+                isFileTooBig={isFileTooBig}
+                setIsFileTooBig={setIsFileTooBig}
+                isFileSupported={isFileSupported}
+                setIsFileSupported={setIsFileSupported}
+                isFileOnPreviewLoading={isFileOnPreviewLoading}
+                setIsFileOnPreviewLoading={setIsFileOnPreviewLoading}
             />
             <section className={`room__imageFullScreen ${imageFullScreen.isFullScreen && "show"}`}>
                 <div className={`room__imageFullScreen_wr`}>

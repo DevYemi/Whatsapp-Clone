@@ -71,6 +71,8 @@
 .modal__clearMssgs p,
 .modal__deleteChat p,
 .modal__exitGroup p,
+.modal__confirmMakeAdmin p,
+.modal__removeFromGroup p,
 .modal__aPConfirmation p {
     font-size: .9rem;
     font-weight: lighter;
@@ -85,6 +87,8 @@
 .modal__reportGroup button,
 .modal__deleteChat button,
 .modal__aPConfirmation button,
+.modal__confirmMakeAdmin button,
+.modal__removeFromGroup button,
 .modal__exitGroup button {
     padding: 1em 1.2em;
     cursor: pointer;
@@ -100,6 +104,8 @@
 .modal__reportGroup button:nth-of-type(2),
 .modal__deleteChat button:nth-of-type(2),
 .modal__aPConfirmation button:nth-of-type(2),
+.modal__confirmMakeAdmin button:nth-of-type(2),
+.modal__removeFromGroup button:nth-of-type(2),
 .modal__exitGroup button:nth-of-type(2) {
     background-color: white;
     color: #06D755;
@@ -113,6 +119,8 @@
 .modal__reportGroup button:nth-of-type(1),
 .modal__deleteChat button:nth-of-type(1),
 .modal__aPConfirmation button:nth-of-type(1),
+.modal__confirmMakeAdmin button:nth-of-type(1),
+.modal__removeFromGroup button:nth-of-type(1),
 .modal__exitGroup button:nth-of-type(1) {
     background-color: #06D755;
     color: white;
@@ -334,4 +342,41 @@
 
 .modal__aPConfirmation.loading {
     text-align: center;
+}
+
+.modal__clickedRoomMemberWr {
+    padding: 0 !important;
+    width: 30%;
+    max-height: 250px;
+}
+
+.modal__clickedRoomMember>p {
+    text-align: center;
+    padding: 1em 0;
+    border-bottom: 1px solid #EDEDED;
+    cursor: pointer;
+
+}
+
+.modal__clickedRoomMember>p:hover {
+    background-color: #EDEDED;
+}
+
+.modal__clickedRoomMember>p:nth-child(1):hover {
+    background-color: white;
+}
+
+.modal__clickedRoomMember>p:nth-child(1) {
+    color: grey;
+    font-size: small;
+}
+
+.modal__clickedRoomMember>p:nth-child(2),
+.modal__clickedRoomMember>p:nth-child(3),
+.modal__clickedRoomMember>p:nth-child(5) {
+    color: #009688;
+}
+
+.modal__clickedRoomMember>p:nth-child(4) {
+    color: red;
 }

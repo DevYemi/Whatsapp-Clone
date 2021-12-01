@@ -131,6 +131,8 @@
     right: 4%;
     width: max-content;
     flex-direction: column;
+    box-shadow: 1px 1px 9px grey;
+    border-radius: 5px;
 }
 
 .roomHeaderHelp>ul {
@@ -147,8 +149,7 @@
     color: rgb(0 0 0 / 68%);
     width: 100%;
     cursor: pointer;
-    padding: .9em 4.5em .9em 1.1em;
-    margin-top: .3em;
+    padding: 1.1em 4.5em .9em 1.1em;
 }
 
 .roomHeaderHelp>ul li:hover {

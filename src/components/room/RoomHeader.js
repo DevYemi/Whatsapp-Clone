@@ -20,6 +20,7 @@ function RoomHeader(props) {
     setOpenModal,
     setModalType,
     setIsRoom,
+    isRoomSearchBarOpen
   } = props;
   const [searchInput, setSearchInput] = useState("");
   const [{ user, currentDisplayConvoInfo }] = useStateValue(); // new logged in user
@@ -118,7 +119,7 @@ function RoomHeader(props) {
     handle: function (e) {
       // checks if the roomHeaderHelp Div is open and closes it vice versa
       let roomHeaderHelpDiv = document.querySelector(".roomHeaderHelp__wr");
-      if (e.target === null || roomHeaderHelpDiv === null) return;
+      if (e.target === null || roomHeaderHelpDiv === null || isRoomSearchBarOpen) return;
       let isDecendent = roomHeaderHelpDiv.contains(e.target);
       if (
         e.target.id !== "roomHeaderHelp" &&
@@ -143,7 +144,7 @@ function RoomHeader(props) {
         <IconButton onClick={() => displayConvoForMobile("hide")}>
           <KeyboardBackspaceRounded />
         </IconButton>
-        <Avatar src={currentDisplayConvoInfo?.avi} />
+        <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => profile.open(true)} />
         <div className="room__headerInfo" onClick={() => profile.open(true)}>
           <h3>{currentDisplayConvoInfo?.roomName}</h3>
           <p>

@@ -10,13 +10,25 @@ import ChatFooter from './ChatFooter';
 import ImageFullScreen from '../common/ImageFullScreen';
 
 function Chat(props) {
-    const { setOpenModal, setModalType, setIsRoom, setIsUserProfileRoom } = props
+    const {
+        setOpenModal,
+        setModalType,
+        setIsRoom,
+        setIsUserProfileRoom,
+        isChatSearchBarOpen,
+        setIsAddChatFromRoomProfile,
+        isChatBeingCleared,
+        setIsChatSearchBarOpen } = props
+
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
+    const [chatFirstRender, setChatFirstRender] = useState(false); // keeps state if chat is rendering for the first time
     const [isFileOnPreview, setIsFileOnPreview] = useState(false); // keeps state if there currently a file on preview
+    const [isFileTooBig, setIsFileTooBig] = useState(false); // keeps state if file picked is more than 15mb
+    const [isFileSupported, setIsFileSupported] = useState(true) // keeps state if file picked is supported
+    const [isFileOnPreviewLoading, setIsFileOnPreviewLoading] = useState(false) // keeps state if file on preview data is loading
     const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
     const [{ user, currentDisplayConvoInfo }, dispatch] = useStateValue(); // new logged in user and the currentDisplayConvoInfo
     const [messages, setMessages] = useState([]); // keeps state for the messages in a chat
-    const [isChatSearchBarOpen, setIsChatSearchBarOpen] = useState(false) // keeps state if the chatheader search bar is open
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
     const [totalChatWordFound, setTotalChatWordFound] = useState(0); // keeps state of total word found when a user search on the header search bar
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
@@ -35,10 +47,11 @@ function Chat(props) {
 
     }
     const scrollChatBody = { // Scroll chat body 
-        toEnd: function () {
+        toEnd: function (isNotSmooth) {
+            if (isChatSearchBarOpen) return
             let chatBody = document.querySelector(".chat__body");
-            chatBody.style.scrollBehavior = "smooth"
-            chatBody?.scrollTo(0, chatBody.offsetHeight * 10000);
+            chatBody.style.scrollBehavior = isNotSmooth ? "initial" : "smooth"
+            chatBody?.scrollTo(0, chatBody.offsetHeight * 100000000000);
         },
         toSearchedMssg: function (index, limit) {
             if (index > limit) return
@@ -50,8 +63,10 @@ function Chat(props) {
     }
     const uploadFile = (e) => { // send selected file storage
         setIsFileOnPreview(true);
-        console.log("file function running");
-        const getFileType = (file) => {
+        let file = e.target.files[0];
+        if (!file) return
+        if (file.size > 15731592) return setIsFileTooBig(true) // check if file is greater than 15mb
+        const getFileType = (file) => { // get file type
             let fileType = file.type
             let arr = fileType.split("/")
             return {
@@ -59,10 +74,13 @@ function Chat(props) {
                 exten: arr[1]
             }
         }
-        if (e.target.files[0]) {
-            let file = e.target.files[0]
-            let fileInfo = getFileType(file);
-            uploadFileToDb(file, fileInfo, setFileOnPreview);
+        let fileInfo = getFileType(file);
+        if (fileInfo.type === "image" || fileInfo.type === "audio" || fileInfo.type === "video") {
+            setIsFileOnPreviewLoading(true)
+            uploadFileToDb(file, fileInfo, setFileOnPreview, setIsFileOnPreviewLoading);
+        } else {
+            setIsFileOnPreviewLoading(false)
+            setIsFileSupported(false);
         }
 
     }
@@ -84,13 +102,12 @@ function Chat(props) {
         }
     }
 
-    useEffect(() => { // makes sure the chat start at the bottom when it renders
-        if (messages) {
-            let chatBody = document.querySelector(".chat__body");
-            chatBody.style.scrollBehavior = "initial"
-            chatBody?.scrollTo(0, chatBody.offsetHeight * 9000000000);
-        }
-    }, [messages])
+    useEffect(() => { // makes sure the chat start at the bottom when it renders and reset setIsAddChatFromRoomProfile to false
+        setChatFirstRender(true);
+        setIsAddChatFromRoomProfile(false);
+        return () => setChatFirstRender(false);
+
+    }, []);
     useEffect(() => { // map chat messages to global state currentDisplyedConvoMessages
 
         if (messages.length > 0) {
@@ -122,7 +139,7 @@ function Chat(props) {
         }
         return () => { unsubcribeMessages(); unsubcribeIsConvoBlockedOnDb(); unsubcribeGetUserInfoFromDb(); }
     }, [chatId, user?.info.uid, setIsUserProfileRoom, dispatch]);
-
+    if (chatFirstRender) scrollChatBody.toEnd(true) // scroll chat body to bottom if chat is rendering for the first time
     return (
         <div className="chat convo">
             <ChatHeader
@@ -137,10 +154,12 @@ function Chat(props) {
                 setOpenModal={setOpenModal}
                 setModalType={setModalType}
                 setIsRoom={setIsRoom}
+                isChatSearchBarOpen={isChatSearchBarOpen}
             />
             <ChatBody
                 messages={messages}
                 setImageFullScreen={setImageFullScreen}
+                isChatBeingCleared={isChatBeingCleared}
             />
             <ChatFooter
                 showEmojis={showEmojis}
@@ -168,6 +187,12 @@ function Chat(props) {
                 sendMessage={sendMessage}
                 setInput={setInput}
                 isRoom={false}
+                isFileTooBig={isFileTooBig}
+                setIsFileTooBig={setIsFileTooBig}
+                isFileSupported={isFileSupported}
+                setIsFileSupported={setIsFileSupported}
+                isFileOnPreviewLoading={isFileOnPreviewLoading}
+                setIsFileOnPreviewLoading={setIsFileOnPreviewLoading}
             />
             <ImageFullScreen
                 imageFullScreen={imageFullScreen}

@@ -1,81 +1,106 @@
-
 .filePreview_wr {
     display: flex;
     height: 100%;
     flex-direction: column;
 }
+
 .filePreviewType {
     flex: 1;
     display: grid;
     place-items: center;
 }
+
 .filePreviewImage {
     display: grid;
     place-items: center;
 }
-.filePreviewImage > div {
+
+.filePreviewImage>div {
     width: 100%;
     height: 300px;
 }
-.filePreviewImage > div > img  {
- width: 100%;
- height: 100%;
- object-fit: cover;
+
+.filePreviewImage>div>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-.filePreviewAudio, .filePreviewVideo, .filePreviewNotSupported {
+
+.filePreviewAudio,
+.filePreviewVideo,
+.filePreviewIsTooBig,
+.filePreviewNotSupported {
     width: 100%;
 }
-.filePreviewAudio > div audio, .filePreviewVideo > div video, .filePreviewNotSupported > div > h3 {
+
+.filePreviewAudio>div audio,
+.filePreviewVideo>div video,
+.filePreviewIsTooBig>div>h3,
+.filePreviewNotSupported>div>h3 {
     width: 100%;
 }
-.filePreviewNotSupported > div > h3 {
+
+.filePreviewIsTooBig>div>h3,
+.filePreviewNotSupported>div>h3 {
     display: flex;
-    color: white ;
+    color: white;
     justify-content: center;
     flex-direction: column;
     text-align: center;
     align-items: center;
 }
-.filePreviewNotSupported > div > h3 .MuiSvgIcon-root {
+
+.filePreviewIsTooBig>div>h3 .MuiSvgIcon-root,
+.filePreviewNotSupported>div>h3 .MuiSvgIcon-root {
     color: #a30000;
 }
+
 .filePreviewFooter {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 62px;
 }
-.filePreviewFooter > form {
+
+.filePreviewFooter>form {
     flex: 1;
     display: flex;
 }
-.filePreviewFooter > form > input {
+
+.filePreviewFooter>form>input {
     flex: 1;
     border-radius: 30px;
     outline: none;
     padding: .8em;
     border: none;
 }
-.filePreviewFooter > form > button {
+
+.filePreviewFooter>form>button {
     display: none;
 }
+
 .filePreviewFooterEmoji {
     position: relative;
 }
-.filePreviewFooterEmoji > .emoji-picker-react {
+
+.filePreviewFooterEmoji>.emoji-picker-react {
     display: none;
     position: absolute;
     bottom: 115%;
     max-height: 251px;
     max-width: 231px;
 }
-.filePreviewFooterEmoji >  .MuiButtonBase-root, .filePreview_wr   .MuiButtonBase-root {
+
+.filePreviewFooterEmoji>.MuiButtonBase-root,
+.filePreview_wr .MuiButtonBase-root {
     color: white;
 }
-.filePreviewFooter > .MuiButtonBase-root {
+
+.filePreviewFooter>.MuiButtonBase-root {
     color: rgb(5, 109, 150);
 }
-.filePreviewFooterEmoji > .emoji-picker-react {
+
+.filePreviewFooterEmoji>.emoji-picker-react {
     display: none;
     position: absolute;
     bottom: 115%;

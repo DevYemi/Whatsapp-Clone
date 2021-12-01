@@ -21,6 +21,7 @@ function ChatHeader(props) {
     setOpenModal,
     setModalType,
     setIsRoom,
+    isChatSearchBarOpen
   } = props;
   const [searchInput, setSearchInput] = useState("");
   const [{ user }] = useStateValue(); // new logged in user
@@ -122,7 +123,7 @@ function ChatHeader(props) {
     handle: function (e) {
       // checks if the chatHeaderHelp Div is open and closes it vice versa
       let chatHeaderHelpDiv = document.querySelector(".chatHeaderHelp__wr");
-      if (e.target === null || chatHeaderHelpDiv === null) return;
+      if (e.target === null || chatHeaderHelpDiv === null || isChatSearchBarOpen) return;
       let isDecendent = chatHeaderHelpDiv.contains(e.target);
       if (
         e.target.id !== "chatHeaderHelp" &&

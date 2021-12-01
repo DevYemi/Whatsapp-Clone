@@ -115,6 +115,8 @@
     right: 28%;
     width: max-content;
     flex-direction: column;
+    box-shadow: 1px 1px 9px grey;
+    border-radius: 5px;
 }
 
 .chatHeaderHelp>ul {
@@ -131,8 +133,7 @@
     color: rgb(0 0 0 / 68%);
     width: 100%;
     cursor: pointer;
-    padding: .9em 4.5em .9em 1.1em;
-    margin-top: .3em;
+    padding: 1.1em 4.5em .9em 1.1em;
 }
 
 .chatHeaderHelp>ul li:hover {
@@ -155,6 +156,7 @@
     background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
     flex: 1;
     background-color: white;
+    position: relative;
     padding: 1em;
     background-repeat: repeat;
     background-position: center;
@@ -173,6 +175,12 @@
 
 .chat__body::-webkit-scrollbar-thumb {
     background: rgba(73, 72, 72, 0.466);
+}
+
+.chatBody__loading {
+    position: absolute;
+    bottom: 0;
+    right: 50%;
 }
 
 .chat__footer.searching {

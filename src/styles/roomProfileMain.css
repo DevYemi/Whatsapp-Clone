@@ -72,6 +72,10 @@
     position: relative;
 }
 
+.roomProfileBodyAvi__loading {
+    position: absolute;
+}
+
 .roomProfileBody__sec1AviWr>input {
     position: absolute;
     height: 95%;

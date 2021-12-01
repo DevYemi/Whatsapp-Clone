@@ -67,35 +67,41 @@ export function getRoomsFromDb(id, setRooms) {
     })
 }
 
-export function createNewChatInDb(user, chatUser) {
+export function createNewChatInDb(user, chatUser, shouldOpenChatCallback) {
   // create new chat when a user clicks on add chat
   db.collection("registeredUsers") // add chat to user currently online
     .doc(user?.info.uid)
     .collection("chats")
-    .doc(chatUser.uid)
+    .doc(chatUser.uid || chatUser.id)
     .set({
-      id: chatUser.uid,
+      id: chatUser.uid || chatUser.id,
       isBlocked: "",
       isRoom: false,
-      email: chatUser.email,
+      email: chatUser.email || chatUser.data.email,
       isRead: true,
       muted: false,
-      phoneNumber: chatUser.phoneNumber,
+      phoneNumber: chatUser.phoneNumber || chatUser.data.phoneNumber,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    }).catch(e => console.log(e))
-  db.collection("registeredUsers")
-    .doc(chatUser.uid)
-    .collection("chats")
-    .doc(user?.info.uid)
-    .set({
-      id: user?.info.uid,
-      isRoom: false,
-      muted: false,
-      email: user?.info.email,
-      isRead: false,
-      phoneNumber: user?.phoneNumber,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    }).catch(e => console.log(e))
+    }).then(() => {
+      db.collection("registeredUsers") // add chat to other user
+        .doc(chatUser.uid || chatUser.id)
+        .collection("chats")
+        .doc(user?.info.uid)
+        .set({
+          id: user?.info.uid,
+          isRoom: false,
+          muted: false,
+          email: user?.info.email,
+          isRead: false,
+          phoneNumber: user?.phoneNumber,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+    }).then(() => {
+      if (shouldOpenChatCallback) { // if callback exist call it
+        shouldOpenChatCallback()
+      }
+    })
+    .catch(e => console.log(e))
 }
 export function createNewRoomInDb(user, roomName) {
   var newRoomKey = firebase.database().ref().child("rooms").push().key;
@@ -106,8 +112,7 @@ export function createNewRoomInDb(user, roomName) {
     .set({
       id: newRoomKey,
       isRoom: true,
-      isAdmin: true,
-      isRead: true,
+      isCreator: true,
       muted: false,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     }).catch(e => console.log(e))
@@ -118,16 +123,17 @@ export function createNewRoomInDb(user, roomName) {
       roomName: roomName,
       roomId: newRoomKey,
       isRoom: true,
+      createdBy: user?.info.uid,
       dateCreated: firebase.firestore.FieldValue.serverTimestamp(),
       muted: false,
       description: "",
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     })
     .then(() => {
-      addNewMemberToRoomToDb(newRoomKey, user, true);
+      addNewMemberToRoomToDb(newRoomKey, user, true, true);
     }).catch(e => console.log(e))
 }
-export function addNewMemberToRoomToDb(roomId, user, admin) {
+export function addNewMemberToRoomToDb(roomId, user, admin, isCreator) {
   db.collection("rooms") // add room to Rooms db
     .doc(roomId)
     .collection("members")
@@ -136,6 +142,8 @@ export function addNewMemberToRoomToDb(roomId, user, admin) {
       phoneNumber: user?.phoneNumber || user.info.phoneNumber,
       id: user?.info.uid,
       isAdmin: admin,
+      isCreator: isCreator,
+      isOnScreen: false
     }).catch(e => console.log(e))
 }
 export function addRoomToUserConvoInDb(roomId, users, admin, hookCallback) {
@@ -150,13 +158,12 @@ export function addRoomToUserConvoInDb(roomId, users, admin, hookCallback) {
           .set({
             id: roomId,
             isRoom: true,
-            isAdmin: admin,
-            isRead: false,
+            isCreator: false,
             muted: false,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           }).then(() => {
             // add user to room members in db
-            addNewMemberToRoomToDb(roomId, user, admin);
+            addNewMemberToRoomToDb(roomId, user, admin, false);
           })
           .catch(e => { console.log(e) })
         if (index === users.length - 1) hookCallback({ loading: false, success: true })
@@ -168,16 +175,6 @@ export function addRoomToUserConvoInDb(roomId, users, admin, hookCallback) {
 
   }
 }
-export function getRoomMembersFromDb(roomId, hookCallback) {
-  return db
-    .collection("rooms") // add room to Rooms db
-    .doc(roomId)
-    .collection("members")
-    .onSnapshot((snapshot) => {
-      let members = snapshot.docs.map((doc) => doc.data());
-      hookCallback(members);
-    })
-}
 export function getMessgFromDb(userId, convoId, isRoom, order, hookCallback, getLastMessage) {
   // gets all the message in a room fromdb
   if (isRoom) {
@@ -187,7 +184,7 @@ export function getMessgFromDb(userId, convoId, isRoom, order, hookCallback, get
       .collection("messages")
       .orderBy("timestamp", order)
       .onSnapshot((snapshot) => {
-        let data = snapshot.docs.map((doc) => doc.data());
+        let data = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
         if (getLastMessage) {
           hookCallback(data[0]);
         } else {
@@ -203,7 +200,7 @@ export function getMessgFromDb(userId, convoId, isRoom, order, hookCallback, get
       .collection("messages")
       .orderBy("timestamp", order)
       .onSnapshot((snapshot) => {
-        let data = snapshot.docs.map((doc) => doc.data());
+        let data = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
         if (getLastMessage) {
           hookCallback(data[0]);
         } else {
@@ -237,7 +234,7 @@ export function getRoomInfoFromDb(id, hookCallBack, isReducerCallback) {
 
 }
 export function getCurrentChatNameFromDb(userId, chatId, hookCallback) {
-  // gets the name of a specific room from db
+  // gets the name of a specific chat from db
   let docRef = db
     .collection("registeredUsers")
     .doc(userId)
@@ -320,20 +317,21 @@ export function resetOtherMembersReadOnDbToFalse(userId, convoId) {
     .doc(convoId)
     .collection("members")
     .where("id", "!=", userId)
+    .where("isOnScreen", "==", false)
     .get()
     .then(snapshot => {
       // then set their isRead to false
       let membersId = snapshot.docs.map(doc => ({ id: doc.id }))
       membersId.forEach(memId => {
-        db.collection("registeredUsers")
-          .doc(memId.id)
-          .collection("rooms")
+        db.collection("rooms")
           .doc(convoId)
+          .collection("members")
+          .doc(memId.id)
           .update({
             isRead: false
           })
       })
-    })
+    }).catch(e => console.log(e))
 }
 export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
   if (isRoom) {
@@ -355,7 +353,7 @@ export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
       .doc(senId)
       .update({
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      }).catch(err => console.log(err));
+      }).catch(err => console.log(err.message));
     db.collection("registeredUsers") // update sender
       .doc(senId)
       .collection("chats")
@@ -368,10 +366,10 @@ export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
 export function resetRecieverMssgReadOnDb(recId, senId, value, isRoom) {
   // resets all user isRead messages to true when user opens or is on current chat or room
   if (isRoom) { // handles as a room
-    db.collection("registeredUsers")
-      .doc(recId)
-      .collection("rooms")
+    db.collection("rooms")
       .doc(senId)
+      .collection("members")
+      .doc(recId)
       .update({
         isRead: value,
       }).catch(err => console.log(err));
@@ -401,16 +399,16 @@ export function resetRecieverMssgReadOnDb(recId, senId, value, isRoom) {
       })
   }
 }
-export function getAndComputeNumberOfNewMssgOnDb(userId, isRoom, convoId, setNewMssgNum, currentUrl) {
+export function getAndComputeNumberOfNewMssgOnDb(userId, isRoom, convoId, setNewMssgNum) {
   if (isRoom) {
     // get it from the rooms in db
-    return db.collection("registeredUsers")
-      .doc(userId)
-      .collection("rooms")
+    return db.collection("rooms")
       .doc(convoId)
+      .collection("members")
+      .doc(userId)
       .onSnapshot((snapshot) => {
-        let isChatRead = snapshot.data()?.isRead;
-        if (!isChatRead) {
+        let isRoomRead = snapshot.data()?.isRead;
+        if (!isRoomRead) {
           setNewMssgNum(1);
         } else {
           setNewMssgNum(0);
@@ -429,9 +427,20 @@ export function getAndComputeNumberOfNewMssgOnDb(userId, isRoom, convoId, setNew
       });
   }
 }
-export function uploadFileToDb(file, fileInfo, setFileOnPreview) {
+export function resetUserRoomOnScreenInDb(userId, roomId, value) {
+  db.collection("rooms")
+    .doc(roomId)
+    .collection("members")
+    .doc(userId)
+    .update({
+      isOnScreen: value
+    })
+}
+export function uploadFileToDb(file, fileInfo, setFileOnPreview, setIsFileOnPreviewLoading) {
   // upload files e.g image, audio, video to strorage and returns the URL
-  const uploadTask = storage.ref(`${fileInfo.type}/${file.name}`).put(file); // saved new image to storage
+  const newKey = firebase.database().ref().child("file").push().key;
+  console.log(newKey)
+  const uploadTask = storage.ref(`${fileInfo.type}/${newKey}`).put(file); // saved new image to storage
   uploadTask.on(
     "state_changed",
     (snapshot) => {
@@ -446,17 +455,19 @@ export function uploadFileToDb(file, fileInfo, setFileOnPreview) {
     () => {
       storage
         .ref(fileInfo.type)
-        .child(file.name)
+        .child(newKey)
         .getDownloadURL()
         .then((url) => {
           setFileOnPreview({ url, info: fileInfo });
+          setIsFileOnPreviewLoading(false);
         });
     }
   );
 }
-export function setVoiceNoteToDb(file, fileSize, chatId, user, scrollConvoBody, convoInfo, min, sec) {
+export function setVoiceNoteToDb(file, chatId, user, scrollConvoBody, convoInfo, min, sec) {
   // upload the new created voice note to strorage and send the url to db
-  const uploadTask = storage.ref(`audio/voice-note${fileSize}`).put(file);
+  const newKey = firebase.database().ref().child("file").push().key;
+  const uploadTask = storage.ref(`audio/voice-note${newKey}`).put(file);
   uploadTask.on(
     "state_changed",
     (snapshot) => {
@@ -471,7 +482,7 @@ export function setVoiceNoteToDb(file, fileSize, chatId, user, scrollConvoBody, 
     () => {
       storage
         .ref("audio")
-        .child(`voice-note${fileSize}`)
+        .child(`voice-note${newKey}`)
         .getDownloadURL()
         .then((url) => {
           setNewMessageToDb(chatId, "", user, scrollConvoBody, convoInfo?.isRoom, { url, info: { type: "voice-note", min, sec, exten: "mp3", avi: user?.info.photoURL, } }
@@ -496,7 +507,8 @@ export function registerNewUserInDb(email, phoneNumber, uid, name, avi) {
 export function getTotalUsersFromDb(reducerCallback) {
   // gets all the total registered users on db
   return db
-    .collection("totalUsers").onSnapshot((snapshot) => {
+    .collection("registeredUsers")
+    .onSnapshot((snapshot) => {
       let data = snapshot.docs.map((doc) => doc.data());
       reducerCallback({
         type: "SET_TOTALUSERONDB",
@@ -578,20 +590,21 @@ export function getGroupMemberFromDb(roomId, reactHookCallback) {
     .doc(roomId)
     .collection("members")
     .onSnapshot((snapshot) => {
+      let upperSnapshot = snapshot.docs;
       snapshot.docs.forEach((member, index) => {
         // for each members go get their current individual avi
-        let upperSnapshot = snapshot.docs;
+
         db.collection("registeredUsers")
           .doc(member.id)
-          .onSnapshot((snapshot) => {
+          .get()
+          .then((snapshot) => {
             modifiedMemebers.push({
               id: member.id,
               data: snapshot.data(),
               isAdmin: member.data().isAdmin
             });
-            if (upperSnapshot.length - 1 === index) {
-              // at the last index call reactHookCallback with modifieldMembers
-              console.log(modifiedMemebers)
+            if (upperSnapshot.length === modifiedMemebers.length) {
+              // when members list length equal modifiedMemebers list length call reactHookCallback
               reactHookCallback(modifiedMemebers);
               modifiedMemebers = [];
             }
@@ -627,6 +640,32 @@ export function exitFromGroupOnDb(userId, roomId) {
     })
     .catch(e => console.log(e));
 }
+export function setMemberAdminStatusInDb(roomId, memId, admin) {
+  // Reset member admin status in db
+  db.collection("rooms")
+    .doc(roomId)
+    .collection("members")
+    .doc(memId)
+    .update({
+      isAdmin: admin
+    })
+}
+export function removeMemberFromRoomInDb(roomId, memId) {
+  // Remove member from groups
+  db.collection("registeredUsers") // remove in members db rooms info
+    .doc(memId)
+    .collection("rooms")
+    .doc(roomId)
+    .delete()
+    .then(() => { // then remove in rooms members info
+      db.collection("rooms")
+        .doc(roomId)
+        .collection("members")
+        .doc(memId)
+        .delete()
+        .catch(e => console.log(e))
+    }).catch(e => console.log(e))
+}
 export function getUserProfilePictureFromDb(userId, callBackFunc) {
   return db
     .collection("registeredUsers")
@@ -636,12 +675,16 @@ export function getUserProfilePictureFromDb(userId, callBackFunc) {
     })
 }
 
-export function setNewAviForGroupOnDb(image, roomId) {
+export function setNewAviForGroupOnDb(image, roomId, setLoadingChangeAvi) {
   const setImageUrlOnDb = (url) => {
     // set new avi url on db
-    db.collection("rooms").doc(roomId).update({
-      avi: url,
-    }).catch(err => console.log(err));
+    db.collection("rooms")
+      .doc(roomId)
+      .update({
+        avi: url,
+      }).then(() => {
+        setLoadingChangeAvi(false)
+      }).catch(err => console.log(err));
   };
   const sendImgToStorage = () => {
     // saved new image to storage and create a url for it
@@ -725,7 +768,7 @@ export function blockChatOnDb(userId, chatId) {
   blockOncurrentLoggedInUserDb();
   blockOnOtherUserDb();
 }
-export async function clearChatOnDb(userId, chatId) {
+export async function clearChatOnDb(userId, chatId, reactHookCallback) {
   db.collection("registeredUsers")
     .doc(userId)
     .collection("chats")
@@ -744,7 +787,12 @@ export async function clearChatOnDb(userId, chatId) {
           .delete()
           .catch(err => console.log(err));
       })
-    });
+    }).then(() => {
+      // all messages has been cleared reset chat being cleared to false
+      if (reactHookCallback) {
+        reactHookCallback(false);
+      }
+    })
 
 }
 export function deleteConvoOnDb(userId, chatId) {
@@ -800,6 +848,18 @@ export function setNewLoggedInUserAviOnDb(userId, newAvi, hookCallback) {
     }
   );
 
+}
+export function getIfMessageHasBeenReadFromDb(receiverId, senderId, mssgId, reactHookCallback) {
+  // checks if a specific message has been read by the other chat user e.g receiver
+  db.collection("registeredUsers")
+    .doc(receiverId)
+    .collection("chats")
+    .doc(senderId)
+    .collection("messages")
+    .doc(mssgId)
+    .onSnapshot(snapshot => {
+      reactHookCallback(snapshot.data()?.isRead)
+    })
 }
 
 

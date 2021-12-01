@@ -31,6 +31,8 @@ function Login() {
 
         },
         up: function () { // Sign up a new user 
+            console.log()
+            if (phoneInput === "") return
             let checkNum = sign.hasPhoneNumBeenUsedBefore();
             if (checkNum) return
             if (isValidPhoneNumber(phoneInput)) {

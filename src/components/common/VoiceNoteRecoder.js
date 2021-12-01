@@ -93,7 +93,7 @@ function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollConvoB
                     } else { // send audio to db and stop recording
                         let min = document.querySelector(".voiceNoteRecoder__min").innerText
                         let sec = document.querySelector(".voiceNoteRecoder__sec").innerText
-                        setVoiceNoteToDb(blob, blob.size, convoId, user, scrollConvoBody, currentDisplayConvoInfo, min, sec);
+                        setVoiceNoteToDb(blob, convoId, user, scrollConvoBody, currentDisplayConvoInfo, min, sec);
                         recordAudio.stop()
                     }
 

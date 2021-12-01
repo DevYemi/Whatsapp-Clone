@@ -1,23 +1,43 @@
 import React, { useEffect, useState } from 'react'
 import '../../styles/sidebarMain.css'
 import { Avatar, IconButton } from "@material-ui/core";
-import { DonutLarge, Chat, MoreVert, SearchOutlined } from "@material-ui/icons";
+import { DonutLarge, Chat, MoreVert, SearchOutlined, NotificationsOff } from "@material-ui/icons";
 import { useStateValue } from "../global-state-provider/StateProvider";
 import { getChatsFromDb, getRoomsFromDb, getUserInfoFromDb, } from "../backend/get&SetDataToDb";
 import Loading from "../common/Loading";
 import SidebarConvo from "./SidebarConvo";
 import { useHistory } from "react-router-dom";
-import { sidebarProfile } from '../utils/sidebarUtils';
+import { sidebarProfile, sidebarMainHeaderHelp } from '../utils/sidebarUtils';
 
 function SidebarMain(props) {
-    const { setIsFirstRender, isFirstRender, setIsConnectedDisplayed, setOpenModal, setModalType } = props
+    const {
+        setIsFirstRender,
+        isFirstRender,
+        setIsConnectedDisplayed,
+        setOpenModal,
+        setModalType,
+        setIsConvoSearchBarOpen,
+        isConvoSearchBarOpen } = props
     const [rooms, setRooms] = useState(null); // keep state for all the rooms received from db
     const [chats, setChats] = useState(null); // keep state for all ther chat received from db
     const [convos, setConvos] = useState([]); // keeps state for the combination of chat and rooms
+    const [isSidebarHeaderHelpOpened, setIsSidebarHeaderHelpOpened] = useState(false); // keeps state if the sidebar help div is opened or not
+
     const [{ user }, dispatch] = useStateValue(); // keeps state for current logged in user
     const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
     const urlHistory = useHistory();
 
+
+    useEffect(() => {
+        // adds and remove an eventlistener that closes and open the sidebarMain__headerHelp Div
+        const handleListener = (e) => {
+            sidebarMainHeaderHelp.handle(e, isConvoSearchBarOpen, isSidebarHeaderHelpOpened, setIsSidebarHeaderHelpOpened)
+        }
+        document.addEventListener("click", handleListener);
+        return () => {
+            document.removeEventListener("click", handleListener);
+        };
+    });
 
     useEffect(() => {
         // on first render display connectedDisplay component on convo side
@@ -65,6 +85,15 @@ function SidebarMain(props) {
             setConvos([...unmutedConvos, ...mutedConvos]);
         }
     }, [chats, rooms]);
+    useEffect(() => {
+        //Map chats to global state
+        if (chats) {
+            dispatch({
+                type: "SET_USERCHATS",
+                userChats: chats
+            })
+        }
+    }, [chats, dispatch])
     return (
         <div className="sidebarMain">
             <section className="sidebarMain__header">
@@ -79,9 +108,20 @@ function SidebarMain(props) {
                     <IconButton>
                         <Chat />
                     </IconButton>
-                    <IconButton>
-                        <MoreVert />
-                    </IconButton>
+                    <div className="sidebarMain__headerHelpWr">
+                        <IconButton onClick={() => sidebarMainHeaderHelp.open(setIsSidebarHeaderHelpOpened)}>
+                            <MoreVert />
+                        </IconButton>
+                        <div className="sidebarMain__headerHelp" id="sidebarMain__headerHelp">
+                            <ul>
+                                <li>New Group</li>
+                                <li>Archived</li>
+                                <li> Starred Messages</li>
+                                <li>CSettings</li>
+                                <li>Log out</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </section>
             <section className="sidebarMain__search">
@@ -104,6 +144,7 @@ function SidebarMain(props) {
                             setIsConnectedDisplayed={setIsConnectedDisplayed}
                             setOpenModal={setOpenModal}
                             setModalType={setModalType}
+                            setIsConvoSearchBarOpen={setIsConvoSearchBarOpen}
                         />
                     ))
                 ) : (

@@ -16,6 +16,8 @@ import {
   deleteConvoOnDb,
   exitFromGroupOnDb,
   muteConvoOnDb,
+  removeMemberFromRoomInDb,
+  setMemberAdminStatusInDb,
   unBlockChatOnDb,
   unmuteConvoOnDb,
 } from "../backend/get&SetDataToDb";
@@ -24,7 +26,7 @@ import { ArrowBackRounded, CheckRounded, CloseRounded, SearchOutlined } from "@m
 import ModalAddParticipant from "./ModalAddParticipant";
 import { Avatar } from "@material-ui/core";
 import Loading from "./Loading";
-import { addParticipantAnimation, getChatThatAreNotMembers, handleRemoveParticipant } from '../utils/displayModalUtils'
+import { addParticipantAnimation, getChatThatAreNotMembers, handleRemoveParticipant, clickedRoomMember, add } from '../utils/displayModalUtils'
 
 const useStylesTextField = makeStyles((theme) => ({
   root: {
@@ -40,13 +42,14 @@ function DisplayModal(props) {
     modalType,
     bgStyles,
     openModal,
-    add,
     setOpenModal,
     isRoom,
     setModalInput,
     modalInput,
     setIsConnectedDisplayed,
     setModalType,
+    setIsChatBeingCleared,
+    setIsAddChatFromRoomProfile
   } = props;
   const [{
     user,
@@ -55,6 +58,8 @@ function DisplayModal(props) {
     isMuteNotifichecked,
     currentDisplayedRoomMembers: roomMembers,
     totalUserOnDb,
+    selectedPreviewMember,
+    userChats,
     isCurrentConvoBlocked, }, dispatch] = useStateValue(); // React context API
   const useStyles = makeStyles((theme) => ({
     modal: {
@@ -391,8 +396,10 @@ function DisplayModal(props) {
                     onClick={() => {
                       clearChatOnDb(
                         user?.info?.uid,
-                        currentDisplayConvoInfo?.uid
+                        currentDisplayConvoInfo?.uid,
+                        setIsChatBeingCleared
                       );
+                      setIsChatBeingCleared(true);
                       handleClose();
                     }}
                   >
@@ -712,6 +719,106 @@ function DisplayModal(props) {
                     </>
                 }
 
+
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+    );
+  } else if (modalType === "CLICKED_ROOM_MEMBER") {
+    return (
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={`${classes.modal}`}
+          open={openModal}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={`${classes.paper} modal__clickedRoomMemberWr`}>
+              <div className="modal__clickedRoomMember">
+                <p>
+                  {selectedPreviewMember.data.name}
+                </p>
+                <p onClick={() => clickedRoomMember.startChat(user, userChats, selectedPreviewMember, handleClose, setIsAddChatFromRoomProfile)}>
+                  Start Chat
+                </p>
+                {!selectedPreviewMember.isAdmin && <p onClick={() => { setModalType("CONFIRM_MAKE_ADMIN") }}>Make Group Admin</p>}
+                <p onClick={() => { setModalType("REMOVE_FROM_GROUP") }}>Remove From Group</p>
+                <p onClick={handleClose}>Cancel</p>
+
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+    );
+  } else if (modalType === "CONFIRM_MAKE_ADMIN") {
+    return (
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={`${classes.modal}`}
+          open={openModal}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={`${classes.paper} modal__confirmMakeAdminWr`}>
+              <div className="modal__confirmMakeAdmin">
+                <p>{`Make ${selectedPreviewMember.data.name} an admin in "${currentDisplayConvoInfo.roomName}" group`}</p>
+                <button onClick={() => {
+                  setMemberAdminStatusInDb(currentDisplayConvoInfo.roomId, selectedPreviewMember.id, true)
+                  handleClose();
+                }}>
+                  Make Group Admin
+                </button>
+                <button onClick={handleClose}>CANCEL</button>
+
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+      </div>
+    );
+  } else if (modalType === "REMOVE_FROM_GROUP") {
+    return (
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={`${classes.modal}`}
+          open={openModal}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={`${classes.paper} modal__removeFromGroupWr`}>
+              <div className="modal__removeFromGroup">
+                <p>{`Remove ${selectedPreviewMember.data.name} from "${currentDisplayConvoInfo.roomName}" group`}</p>
+                <button onClick={() => {
+                  removeMemberFromRoomInDb(currentDisplayConvoInfo.roomId, selectedPreviewMember.id)
+                  handleClose();
+                }}>
+                  Remove
+                </button>
+                <button onClick={handleClose}>CANCEL</button>
 
               </div>
             </div>

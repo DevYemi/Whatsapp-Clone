@@ -4,8 +4,14 @@ import SidebarMain from "./SidebarMain";
 import SidebarProfile from "./SidebarProfile";
 
 function Sidebar(props) {
-  const { setIsFirstRender, isFirstRender, setIsConnectedDisplayed, setOpenModal, setModalType } = props
-  console.log("sidebar");
+  const {
+    setIsFirstRender,
+    isFirstRender,
+    setIsConnectedDisplayed,
+    setOpenModal,
+    setModalType,
+    setIsConvoSearchBarOpen,
+    isConvoSearchBarOpen } = props
 
   return (
     <div className="sidebar">
@@ -15,6 +21,8 @@ function Sidebar(props) {
         setIsFirstRender={setIsFirstRender}
         isFirstRender={isFirstRender}
         setIsConnectedDisplayed={setIsConnectedDisplayed}
+        isConvoSearchBarOpen={isConvoSearchBarOpen}
+        setIsConvoSearchBarOpen={setIsConvoSearchBarOpen}
       />
       <SidebarProfile />
     </div>

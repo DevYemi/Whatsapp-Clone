@@ -61,7 +61,7 @@ function SidebarChatLastMessage({ lastMessage }) {
         )
     } else if (fileType?.info?.type === "video") {
         return (
-            <p><VideocamRounded className="video" />{audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}`: "00:00"} Video</p>
+            <p><VideocamRounded className="video" />{audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Video</p>
         )
     } else if (fileType?.info?.type === "voice-note") {
         return (
@@ -74,4 +74,4 @@ function SidebarChatLastMessage({ lastMessage }) {
     }
 }
 
-export default React.memo(SidebarChatLastMessage)  
+export default React.memo(SidebarChatLastMessage)

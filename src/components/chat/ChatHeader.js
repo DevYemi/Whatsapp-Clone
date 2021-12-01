@@ -11,7 +11,6 @@ import { profile } from "../profile/Profile";
 function ChatHeader(props) {
   const {
     currentDisplayConvoInfo,
-    messages,
     setFoundWordIndex,
     chatId,
     setMessages,
@@ -21,6 +20,8 @@ function ChatHeader(props) {
     setOpenModal,
     setModalType,
     setIsRoom,
+    isChatUserOnline,
+    chatUserLastSeen,
     isChatSearchBarOpen
   } = props;
   const [searchInput, setSearchInput] = useState("");
@@ -141,7 +142,6 @@ function ChatHeader(props) {
       document.removeEventListener("click", chatHeaderHelp.handle);
     };
   });
-
   return (
     <section className="chat__header">
       <div className="chat__headerWr">
@@ -152,12 +152,8 @@ function ChatHeader(props) {
         <div className="chat__headerInfo" onClick={() => profile.open(false)}>
           <h3>{currentDisplayConvoInfo?.name}</h3>
           <p>
-            Last seen{" "}
-            {messages[messages.length - 1]?.timestamp
-              ? new Date(
-                messages[messages.length - 1]?.timestamp?.toDate()
-              ).toUTCString()
-              : "offline"}
+            {isChatUserOnline ? "Online" : `Last seen ${new Date(chatUserLastSeen.toDate()).toUTCString()}`}
+
           </p>
         </div>
         <div className="chat__headerRight">

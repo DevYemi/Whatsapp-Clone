@@ -54,7 +54,7 @@
     margin-left: .5em;
 }
 
-.sidebarConvo__info>p {
+.sidebarConvo__info>div {
     font-size: small;
     max-width: 150px;
     white-space: nowrap;
@@ -63,18 +63,38 @@
     display: flex;
     color: #00000094;
     align-items: center;
+    position: relative;
 }
 
-.sidebarConvo__info>p .MuiSvgIcon-root {
+.sidebarConvo__info>div>.check {
+    margin-right: .3em;
+}
+
+.sidebarConvo__info>div>.check.read .checkIcon {
+    color: #55ADEE;
+}
+
+.sidebarConvo__info>div .MuiSvgIcon-root {
     color: rgba(0, 0, 0, 0.685);
 }
 
-.sidebarConvo__info>p .mic {
+.sidebarConvo__info>div .mic {
     color: rgb(52, 146, 184);
 }
 
-.sidebarConvo__info>p .video {
+.sidebarConvo__info>div .video {
     color: rgb(226, 8, 8);
+}
+
+.sidebarConvo__info>div .checkIcon {
+    width: 15px;
+    height: 15px;
+    color: #80808080;
+}
+
+.sidebarConvo__info>div .checkIcon:nth-child(2) {
+    position: absolute;
+    left: 4px;
 }
 
 .sidebarConvo__add {

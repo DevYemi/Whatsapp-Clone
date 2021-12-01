@@ -77,7 +77,7 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
                     <Avatar src={convoDirectInfo?.avi} />
                     <div className="sidebarConvo__info">
                         <h2>{isRoom ? convoDirectInfo?.roomName : convoDirectInfo?.name}</h2>
-                        {lastMessage ? <SidebarConvoLastMessage lastMessage={lastMessage} /> : <p>{isRoom ? "Room" : "Chat"} is currently empty</p>}
+                        {lastMessage ? <SidebarConvoLastMessage lastMessage={lastMessage} /> : <div>{isRoom ? "Room" : "Chat"} is currently empty</div>}
                     </div>
                 </div>
                 <p className={newMssgNum > 0 && !isMuteNotifichecked && !isRoom ? "show chat" : ""}>{newMssgNum}</p>

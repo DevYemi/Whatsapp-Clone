@@ -8,7 +8,7 @@ import { useStateValue } from "../global-state-provider/StateProvider";
 function Message({ convo, setImageFullScreen }) {
   const { message, name, fileType, timestamp, senderId, receiverId, id } = convo;
   const [{ user, currentDisplayedConvoMessages }] = useStateValue();
-  const [isRead, setIsRead] = useState(false);
+  const [isRead, setIsRead] = useState(false); //keeps state if this message has been read
   const openImageFullScreen = () => {
     // Open image on full screen when a user clicks on a message
     setImageFullScreen({

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import '../../styles/chat.css'
 import { useParams } from 'react-router-dom';
 import { useStateValue } from '../global-state-provider/StateProvider';
-import { getIsConvoBlockedOnDb, getMessgFromDb, getUserInfoFromDb, resetRecieverMssgReadOnDb, setNewMessageToDb, uploadFileToDb } from '../backend/get&SetDataToDb';
+import { getIsConvoBlockedOnDb, getIsUserOnlineOnDb, getMessgFromDb, getUserInfoFromDb, getUserLastSeenTime, resetRecieverMssgReadOnDb, setNewMessageToDb, uploadFileToDb } from '../backend/get&SetDataToDb';
 import FilePreview from '../common/FilePreview';
 import ChatHeader from './ChatHeader';
 import ChatBody from './ChatBody';
@@ -32,6 +32,8 @@ function Chat(props) {
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
     const [totalChatWordFound, setTotalChatWordFound] = useState(0); // keeps state of total word found when a user search on the header search bar
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
+    const [isChatUserOnline, setIsChatUserOnline] = useState(false) // keeps state if the chat user is online
+    const [chatUserLastSeen, setChatUserLastSeen] = useState(false) // keeps state pf last time chat user was online
     const { chatId } = useParams(); // id for the current room the user is on
     const sendMessage = (e, eventType, file) => { // sends new message to db
         e && e.preventDefault();
@@ -107,7 +109,20 @@ function Chat(props) {
         setIsAddChatFromRoomProfile(false);
         return () => setChatFirstRender(false);
 
-    }, []);
+    }, [setIsAddChatFromRoomProfile]);
+    useEffect(() => {
+        // checks the status of the chat user if user is online & get user last seen
+        let unsubGetIsUserOnlineOnDb;
+        let unsubGetUserLastSeenTime;
+        if (chatId) {
+            unsubGetIsUserOnlineOnDb = getIsUserOnlineOnDb(chatId, setIsChatUserOnline)
+            unsubGetUserLastSeenTime = getUserLastSeenTime(chatId, setChatUserLastSeen)
+        }
+        return () => {
+            unsubGetUserLastSeenTime && unsubGetUserLastSeenTime();
+            unsubGetIsUserOnlineOnDb && unsubGetIsUserOnlineOnDb();
+        }
+    }, [chatId]);
     useEffect(() => { // map chat messages to global state currentDisplyedConvoMessages
 
         if (messages.length > 0) {
@@ -145,7 +160,6 @@ function Chat(props) {
             <ChatHeader
                 chatId={chatId}
                 currentDisplayConvoInfo={currentDisplayConvoInfo}
-                messages={messages}
                 setMessages={setMessages}
                 setIsChatSearchBarOpen={setIsChatSearchBarOpen}
                 uploadFile={uploadFile}
@@ -155,6 +169,8 @@ function Chat(props) {
                 setModalType={setModalType}
                 setIsRoom={setIsRoom}
                 isChatSearchBarOpen={isChatSearchBarOpen}
+                isChatUserOnline={isChatUserOnline}
+                chatUserLastSeen={chatUserLastSeen}
             />
             <ChatBody
                 messages={messages}

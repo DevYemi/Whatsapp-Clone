@@ -1,9 +1,12 @@
-import { AudiotrackRounded, ImageRounded, MicRounded, VideocamRounded } from '@material-ui/icons';
+import { AudiotrackRounded, Check, ImageRounded, MicRounded, VideocamRounded } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react'
+import { getIfMessageHasBeenReadFromDb } from '../backend/get&SetDataToDb';
 
 function SidebarChatLastMessage({ lastMessage }) {
     const [audioFileDuration, setAudioFileDuration] = useState(null)
-    const { message, fileType, } = lastMessage;
+    const { message, fileType, senderId, receiverId, id } = lastMessage;
+    const [isRead, setIsRead] = useState(false); // keeps state if this message has been read
+
     useEffect(() => { // sets the duration of the file if its audio, voice-note or video
         const getSec = (d) => {
             let sec = Math.floor(d % 3600 % 60)
@@ -47,29 +50,67 @@ function SidebarChatLastMessage({ lastMessage }) {
         }
     }, [lastMessage, fileType?.info?.type, fileType?.url, fileType?.info?.min, fileType?.info?.sec])
 
+    useEffect(() => { // checks if receiver has seen or read this message
+        let unsubGetIfMessageHasBeenReadFromDb;
+        if (senderId && receiverId && id) {
+            unsubGetIfMessageHasBeenReadFromDb = getIfMessageHasBeenReadFromDb(receiverId, senderId, id, setIsRead)
+        }
+        return () => unsubGetIfMessageHasBeenReadFromDb && unsubGetIfMessageHasBeenReadFromDb();
+    }, [senderId, receiverId, id])
+
     if (fileType?.type === "text") {
         return (
-            <p>{message}</p>
+            <div>
+                <div className={`check ${isRead && "read"}`}>
+                    <Check className="checkIcon" />
+                    <Check className="checkIcon" />
+                </div>
+                {message}
+            </div>
         )
     } else if (fileType?.info?.type === "image") {
         return (
-            <p><ImageRounded className="img" /> Image</p>
+            <div>
+                <div className={`check ${isRead && "read"}`}>
+                    <Check className="checkIcon" />
+                    <Check className="checkIcon" />
+                </div>
+                <ImageRounded className="img" /> Image
+            </div>
         )
     } else if (fileType?.info?.type === "audio") {
         return (
-            <p><AudiotrackRounded className="audio" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Audio</p>
+            <div>
+                <div className={`check ${isRead && "read"}`}>
+                    <Check className="checkIcon" />
+                    <Check className="checkIcon" />
+                </div>
+                <AudiotrackRounded className="audio" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Audio
+            </div>
         )
     } else if (fileType?.info?.type === "video") {
         return (
-            <p><VideocamRounded className="video" />{audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Video</p>
+            <div>
+                <div className={`check ${isRead && "read"}`}>
+                    <Check className="checkIcon" />
+                    <Check className="checkIcon" />
+                </div>
+                <VideocamRounded className="video" />{audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Video
+            </div>
         )
     } else if (fileType?.info?.type === "voice-note") {
         return (
-            <p><MicRounded className="mic" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Voice-Note</p>
+            <div>
+                <div className={`check ${isRead && "read"}`}>
+                    <Check className="checkIcon" />
+                    <Check className="checkIcon" />
+                </div>
+                <MicRounded className="mic" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Voice-Note
+            </div>
         )
     } else {
         return (
-            <p> chat is currently empty</p>
+            <></>
         )
     }
 }

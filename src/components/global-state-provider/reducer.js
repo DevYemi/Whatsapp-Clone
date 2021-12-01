@@ -1,5 +1,6 @@
+
 export const initialState = {
-  user: null, // state for the current logged in user
+  user: localStorage.whatsappCloneUser ? JSON.parse(localStorage.whatsappCloneUser) : null, // state for the current logged in user
   userChats: null, // state for the current logged in user chats 
   currentLoggedInUserChats: null, // state for the current user chats convos
   currentDisplayedRoomMembers: null, // state for the members of the current displayed room

@@ -5,7 +5,7 @@ import '../../styles/login.css'
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import { useStateValue } from '../global-state-provider/StateProvider';
-import { getTotalUsersFromDb, registerNewUserInDb } from '../backend/get&SetDataToDb'
+import { getTotalUsersFromDb, registerNewUserInDb, resetIsUserOnlineOnDb } from '../backend/get&SetDataToDb'
 
 function Login() {
     const [{ totalUserOnDb }, dispatch] = useStateValue();
@@ -19,10 +19,12 @@ function Login() {
                     let check = sign.hasEmailBeenUsedBefore(res?.user?.email);
                     if (check.res) {
                         let info = res.user
+                        localStorage.setItem("whatsappCloneUser", JSON.stringify({ info, phoneNumber: check.matchedPhoneNumber }))
                         dispatch({
                             type: "SET_USER",
                             user: { info, phoneNumber: check.matchedPhoneNumber },
                         })
+                        resetIsUserOnlineOnDb(info.uid, true);
                     } else {
                         alert(`User not found, please sign up`);
                     }
@@ -42,10 +44,12 @@ function Login() {
                         if (!checkEmail.res) {
                             registerNewUserInDb(res?.user?.email, phoneInput, res?.user?.uid, res?.user?.displayName, res?.user?.photoURL)
                             let info = res.user
+                            localStorage.setItem("whatsappCloneUser", JSON.stringify({ info, phoneNumber: phoneInput }))
                             dispatch({
                                 type: "SET_USER",
                                 user: { info, phoneNumber: phoneInput },
                             })
+                            resetIsUserOnlineOnDb(info.uid, true)
                         } else {
                             alert(`The email address "${res?.user?.email}" has already been used by another user to register a number`);
                         }

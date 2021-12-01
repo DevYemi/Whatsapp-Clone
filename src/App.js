@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 import Chat from "./components/chat/Chat";
@@ -9,8 +9,9 @@ import Room from "./components/room/Room";
 import Sidebar from "./components/sidebar/Sidebar";
 import { useStateValue } from "./components/global-state-provider/StateProvider";
 import Profile from "./components/profile/Profile";
+import { getTotalUsersFromDb } from "./components/backend/get&SetDataToDb";
 function App() {
-  const [{ user, selectedPreviewMember }] = useStateValue();
+  const [{ user, selectedPreviewMember }, dispatch] = useStateValue();
   const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
   const [isChatBeingCleared, setIsChatBeingCleared] = useState(false) // keeps state if current displayed chat messages is being cleared
   const [modalInput, setModalInput] = useState(""); // keeps state of user input in the modal
@@ -23,6 +24,19 @@ function App() {
   const [isAddChatFromRoomProfile, setIsAddChatFromRoomProfile] = useState(false); // keeps state if user has successfully started a chat with a fellow member and redirect to chat
   const addChatBg = { url: "url(/img/chat-bg.svg)", position: "right bottom", size: "contain" } // addchat modal bg-image styles
   const addRoomBg = { url: "url(/img/room-bg.svg)", position: "right bottom", size: "97px" } // addroom modal bg-image styles
+  useEffect(() => {
+    //  KEEPS A USER LOGGED IN CONSISTENT
+    if (localStorage.whatsappCloneUser) {
+      dispatch({
+        type: "SET_USER",
+        user: JSON.parse(localStorage.whatsappCloneUser),
+      })
+    }
+  }, [dispatch])
+  useEffect(() => { // Gets the total registertered user on db
+    let unsubcribeGetToUserFromDb = getTotalUsersFromDb(dispatch);
+    return () => { unsubcribeGetToUserFromDb(); }
+  }, [dispatch])
   return (
     <div className="app">
       {!user ? (

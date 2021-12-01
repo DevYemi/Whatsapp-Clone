@@ -851,7 +851,7 @@ export function setNewLoggedInUserAviOnDb(userId, newAvi, hookCallback) {
 }
 export function getIfMessageHasBeenReadFromDb(receiverId, senderId, mssgId, reactHookCallback) {
   // checks if a specific message has been read by the other chat user e.g receiver
-  db.collection("registeredUsers")
+  return db.collection("registeredUsers")
     .doc(receiverId)
     .collection("chats")
     .doc(senderId)
@@ -859,6 +859,31 @@ export function getIfMessageHasBeenReadFromDb(receiverId, senderId, mssgId, reac
     .doc(mssgId)
     .onSnapshot(snapshot => {
       reactHookCallback(snapshot.data()?.isRead)
+    })
+}
+
+export function resetIsUserOnlineOnDb(userId, value) {
+  db.collection("registeredUsers")
+    .doc(userId)
+    .update({
+      isOnline: value,
+      lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+    }).catch(e => console.log(e))
+}
+
+export function getIsUserOnlineOnDb(userId, reactHookCallback) {
+  return db.collection("registeredUsers")
+    .doc(userId)
+    .onSnapshot(snapshot => {
+      reactHookCallback(snapshot.data()?.isOnline)
+    })
+}
+
+export function getUserLastSeenTime(userId, reactHookCallback) {
+  return db.collection("registeredUsers")
+    .doc(userId)
+    .onSnapshot(snapshot => {
+      reactHookCallback(snapshot.data()?.lastSeen)
     })
 }
 

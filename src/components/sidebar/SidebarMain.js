@@ -7,7 +7,7 @@ import { getChatsFromDb, getRoomsFromDb, getUserInfoFromDb, } from "../backend/g
 import Loading from "../common/Loading";
 import SidebarConvo from "./SidebarConvo";
 import { useHistory } from "react-router-dom";
-import { sidebarProfile, sidebarMainHeaderHelp } from '../utils/sidebarUtils';
+import { sidebarProfile, sidebarMainHeaderHelp, handleLogOut } from '../utils/sidebarUtils';
 
 function SidebarMain(props) {
     const {
@@ -117,8 +117,8 @@ function SidebarMain(props) {
                                 <li>New Group</li>
                                 <li>Archived</li>
                                 <li> Starred Messages</li>
-                                <li>CSettings</li>
-                                <li>Log out</li>
+                                <li>Settings</li>
+                                <li onClick={() => handleLogOut(user, dispatch)}>Log out</li>
                             </ul>
                         </div>
                     </div>

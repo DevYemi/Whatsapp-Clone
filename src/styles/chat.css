@@ -271,11 +271,6 @@
     opacity: 1;
 }
 
-.chat__filePreview.show {
-    display: block;
-    top: 0;
-}
-
 
 @media(max-width: 767px) {
     .chat {

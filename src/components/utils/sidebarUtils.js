@@ -1,4 +1,5 @@
 import gsap from "gsap"
+import { resetIsUserOnlineOnDb } from "../backend/get&SetDataToDb"
 
 export const sidebarProfile = { // handles the smooth animation of displaying and hiding the sidebar div
     show: function () {
@@ -43,3 +44,12 @@ export const sidebarMainHeaderHelp = {
         }
     },
 };
+
+export function handleLogOut(user, dispatch) {
+    localStorage.removeItem('whatsappCloneUser');
+    dispatch({
+        type: "SET_USER",
+        user: null,
+    })
+    resetIsUserOnlineOnDb(user?.info?.uid, false);
+}

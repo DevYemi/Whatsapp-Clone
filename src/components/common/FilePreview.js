@@ -1,7 +1,8 @@
 import { IconButton } from '@material-ui/core';
 import { CloseRounded, InsertEmoticon, Send } from '@material-ui/icons';
 import Picker from 'emoji-picker-react';
-import React from 'react'
+import gsap from 'gsap/all';
+import React, { useEffect } from 'react'
 import '../../styles/filePreview.css'
 import FilePreviewFileType from './FilePreviewFileType';
 import Loading from './Loading';
@@ -24,20 +25,44 @@ function FilePreview(props) {
         setIsFileOnPreviewLoading,
         isFileOnPreviewLoading,
         isRoom } = props
-    const closeFilePreview = () => { // Closes file on preview
-        let fileInput = document.querySelector(`.${isRoom ? "room" : "chat"}__headerRight input`);
-        fileInput.value = ""
-        setIsFileOnPreview(false);
-        setIsFileOnPreviewLoading(false);
-        setIsFileSupported(true);
-        setIsFileTooBig(false);
-        setFileOnPreview(null);
+
+    const closeFilePreview = async () => { // Closes file on preview
+        let done = await filePreviewAnimation.close();
+        if (done) {
+            let fileInput = document.querySelector(`.${isRoom ? "room" : "chat"}__headerRight input`);
+            fileInput.value = ""
+            setIsFileOnPreview(false);
+            setIsFileOnPreviewLoading(false);
+            setIsFileSupported(true);
+            setIsFileTooBig(false);
+            setFileOnPreview(null);
+        }
+
     }
-    const sendFileOnPreview = () => {
-        if (fileOnPreview) {
+    const sendFileOnPreview = async () => {
+        let done = await filePreviewAnimation.close();
+        if (fileOnPreview && done) {
             sendMessage(null, "file", fileOnPreview);
         }
     }
+    const filePreviewAnimation = {
+        open: function () {
+            if (isFileOnPreview) {
+                gsap.to(".chat__filePreview", { duration: .2, display: "block", top: 0, })
+            }
+        },
+        close: function () {
+            return new Promise((resolve) => {
+                gsap.to(".chat__filePreview", {
+                    duration: .1,
+                    display: "block",
+                    top: "110%",
+                    onComplete: () => resolve(true)
+                })
+            })
+        }
+    }
+    isFileOnPreview && filePreviewAnimation.open();
     return (
         <section className={`chat__filePreview ${isFileOnPreview && "show"}`} >
             <div className={`filePreview_wr`}>

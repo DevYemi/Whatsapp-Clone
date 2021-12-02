@@ -863,6 +863,7 @@ export function getIfMessageHasBeenReadFromDb(receiverId, senderId, mssgId, reac
 }
 
 export function resetIsUserOnlineOnDb(userId, value) {
+  // resets user online value
   db.collection("registeredUsers")
     .doc(userId)
     .update({
@@ -872,6 +873,7 @@ export function resetIsUserOnlineOnDb(userId, value) {
 }
 
 export function getIsUserOnlineOnDb(userId, reactHookCallback) {
+  // gets if a user is online
   return db.collection("registeredUsers")
     .doc(userId)
     .onSnapshot(snapshot => {
@@ -880,10 +882,84 @@ export function getIsUserOnlineOnDb(userId, reactHookCallback) {
 }
 
 export function getUserLastSeenTime(userId, reactHookCallback) {
+  // Gets a user last seen date from db
   return db.collection("registeredUsers")
     .doc(userId)
     .onSnapshot(snapshot => {
       reactHookCallback(snapshot.data()?.lastSeen)
+    })
+}
+
+export function resetIsUserTypingOnDb(userId, convoId, isRoom, value) {
+  if (isRoom) {
+    db.collection("rooms")
+      .doc(convoId)
+      .collection("members")
+      .doc(userId)
+      .update({
+        isTyping: value
+      }).catch(err => console.log(err));
+  } else {
+    db.collection("registeredUsers")
+      .doc(convoId)
+      .collection("chats")
+      .doc(userId)
+      .update({
+        isTyping: value
+      }).catch(err => console.log(err));
+  }
+}
+
+export function getIsUserTypingFromDb(userId, convoId, isRoom, reactHookCallback) {
+  if (isRoom) {
+    // gets members that are typing on db
+    db.collection("rooms")
+      .doc(convoId)
+      .collection("members")
+      .where("isTyping", "==", true)
+      .onSnapshot(snapshot => {
+        let members = snapshot.docs.map(doc => doc.id)
+        if (members.length !== 0) {
+          // pick one user & get their current infos
+          let member = members[0];
+          db.collection("registeredUsers")
+            .doc(userId)
+            .get()
+            .then(doc => {
+              reactHookCallback({ ...member, name: doc.data()?.name });
+            }).catch(err => console.log(err));
+        } else {
+          reactHookCallback(null);
+        }
+      })
+
+  } else {
+    return db.collection("registeredUsers")
+      .doc(userId)
+      .collection("chats")
+      .doc(convoId)
+      .onSnapshot(snapshot => {
+        reactHookCallback(snapshot.data()?.isTyping)
+      })
+  }
+}
+
+export function resetIsUserOnDarkModeOnDb(userId, value) {
+  db.collection("registeredUsers")
+    .doc(userId)
+    .update({
+      darkMode: value,
+    })
+}
+
+export function getIsUserOnDarkModeOnDb(userId, reducerDispatch) {
+  return db.collection("registeredUsers")
+    .doc(userId)
+    .onSnapshot(snapshot => {
+      reducerDispatch({
+        type: "SET_ISUSERONDARKMODE",
+        isUserOnDarkMode: snapshot.data()?.darkMode
+      })
     })
 }
 

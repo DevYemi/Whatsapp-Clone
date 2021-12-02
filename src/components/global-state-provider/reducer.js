@@ -10,6 +10,9 @@ export const initialState = {
   isCurrentConvoBlocked: false, // state if the current displayed convo has been blocked
   selectedPreviewMember: null, // state of the member whom profile was clicked in RoomProfileMain 
   totalUserOnDb: null, // state for the total registered users on the db
+  isUserOnDarkMode: false, // keeps state if user is on dark mode
+  darkMode: { d1: { backgroundColor: "#212121" }, d2: { backgroundColor: "#3D3D3D" } },
+  lightMode: { l1: { backgroundColor: "white" }, l2: { backgroundColor: "EDEDED" } }
 };
 
 function reducer(state, action) {
@@ -34,6 +37,8 @@ function reducer(state, action) {
       return { ...state, selectedPreviewMember: action.selectedPreviewMember };
     case "SET_TOTALUSERONDB":
       return { ...state, totalUserOnDb: action.totalUserOnDb };
+    case "SET_ISUSERONDARKMODE":
+      return { ...state, isUserOnDarkMode: action.isUserOnDarkMode }
     default:
       return state;
   }

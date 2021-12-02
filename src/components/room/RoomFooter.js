@@ -2,7 +2,9 @@ import { IconButton } from '@material-ui/core'
 import { ExpandLessRounded, ExpandMoreRounded, InsertEmoticon } from '@material-ui/icons'
 import Picker from 'emoji-picker-react';
 import React, { useState } from 'react'
+import { resetIsUserTypingOnDb } from '../backend/get&SetDataToDb';
 import VoiceNoteRecoder from '../common/VoiceNoteRecoder'
+import { useStateValue } from '../global-state-provider/StateProvider';
 
 function RoomFooter(props) {
     const {
@@ -18,6 +20,7 @@ function RoomFooter(props) {
         isRoomSearchBarOpen,
         totalRoomWordFound } = props
     const [vnIsRecoding, setVnIsRecoding] = useState(false); // keeps state if the user is currently recording a voice note
+    const [{ user }] = useStateValue();
     const navigateToFoundWord = (key) => {
         let newIndex;
         switch (key) {
@@ -67,7 +70,11 @@ function RoomFooter(props) {
                 <form className={vnIsRecoding ? "hide" : ""} action="">
                     <input value={input} type="text"
                         onChange={e => setInput(e.target.value)}
-                        onFocus={e => showEmojis(e, true, "footer__emoji")}
+                        onFocus={e => {
+                            resetIsUserTypingOnDb(user?.info?.uid, roomId, true, true)
+                            showEmojis(e, true, "footer__emoji")
+                        }}
+                        onBlur={() => resetIsUserTypingOnDb(user?.info?.uid, roomId, true, false)}
                         placeholder="Type a message" />
                     <button onClick={(e) => sendMessage(e, "text")} type="submit">Send a message</button>
                 </form>

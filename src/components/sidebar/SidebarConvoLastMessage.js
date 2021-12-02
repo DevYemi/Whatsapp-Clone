@@ -1,10 +1,13 @@
 import { AudiotrackRounded, Check, ImageRounded, MicRounded, VideocamRounded } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react'
 import { getIfMessageHasBeenReadFromDb } from '../backend/get&SetDataToDb';
+import { useStateValue } from '../global-state-provider/StateProvider';
 
-function SidebarChatLastMessage({ lastMessage }) {
+function SidebarChatLastMessage({ lastMessage, isRoom }) {
+    const [{ totalUserOnDb }] = useStateValue()
     const [audioFileDuration, setAudioFileDuration] = useState(null)
     const { message, fileType, senderId, receiverId, id } = lastMessage;
+    const [lastMessagesUpdated, setIsLastMessagesUpdated] = useState({ ...lastMessage }) // keeps state of last message that has been updated with user current details
     const [isRead, setIsRead] = useState(false); // keeps state if this message has been read
 
     useEffect(() => { // sets the duration of the file if its audio, voice-note or video
@@ -57,54 +60,85 @@ function SidebarChatLastMessage({ lastMessage }) {
         }
         return () => unsubGetIfMessageHasBeenReadFromDb && unsubGetIfMessageHasBeenReadFromDb();
     }, [senderId, receiverId, id])
+    useEffect(() => {
+        // get message and updates with the latest users infos
+        let lastMessageClone = { ...lastMessage }
+        if (lastMessage) {
+            let match = totalUserOnDb.filter(user => user.uid === lastMessage.senderId)[0]
+            lastMessageClone.name = match?.name
+        }
+        setIsLastMessagesUpdated(lastMessageClone);
+
+    }, [totalUserOnDb, lastMessage])
 
     if (fileType?.type === "text") {
         return (
             <div>
-                <div className={`check ${isRead && "read"}`}>
-                    <Check className="checkIcon" />
-                    <Check className="checkIcon" />
-                </div>
+                {isRoom ?
+                    <p>{lastMessagesUpdated.name}:</p>
+                    : <div className={`check ${isRead && "read"}`}>
+                        <Check className="checkIcon" />
+                        <Check className="checkIcon" />
+                    </div>
+
+                }
+                {" "}
                 {message}
             </div>
         )
     } else if (fileType?.info?.type === "image") {
         return (
             <div>
-                <div className={`check ${isRead && "read"}`}>
-                    <Check className="checkIcon" />
-                    <Check className="checkIcon" />
-                </div>
+                {isRoom ?
+                    <p>{lastMessagesUpdated.name}:</p>
+                    : <div className={`check ${isRead && "read"}`}>
+                        <Check className="checkIcon" />
+                        <Check className="checkIcon" />
+                    </div>
+
+                }
                 <ImageRounded className="img" /> Image
             </div>
         )
     } else if (fileType?.info?.type === "audio") {
         return (
             <div>
-                <div className={`check ${isRead && "read"}`}>
-                    <Check className="checkIcon" />
-                    <Check className="checkIcon" />
-                </div>
+                {isRoom ?
+                    <p>{lastMessagesUpdated.name}:</p>
+                    : <div className={`check ${isRead && "read"}`}>
+                        <Check className="checkIcon" />
+                        <Check className="checkIcon" />
+                    </div>
+
+                }
                 <AudiotrackRounded className="audio" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Audio
             </div>
         )
     } else if (fileType?.info?.type === "video") {
         return (
             <div>
-                <div className={`check ${isRead && "read"}`}>
-                    <Check className="checkIcon" />
-                    <Check className="checkIcon" />
-                </div>
+                {isRoom ?
+                    <p>{lastMessagesUpdated.name}:</p>
+                    : <div className={`check ${isRead && "read"}`}>
+                        <Check className="checkIcon" />
+                        <Check className="checkIcon" />
+                    </div>
+
+                }
                 <VideocamRounded className="video" />{audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Video
             </div>
         )
     } else if (fileType?.info?.type === "voice-note") {
         return (
             <div>
-                <div className={`check ${isRead && "read"}`}>
-                    <Check className="checkIcon" />
-                    <Check className="checkIcon" />
-                </div>
+                {isRoom ?
+                    <p>{lastMessagesUpdated.name}:</p>
+                    : <div className={`check ${isRead && "read"}`}>
+                        <Check className="checkIcon" />
+                        <Check className="checkIcon" />
+                    </div>
+
+                }
                 <MicRounded className="mic" /> {audioFileDuration ? `${audioFileDuration.min}:${audioFileDuration.sec}` : "00:00"} Voice-Note
             </div>
         )

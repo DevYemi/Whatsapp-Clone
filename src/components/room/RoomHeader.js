@@ -20,6 +20,7 @@ function RoomHeader(props) {
     setOpenModal,
     setModalType,
     setIsRoom,
+    roomMemberWhomTyping,
     isRoomSearchBarOpen
   } = props;
   const [searchInput, setSearchInput] = useState("");
@@ -148,11 +149,13 @@ function RoomHeader(props) {
         <div className="room__headerInfo" onClick={() => profile.open(true)}>
           <h3>{currentDisplayConvoInfo?.roomName}</h3>
           <p>
-            {roomMembers.length > 0
-              ? roomMembers.map((member, index) => (
-                <small key={index}>{`${member.data.name}, `}</small>
-              ))
-              : "There are no member in this room"}
+            {roomMemberWhomTyping ?
+              `${roomMemberWhomTyping.name} Typing...`
+              : roomMembers.length > 0
+                ? roomMembers.map((member, index) => (
+                  <small key={index}>{`${member.data.name}, `}</small>
+                ))
+                : "There are no member in this room"}
           </p>
         </div>
         <div className="room__headerRight">

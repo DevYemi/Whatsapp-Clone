@@ -3,8 +3,16 @@
     align-items: center;
     flex: 1;
     justify-content: center;
+}
+
+.connectedDisplay.dark {
+    background-color: #3D3D3D;
+}
+
+.connectedDisplay.light {
     background-color: #F8F9FB;
 }
+
 .connectedDisplay_wr {
     display: flex;
     align-items: center;
@@ -12,19 +20,26 @@
     flex-direction: column;
     max-width: 80%;
 }
+
 .connectedDisplay_wr img {
- object-fit: contain;
- max-width: 300px;
- max-height: 300px;
- width: 45%;
- height: 45%;
+    object-fit: contain;
+    max-width: 300px;
+    max-height: 300px;
+    width: 45%;
+    height: 45%;
 }
+
+.connectedDisplay_wr img.dark {
+    border-radius: 50%;
+}
+
 .connectedDisplay_wr h1 {
-  font-weight: lighter;
-  color: rgba(0, 0, 0, 0.637);
-  margin: 1.4em 0 .8em 0;
+    font-weight: lighter;
+    color: rgba(0, 0, 0, 0.637);
+    margin: 1.4em 0 .8em 0;
 }
-.connectedDisplay_wr > p {
+
+.connectedDisplay_wr>p {
     text-align: center;
     font-size: .9rem;
     color: rgba(0, 0, 0, 0.452);
@@ -32,21 +47,25 @@
     padding-bottom: 2em;
     margin-bottom: 2em;
 }
-.connectedDisplay_wr > div {
+
+.connectedDisplay_wr>div {
     display: flex;
     align-items: center;
 }
-.connectedDisplay_wr > div .MuiSvgIcon-root {
-    color: rgba(0, 0, 0, 0.637) ;
+
+.connectedDisplay_wr>div .MuiSvgIcon-root {
+    color: rgba(0, 0, 0, 0.637);
     width: .8em;
     height: .8em;
 }
-.connectedDisplay_wr > div p {
- color: rgba(0, 0, 0, 0.637);
- margin-left: .5em;
- font-size: small;
+
+.connectedDisplay_wr>div p {
+    color: rgba(0, 0, 0, 0.637);
+    margin-left: .5em;
+    font-size: small;
 }
-.connectedDisplay_wr > div p a {
+
+.connectedDisplay_wr>div p a {
     text-decoration: none;
     color: #05943c;
 }

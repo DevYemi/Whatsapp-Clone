@@ -109,6 +109,7 @@ function RoomProfileMain(props) {
     const handleAviFileChange = (e) => {
         // handles the uploading of the group new avi
         const selectedAvi = e.target.files[0];
+        if (selectedAvi.type.split("/")[0] !== "image") return
         if (selectedAvi) {
             setLoadingChangeAvi(true)
             setNewAviForGroupOnDb(selectedAvi, currentDisplayConvoInfo?.roomId, setLoadingChangeAvi);

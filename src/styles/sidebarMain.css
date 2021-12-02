@@ -23,6 +23,14 @@
     border-right: 1px solid lightgrey;
 }
 
+.sidebarMain__header.light {
+    border-right: 1px solid lightgrey;
+}
+
+.sidebarMain__header.dark {
+    border-right: 1px solid #3D3D3D;
+}
+
 .sidebarMain__headerRight {
     display: flex;
     justify-content: space-between;
@@ -63,6 +71,12 @@
     padding: 1.1em 4.5em .9em 1.1em;
 }
 
+.sidebarMain__headerHelp>ul li:last-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .sidebarMain__headerHelp>ul li:hover {
     background-color: rgba(0, 0, 0, 0.123);
 }
@@ -73,6 +87,14 @@
     background-color: #f6f6f6;
     height: 39px;
     padding: 10px;
+}
+
+.sidebarMain__search.dark {
+    background-color: #3D3D3D;
+}
+
+.sidebarMain__search.light {
+    background-color: #f6f6f6;
 }
 
 .sidebarMain__searchContainer {
@@ -101,6 +123,14 @@
     background-color: white;
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.sidebarMain__convos.dark {
+    background-color: #212121;
+}
+
+.sidebarMain__convos.light {
+    background-color: white;
 }
 
 .sidebarMain__convos::-webkit-scrollbar {

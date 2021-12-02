@@ -2,7 +2,6 @@ import { SentimentDissatisfiedRounded } from '@material-ui/icons'
 import React from 'react'
 
 function FilePreviewFileType({ fileOnPreview, isFileSupported, isFileTooBig }) { // gets the type of file to be previewed e.g image, audio, video
-    console.log(isFileTooBig)
     if (isFileTooBig) {
         return (
             <div className="filePreviewIsTooBig">

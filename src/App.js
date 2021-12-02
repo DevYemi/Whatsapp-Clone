@@ -9,9 +9,13 @@ import Room from "./components/room/Room";
 import Sidebar from "./components/sidebar/Sidebar";
 import { useStateValue } from "./components/global-state-provider/StateProvider";
 import Profile from "./components/profile/Profile";
-import { getTotalUsersFromDb } from "./components/backend/get&SetDataToDb";
+import { getIsUserOnDarkModeOnDb, getTotalUsersFromDb } from "./components/backend/get&SetDataToDb";
 function App() {
-  const [{ user, selectedPreviewMember }, dispatch] = useStateValue();
+  const [{
+    user,
+    selectedPreviewMember,
+    isUserOnDarkMode,
+  }, dispatch] = useStateValue();
   const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
   const [isChatBeingCleared, setIsChatBeingCleared] = useState(false) // keeps state if current displayed chat messages is being cleared
   const [modalInput, setModalInput] = useState(""); // keeps state of user input in the modal
@@ -32,19 +36,27 @@ function App() {
         user: JSON.parse(localStorage.whatsappCloneUser),
       })
     }
-  }, [dispatch])
+  }, [dispatch]);
+  useEffect(() => {
+    // Gets if logged in user is on dark mode
+    let unsubGetIsUserOnDarkModeOnDb;
+    if (user) {
+      unsubGetIsUserOnDarkModeOnDb = getIsUserOnDarkModeOnDb(user.info.uid, dispatch)
+    }
+    return () => unsubGetIsUserOnDarkModeOnDb && unsubGetIsUserOnDarkModeOnDb();
+  }, [user, dispatch])
   useEffect(() => { // Gets the total registertered user on db
     let unsubcribeGetToUserFromDb = getTotalUsersFromDb(dispatch);
     return () => { unsubcribeGetToUserFromDb(); }
   }, [dispatch])
   return (
-    <div className="app">
+    <div className={`app ${isUserOnDarkMode ? "dark" : "light"}`}>
       {!user ? (
         <Login />
       ) : (
         <Router>
           {isAddChatFromRoomProfile && <Redirect to={`/chats/${selectedPreviewMember.id}`} />}
-          <div className="app__body">
+          <div className={`app__body ${isUserOnDarkMode ? "dark" : "light"}`}>
             <Sidebar
               setOpenModal={setOpenModal}
               setModalType={setModalType}

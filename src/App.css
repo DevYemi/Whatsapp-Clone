@@ -1,16 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-*{
+
+* {
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
   box-sizing: border-box;
 }
+
 .app {
   height: 100vh;
   display: grid;
   place-items: center;
   background-color: #dadbd3;
 }
+
 .app__body {
   display: flex;
   background-color: #ededed;
@@ -21,14 +24,31 @@
   box-shadow: 1px 1px 9px 3px rgb(148, 146, 146);
   width: 90vw;
 }
+
+.app.dark {
+  background-color: #3D3D3D;
+}
+
+.app.light {
+  background-color: #EDEDED;
+}
+
+.app__body.dark {
+  background-color: #3D3D3D;
+}
+
+.app__body.light {
+  background-color: #EDEDED;
+}
+
 @media(min-width: 767px) {
- .app:before {
-  position: fixed;
-  top: 0;
-  z-index: 1;
-  background-color: #009688;
-  width: 100%;
-  height: 127px;
-  content: "";
- }
+  .app:before {
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: #009688;
+    width: 100%;
+    height: 127px;
+    content: "";
+  }
 }

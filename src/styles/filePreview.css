@@ -40,6 +40,15 @@
     width: 100%;
 }
 
+.filePreviewAudio>div {
+    display: flex;
+    justify-content: center;
+}
+
+.filePreviewAudio>div audio {
+    max-width: 90%;
+}
+
 .filePreviewIsTooBig>div>h3,
 .filePreviewNotSupported>div>h3 {
     display: flex;

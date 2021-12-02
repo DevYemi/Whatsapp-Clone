@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import '../../styles/room.css'
 import { useParams } from 'react-router-dom';
 import { useStateValue } from '../global-state-provider/StateProvider';
-import { getRoomInfoFromDb, getMessgFromDb, setNewMessageToDb, uploadFileToDb, resetRecieverMssgReadOnDb, getGroupMemberFromDb, resetUserRoomOnScreenInDb } from '../backend/get&SetDataToDb';
+import { getRoomInfoFromDb, getMessgFromDb, setNewMessageToDb, uploadFileToDb, resetRecieverMssgReadOnDb, getGroupMemberFromDb, resetUserRoomOnScreenInDb, getIsUserTypingFromDb } from '../backend/get&SetDataToDb';
 import FilePreview from '../common/FilePreview';
 import RoomHeader from './RoomHeader';
 import RoomBody from './RoomBody';
@@ -31,20 +31,27 @@ function Room(props) {
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
     const [totalRoomWordFound, setTotalRoomWordFound] = useState(0); // keeps state of total word found when a user search on the header search bar
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
-    const [roomMembers, setRoomMembers] = useState([])
+    const [roomMembers, setRoomMembers] = useState([]); // keeps state of all the room members
+    const [roomMemberWhomTyping, setRoomMemberWhomTyping] = useState(null) // keeps state of the room member thats typing
     const { roomId } = useParams(); // id for the current room the user is on
 
     const sendMessage = (e, eventType, file) => { // sends new message to db
         e && e.preventDefault();
+        let fileInput = document.querySelector(`room__headerRight input`);
+        fileInput.value = ""
+        setInput("");
+        setIsFileTooBig(false);
+        setIsFileSupported(true);
+        setIsFileOnPreview(false);
+        setFileOnPreview(null);
         if (input === "" && eventType === "text") return // return if the user is sending an empty message
+        if (isFileTooBig) return // return if file is too big
+        if (!isFileSupported) return // return if file is not supported
         if (eventType === "file") { // handle as file messaage if message contains files e.g image, audio, video
             setNewMessageToDb(roomId, input, user, scrollRoomBody, true, file);
         } else if (eventType === "text") { // handle as text if message if just a text
             setNewMessageToDb(roomId, input, user, scrollRoomBody, true, { type: "text", exten: ".txt" });
         }
-        setInput("");
-        setIsFileOnPreview(false);
-        setFileOnPreview(null);
 
     }
     const scrollRoomBody = { // Scroll room body 
@@ -115,6 +122,14 @@ function Room(props) {
         setRoomFirstRender(true);
         return () => setRoomFirstRender(false)
     }, [messages]);
+    useEffect(() => {
+        // gets if room member who is currently typing on the db
+        let unsubRoomMemberWhomTyping;
+        if (roomId) {
+            unsubRoomMemberWhomTyping = getIsUserTypingFromDb(user?.info?.uid, roomId, true, setRoomMemberWhomTyping);
+        }
+        return () => unsubRoomMemberWhomTyping && unsubRoomMemberWhomTyping()
+    }, [roomId, user])
     useEffect(() => { // map Room messages to global state currentDisplyedConvoMessages
 
         if (messages.length > 0) {
@@ -165,6 +180,7 @@ function Room(props) {
                 setModalType={setModalType}
                 setIsRoom={setIsRoom}
                 isRoomSearchBarOpen={isRoomSearchBarOpen}
+                roomMemberWhomTyping={roomMemberWhomTyping}
             />
             <RoomBody
                 messages={messages}

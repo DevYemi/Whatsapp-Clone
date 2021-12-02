@@ -277,7 +277,11 @@
 }
 
 .room__imageFullScreenDivWrap {
-    position: relative;
+    display: flex;
+    height: 80vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .room__imageFullScreenDivWrap>img {
@@ -287,10 +291,8 @@
 
 .room__imageFullScreenCaption {
     font-size: 1.2rem;
-    position: absolute;
     color: white;
-    top: 82%;
-    left: 33%;
+    margin-top: .5em;
 }
 
 @media(max-width: 767px) {

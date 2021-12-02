@@ -8,6 +8,7 @@ import Picker from "emoji-picker-react";
 import React, { useState } from "react";
 import { useStateValue } from "../global-state-provider/StateProvider";
 import VoiceNoteRecoder from "../common/VoiceNoteRecoder";
+import { resetIsUserTypingOnDb } from "../backend/get&SetDataToDb";
 
 function ChatFooter(props) {
   const {
@@ -95,7 +96,11 @@ function ChatFooter(props) {
             value={input}
             type="text"
             onChange={(e) => setInput(e.target.value)}
-            onFocus={(e) => showEmojis(e, true, "footer__emoji")}
+            onFocus={(e) => {
+              resetIsUserTypingOnDb(user.info.uid, chatId, false, true)
+              showEmojis(e, true, "footer__emoji");
+            }}
+            onBlur={() => resetIsUserTypingOnDb(user.info.uid, chatId, false, false)}
             placeholder="Type a message"
           />
           <button onClick={(e) => sendMessage(e, "text")} type="submit">

@@ -56,7 +56,7 @@
 
 .sidebarConvo__info>div {
     font-size: small;
-    max-width: 150px;
+    max-width: 250px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -64,6 +64,10 @@
     color: #00000094;
     align-items: center;
     position: relative;
+}
+
+.sidebarConvo__info>.typing {
+    color: #06D755;
 }
 
 .sidebarConvo__info>div>.check {

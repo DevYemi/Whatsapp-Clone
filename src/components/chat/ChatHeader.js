@@ -22,12 +22,12 @@ function ChatHeader(props) {
     setIsRoom,
     isChatUserOnline,
     chatUserLastSeen,
+    isChatUserTyping,
     isChatSearchBarOpen
   } = props;
   const [searchInput, setSearchInput] = useState("");
   const [{ user }] = useStateValue(); // new logged in user
   const [ischatHeaderHelpOpened, setIschatHeaderHelpOpened] = useState(false); // keeps state if the chat help div is opened or not
-
   const chatHeaderSearchBar = {
     open: function () {
       let headerContent = document.querySelector(".chat__headerWr");
@@ -152,7 +152,11 @@ function ChatHeader(props) {
         <div className="chat__headerInfo" onClick={() => profile.open(false)}>
           <h3>{currentDisplayConvoInfo?.name}</h3>
           <p>
-            {isChatUserOnline ? "Online" : `Last seen ${new Date(chatUserLastSeen.toDate()).toUTCString()}`}
+            {
+              isChatUserTyping ? "Typing..."
+                : isChatUserOnline ? "Online"
+                  : chatUserLastSeen ? `Last seen ${new Date(chatUserLastSeen.toDate()).toUTCString()}`
+                    : "Offline"}
 
           </p>
         </div>

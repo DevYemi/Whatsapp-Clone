@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import '../../styles/chat.css'
 import { useParams } from 'react-router-dom';
 import { useStateValue } from '../global-state-provider/StateProvider';
-import { getIsConvoBlockedOnDb, getIsUserOnlineOnDb, getMessgFromDb, getUserInfoFromDb, getUserLastSeenTime, resetRecieverMssgReadOnDb, setNewMessageToDb, uploadFileToDb } from '../backend/get&SetDataToDb';
+import { getIsConvoBlockedOnDb, getIsUserOnlineOnDb, getIsUserTypingFromDb, getMessgFromDb, getUserInfoFromDb, getUserLastSeenTime, resetRecieverMssgReadOnDb, setNewMessageToDb, uploadFileToDb } from '../backend/get&SetDataToDb';
 import FilePreview from '../common/FilePreview';
 import ChatHeader from './ChatHeader';
 import ChatBody from './ChatBody';
@@ -22,6 +22,7 @@ function Chat(props) {
 
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
     const [chatFirstRender, setChatFirstRender] = useState(false); // keeps state if chat is rendering for the first time
+    const [isChatUserTyping, setIsChatUserTyping] = useState(false); // keeps state if the chat user is currently typing a message
     const [isFileOnPreview, setIsFileOnPreview] = useState(false); // keeps state if there currently a file on preview
     const [isFileTooBig, setIsFileTooBig] = useState(false); // keeps state if file picked is more than 15mb
     const [isFileSupported, setIsFileSupported] = useState(true) // keeps state if file picked is supported
@@ -33,19 +34,25 @@ function Chat(props) {
     const [totalChatWordFound, setTotalChatWordFound] = useState(0); // keeps state of total word found when a user search on the header search bar
     const [foundWordIndex, setFoundWordIndex] = useState(0); // keeps state of the current found word index
     const [isChatUserOnline, setIsChatUserOnline] = useState(false) // keeps state if the chat user is online
-    const [chatUserLastSeen, setChatUserLastSeen] = useState(false) // keeps state pf last time chat user was online
+    const [chatUserLastSeen, setChatUserLastSeen] = useState() // keeps state pf last time chat user was online
     const { chatId } = useParams(); // id for the current room the user is on
     const sendMessage = (e, eventType, file) => { // sends new message to db
         e && e.preventDefault();
+        let fileInput = document.querySelector(`.chat__headerRight input`);
+        fileInput.value = ""
+        setInput("");
+        setIsFileTooBig(false)
+        setIsFileSupported(true)
+        setIsFileOnPreview(false);
+        setFileOnPreview(null);
         if (input === "" && eventType === "text") return // return if the user is sending an empty message
+        if (isFileTooBig) return // return if file is too big
+        if (!isFileSupported) return // return if file is not supported
         if (eventType === "file") { // handle as file messaage if message contains files e.g image, audio, video
             setNewMessageToDb(chatId, input, user, scrollChatBody, false, file);
         } else if (eventType === "text") { // handle as text if message if just a text
             setNewMessageToDb(chatId, input, user, scrollChatBody, false, { type: "text", exten: ".txt" });
         }
-        setInput("");
-        setIsFileOnPreview(false);
-        setFileOnPreview(null);
 
     }
     const scrollChatBody = { // Scroll chat body 
@@ -142,6 +149,15 @@ function Chat(props) {
         resetRecieverMssgReadOnDb(user?.info.uid, chatId, true, false);
     }, [chatId, user?.info.uid])
 
+    useEffect(() => {
+        // gets if the chat user is currently typing on the db
+        let unsubGetIsUserTypingFromDb;
+        if (chatId) {
+            unsubGetIsUserTypingFromDb = getIsUserTypingFromDb(user?.info?.uid, chatId, false, setIsChatUserTyping)
+        }
+        return () => unsubGetIsUserTypingFromDb && unsubGetIsUserTypingFromDb()
+    }, [chatId, user])
+
     useEffect(() => { // gets currentDisplayConvoInfo, isConvoBlockedOnDb  and chatMessages on first render
         let unsubcribeMessages;
         let unsubcribeIsConvoBlockedOnDb;
@@ -171,6 +187,7 @@ function Chat(props) {
                 isChatSearchBarOpen={isChatSearchBarOpen}
                 isChatUserOnline={isChatUserOnline}
                 chatUserLastSeen={chatUserLastSeen}
+                isChatUserTyping={isChatUserTyping}
             />
             <ChatBody
                 messages={messages}

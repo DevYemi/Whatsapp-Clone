@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import '../../styles/sidebarMain.css'
 import { Avatar, IconButton } from "@material-ui/core";
-import { DonutLarge, Chat, MoreVert, SearchOutlined, NotificationsOff } from "@material-ui/icons";
+import { DonutLarge, Chat, MoreVert, SearchOutlined } from "@material-ui/icons";
 import { useStateValue } from "../global-state-provider/StateProvider";
-import { getChatsFromDb, getRoomsFromDb, getUserInfoFromDb, } from "../backend/get&SetDataToDb";
+import { getChatsFromDb, getRoomsFromDb, getUserInfoFromDb } from "../backend/get&SetDataToDb";
 import Loading from "../common/Loading";
 import SidebarConvo from "./SidebarConvo";
 import { useHistory } from "react-router-dom";
-import { sidebarProfile, sidebarMainHeaderHelp, handleLogOut } from '../utils/sidebarUtils';
+import { sidebarProfile, sidebarMainHeaderHelp, handleLogOut, handleDarkMode, GreenSwitch } from '../utils/sidebarUtils';
+import Switch from '@mui/material/Switch';
 
 function SidebarMain(props) {
     const {
@@ -23,7 +24,7 @@ function SidebarMain(props) {
     const [convos, setConvos] = useState([]); // keeps state for the combination of chat and rooms
     const [isSidebarHeaderHelpOpened, setIsSidebarHeaderHelpOpened] = useState(false); // keeps state if the sidebar help div is opened or not
 
-    const [{ user }, dispatch] = useStateValue(); // keeps state for current logged in user
+    const [{ user, isUserOnDarkMode }, dispatch] = useStateValue(); // keeps state for current logged in user
     const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
     const urlHistory = useHistory();
 
@@ -96,7 +97,7 @@ function SidebarMain(props) {
     }, [chats, dispatch])
     return (
         <div className="sidebarMain">
-            <section className="sidebarMain__header">
+            <section className={`sidebarMain__header ${isUserOnDarkMode ? "dark" : "light"}`}>
                 <div onClick={sidebarProfile.show} className="sidebarMain__headerLeft">
                     <Avatar src={userInfoDb?.avi} />
                     <p>{userInfoDb?.phoneNumber}</p>
@@ -119,18 +120,25 @@ function SidebarMain(props) {
                                 <li> Starred Messages</li>
                                 <li>Settings</li>
                                 <li onClick={() => handleLogOut(user, dispatch)}>Log out</li>
+                                <li onClick={() => handleDarkMode(user, !isUserOnDarkMode)}>
+                                    <span>Dark Mode</span>
+                                    <GreenSwitch
+                                        checked={isUserOnDarkMode}
+                                        onChange={() => handleDarkMode(user, !isUserOnDarkMode)}
+                                        inputProps={{ 'aria-label': 'controlled' }}
+                                    /></li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </section>
-            <section className="sidebarMain__search">
+            <section className={`sidebarMain__search ${isUserOnDarkMode ? "dark" : "light"}`}>
                 <div className="sidebarMain__searchContainer">
                     <SearchOutlined />
                     <input type="text" placeholder="Search or start a new group" />
                 </div>
             </section>
-            <section className="sidebarMain__convos">
+            <section className={`sidebarMain__convos  ${isUserOnDarkMode ? "dark" : "light"}`}>
                 <SidebarConvo
                     addNewConvo
                     setOpenModal={setOpenModal}

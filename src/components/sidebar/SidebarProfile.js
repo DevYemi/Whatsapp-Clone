@@ -20,10 +20,10 @@ function SidebarProfile() {
     const handleAviFileChange = (e) => {
         // handles the uploading of the group new avi
         const selectedAvi = e.target.files[0];
+        if (selectedAvi.type.split("/")[0] !== "image") return
         if (selectedAvi) {
             setLoadingChangeAvi(true);
             setNewLoggedInUserAviOnDb(user.info.uid, selectedAvi, setLoadingChangeAvi);
-            console.log(selectedAvi)
         }
     };
     const showEmojis = (e, userTyping, location) => {
@@ -101,7 +101,11 @@ function SidebarProfile() {
         <div className="sidebarProfile">
             <div className="sidebarProfile__header">
                 <div>
-                    <ArrowBack onClick={sidebarProfile.hide} />
+                    <ArrowBack onClick={() => {
+                        sidebarProfile.hide();
+                        setIsNameOnEdit();
+                        setIsAboutOnEdit();
+                    }} />
                     <p>Profile</p>
                 </div>
             </div>

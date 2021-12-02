@@ -95,6 +95,8 @@
 .message__image>div>img {
   width: 100%;
   object-fit: cover;
+  height: 100%;
+  max-height: 400px;
   max-width: 250px;
 }
 

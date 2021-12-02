@@ -1,5 +1,8 @@
 import gsap from "gsap"
-import { resetIsUserOnlineOnDb } from "../backend/get&SetDataToDb"
+import { resetIsUserOnDarkModeOnDb, resetIsUserOnlineOnDb } from "../backend/get&SetDataToDb"
+import { alpha, styled } from '@mui/material/styles';
+import { pink } from '@mui/material/colors';
+import Switch from '@mui/material/Switch';
 
 export const sidebarProfile = { // handles the smooth animation of displaying and hiding the sidebar div
     show: function () {
@@ -46,6 +49,7 @@ export const sidebarMainHeaderHelp = {
 };
 
 export function handleLogOut(user, dispatch) {
+    // logs a user out
     localStorage.removeItem('whatsappCloneUser');
     dispatch({
         type: "SET_USER",
@@ -53,3 +57,20 @@ export function handleLogOut(user, dispatch) {
     })
     resetIsUserOnlineOnDb(user?.info?.uid, false);
 }
+
+export function handleDarkMode(user, value) {
+    // reset dark mode toggle
+    resetIsUserOnDarkModeOnDb(user?.info?.uid, value)
+}
+
+export const GreenSwitch = styled(Switch)(({ theme }) => ({
+    '& .MuiSwitch-switchBase.Mui-checked': {
+        color: "#009688",
+        '&:hover': {
+            backgroundColor: "#009688",
+        },
+    },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: "#009688",
+    },
+}));

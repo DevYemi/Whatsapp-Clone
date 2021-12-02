@@ -1,37 +1,46 @@
  .imageFullScreen {
-    position: absolute;
-    display: none;
-    transition: all 1s ease-in-out;
-    top: 110%;
-    height: 100%;
-    width: 100%;
-    background-color: black;
-    z-index: 2;
-    opacity: 1;
-}
+     position: absolute;
+     display: none;
+     transition: all 1s ease-in-out;
+     top: 110%;
+     height: 100%;
+     width: 100%;
+     background-color: black;
+     z-index: 2;
+     opacity: 1;
+ }
+
  .imageFullScreen.show {
-    display:block;
-    top: 0;
-}
-.imageFullScreen_wr {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-}
-.imageFullScreen_wr > .MuiButtonBase-root {
-    color: white;
-}
-.imageFullScreenDivWrap {
-    position: relative;
-}
-.imageFullScreenDivWrap > img {
-    width: 100%;
-    object-fit: contain;
-}
-.imageFullScreenCaption {
-    font-size: 1.2rem;
-    position: absolute;
-    color: white;
-    top: 82%;
-    left: 33%;
-}
+     display: block;
+     top: 0;
+ }
+
+ .imageFullScreen_wr {
+     display: flex;
+     height: 100%;
+     flex-direction: column;
+ }
+
+ .imageFullScreen_wr>.MuiButtonBase-root {
+     color: white;
+ }
+
+ .imageFullScreenDivWrap {
+     display: flex;
+     height: 80vh;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+ }
+
+ .imageFullScreenDivWrap>img {
+     width: 100%;
+     height: 100%;
+     object-fit: contain;
+ }
+
+ .imageFullScreenCaption {
+     font-size: 1.2rem;
+     margin-top: .5em;
+     color: white;
+ }

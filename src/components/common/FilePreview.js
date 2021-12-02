@@ -31,6 +31,7 @@ function FilePreview(props) {
         if (done) {
             let fileInput = document.querySelector(`.${isRoom ? "room" : "chat"}__headerRight input`);
             fileInput.value = ""
+            setInput("")
             setIsFileOnPreview(false);
             setIsFileOnPreviewLoading(false);
             setIsFileSupported(true);
@@ -39,7 +40,8 @@ function FilePreview(props) {
         }
 
     }
-    const sendFileOnPreview = async () => {
+    const sendFileOnPreview = async (e) => {
+        e.preventDefault();
         let done = await filePreviewAnimation.close();
         if (fileOnPreview && done) {
             sendMessage(null, "file", fileOnPreview);
@@ -48,7 +50,12 @@ function FilePreview(props) {
     const filePreviewAnimation = {
         open: function () {
             if (isFileOnPreview) {
-                gsap.to(".chat__filePreview", { duration: .2, display: "block", top: 0, })
+                gsap.to(".chat__filePreview", {
+                    ease: "power4.in",
+                    duration: 0.5,
+                    display: "block",
+                    top: 0,
+                })
             }
         },
         close: function () {
@@ -57,12 +64,22 @@ function FilePreview(props) {
                     duration: .1,
                     display: "block",
                     top: "110%",
-                    onComplete: () => resolve(true)
+                    onComplete: () => { resolve(true); console.log(isFileOnPreview) }
                 })
             })
         }
     }
-    isFileOnPreview && filePreviewAnimation.open();
+    useEffect(() => {
+        // open filePreviewAnimation
+        if (isFileOnPreview) {
+            gsap.to(".chat__filePreview", {
+                ease: "power4.in",
+                duration: 0.5,
+                display: "block",
+                top: 0,
+            })
+        }
+    }, [isFileOnPreview])
     return (
         <section className={`chat__filePreview ${isFileOnPreview && "show"}`} >
             <div className={`filePreview_wr`}>

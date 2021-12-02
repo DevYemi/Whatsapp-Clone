@@ -1,12 +1,14 @@
 import React from 'react'
 import "../../styles/connectedDisplay.css"
 import { LaptopMacRounded } from '@material-ui/icons';
+import { useStateValue } from '../global-state-provider/StateProvider';
 
 function ConnectedDisplay() {
+    const [{ isUserOnDarkMode }] = useStateValue()
     return (
-        <div className="connectedDisplay">
+        <div className={`connectedDisplay ${isUserOnDarkMode ? "dark" : "light"}`}>
             <div className="connectedDisplay_wr">
-                <img src="/img/whatapp-intro.jpg" alt="phone-connected" />
+                <img className={`${isUserOnDarkMode ? "dark" : "light"}`} src="/img/whatapp-intro.jpg" alt="phone-connected" />
                 <h1>Keep your phone connected</h1>
                 <p>WhatsApp connects to your phone to sync messages. To reduce data usage, connect your phone to a Wi-Fi</p>
                 <div>

@@ -2,7 +2,7 @@ import { Avatar } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import '../../styles/sidebarConvo.css'
-import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, resetRecieverMssgReadOnDb, getUserInfoFromDb, getRoomInfoFromDb } from '../backend/get&SetDataToDb';
+import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, resetRecieverMssgReadOnDb, getUserInfoFromDb, getRoomInfoFromDb, getIsUserTypingFromDb } from '../backend/get&SetDataToDb';
 import SidebarConvoLastMessage from './SidebarConvoLastMessage';
 import { useStateValue } from '../global-state-provider/StateProvider';
 import { useLocation } from "react-router-dom";
@@ -16,7 +16,24 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
     const [newMssgNum, setNewMssgNum] = useState(0); // keeps stste for the number of new messages
     const [lastMessage, setlastMessage] = useState(); // keeps state for the last message recived or sent
     const [isCurrentSidebar, setIsCurrentSidebar] = useState(false); // keeps state if a user is current on the displayed sidebar
+    const [ischatUserTyping, setIschatUserTyping] = useState(false); // keeps state if convo user or users are typing a message
+    const [roomMemberWhomTyping, setRoomMemberWhomTyping] = useState(null) // keeps state of the room member thats typing if sidebar convo is a room
     const urlLocation = useLocation();
+
+    useEffect(() => { // Gets if convo user is typing a message
+        let unsubIschatUserTypingDb;
+        let unsubRoomMemberWhomTyping;
+        if (convoId && isRoom) {
+            unsubRoomMemberWhomTyping = getIsUserTypingFromDb(user?.info?.uid, convoId, isRoom, setRoomMemberWhomTyping);
+        }
+        else if (convoId && !isRoom) {
+            unsubIschatUserTypingDb = getIsUserTypingFromDb(user?.info?.uid, convoId, isRoom, setIschatUserTyping);
+        }
+        return () => {
+            unsubRoomMemberWhomTyping && unsubRoomMemberWhomTyping();
+            unsubIschatUserTypingDb && unsubIschatUserTypingDb();
+        }
+    }, [user, convoId, isRoom])
 
     useEffect(() => { // Get the info of the convo user
         let unsubGetUserInfoFromDb;
@@ -77,7 +94,15 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
                     <Avatar src={convoDirectInfo?.avi} />
                     <div className="sidebarConvo__info">
                         <h2>{isRoom ? convoDirectInfo?.roomName : convoDirectInfo?.name}</h2>
-                        {lastMessage ? <SidebarConvoLastMessage lastMessage={lastMessage} /> : <div>{isRoom ? "Room" : "Chat"} is currently empty</div>}
+                        {roomMemberWhomTyping && isRoom ?
+                            <div className="typing">{`${roomMemberWhomTyping.name} Typing...`}</div>
+                            : ischatUserTyping && !isRoom ?
+                                <div className="typing">Typing...</div>
+                                : lastMessage ?
+                                    <SidebarConvoLastMessage
+                                        isRoom={isRoom}
+                                        lastMessage={lastMessage} />
+                                    : <div>{isRoom ? "Room" : "Chat"} is currently empty</div>}
                     </div>
                 </div>
                 <p className={newMssgNum > 0 && !isMuteNotifichecked && !isRoom ? "show chat" : ""}>{newMssgNum}</p>

@@ -8,6 +8,7 @@ import ChatHeader from './ChatHeader';
 import ChatBody from './ChatBody';
 import ChatFooter from './ChatFooter';
 import ImageFullScreen from '../common/ImageFullScreen';
+import { displayConvoForMobile } from '../utils/mobileScreenUtils';
 
 function Chat(props) {
     const {
@@ -157,6 +158,14 @@ function Chat(props) {
         }
         return () => unsubGetIsUserTypingFromDb && unsubGetIsUserTypingFromDb()
     }, [chatId, user])
+
+    useEffect(() => {
+        // on first render display the chat convo if the user is on a smaller screen
+        // this is because the user has clicked on the chat on the sidebar
+        if (chatId) {
+            displayConvoForMobile("show");
+        }
+    }, [chatId])
 
     useEffect(() => { // gets currentDisplayConvoInfo, isConvoBlockedOnDb  and chatMessages on first render
         let unsubcribeMessages;

@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import "../../styles/modal.css";
 import { useStateValue } from "../global-state-provider/StateProvider";
 import { useHistory } from "react-router-dom";
+import { displayConvoForMobile, mobileDisplayConvoProfile } from '../utils/mobileScreenUtils'
 import {
   addRoomToUserConvoInDb,
   blockChatOnDb,
@@ -21,7 +22,7 @@ import {
   unBlockChatOnDb,
   unmuteConvoOnDb,
 } from "../backend/get&SetDataToDb";
-import { profile } from "../profile/Profile";
+import { profile } from "../utils/profileUtils";
 import { ArrowBackRounded, CheckRounded, CloseRounded, SearchOutlined } from "@material-ui/icons";
 import ModalAddParticipant from "./ModalAddParticipant";
 import { Avatar } from "@material-ui/core";
@@ -489,6 +490,8 @@ function DisplayModal(props) {
                 <p>Delete this chat ?</p>
                 <button
                   onClick={() => {
+                    mobileDisplayConvoProfile("hide", false);
+                    displayConvoForMobile("hide")
                     deleteConvoOnDb(
                       user?.info?.uid,
                       currentDisplayConvoInfo?.uid
@@ -529,6 +532,8 @@ function DisplayModal(props) {
                 <p>Exit Group ?</p>
                 <button
                   onClick={() => {
+                    mobileDisplayConvoProfile("hide", true);
+                    displayConvoForMobile("hide")
                     exitFromGroupOnDb(user?.info?.uid, currentDisplayConvoInfo?.roomId);
                     setIsConnectedDisplayed(true);
                     profile.close(true)
@@ -584,6 +589,8 @@ function DisplayModal(props) {
                 <button
                   onClick={() => {
                     if (isExitAndClearChecked) {
+                      mobileDisplayConvoProfile("hide", true);
+                      displayConvoForMobile("hide")
                       exitFromGroupOnDb(user?.info?.uid, currentDisplayConvoInfo?.roomId);
                       setIsConnectedDisplayed(true);
                       profile.close(true)
@@ -747,7 +754,11 @@ function DisplayModal(props) {
                 <p>
                   {selectedPreviewMember.data.name}
                 </p>
-                <p onClick={() => clickedRoomMember.startChat(user, userChats, selectedPreviewMember, handleClose, setIsAddChatFromRoomProfile)}>
+                <p onClick={() => {
+                  mobileDisplayConvoProfile("hide", true);
+                  displayConvoForMobile("hide");
+                  clickedRoomMember.startChat(user, userChats, selectedPreviewMember, handleClose, setIsAddChatFromRoomProfile);
+                }}>
                   Start Chat
                 </p>
                 {!selectedPreviewMember.isAdmin && <p onClick={() => { setModalType("CONFIRM_MAKE_ADMIN") }}>Make Group Admin</p>}

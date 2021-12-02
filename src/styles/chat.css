@@ -2,7 +2,6 @@
     width: 65%;
     position: relative;
     display: flex;
-    transition: all 1s ease-in-out;
     flex-direction: column;
 }
 
@@ -272,12 +271,13 @@
 }
 
 
-@media(max-width: 767px) {
+@media(max-width: 840px) {
+
+    /* MOBILE STYLES */
     .chat {
         position: absolute;
         box-shadow: 1px 1px 1px 1px rgb(148, 146, 146);
         width: 100%;
-        transform: rotate(7deg);
         left: 110%;
         z-index: 3;
         height: 100%;
@@ -289,11 +289,6 @@
         margin-left: -15px;
     }
 
-    .chat.show {
-        transform: rotate(0deg);
-        left: 0;
-
-    }
 
 }
 

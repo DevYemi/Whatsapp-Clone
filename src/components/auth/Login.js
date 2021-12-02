@@ -6,11 +6,13 @@ import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import { useStateValue } from '../global-state-provider/StateProvider';
 import { getTotalUsersFromDb, registerNewUserInDb, resetIsUserOnlineOnDb } from '../backend/get&SetDataToDb'
+import { useHistory } from 'react-router'
 
 function Login() {
     const [{ totalUserOnDb }, dispatch] = useStateValue();
     const [userAlreadyHasAcct, setUserAlreadyHasAcct] = useState(false);
     const [phoneInput, setPhoneInput] = useState("");
+    const history = useHistory()
 
     const sign = {
         in: function () { // Sign in the user 
@@ -92,10 +94,11 @@ function Login() {
     }
 
 
-    useEffect(() => { // Gets the total registertered user on db
+    useEffect(() => { // Gets the total registertered user on db and reset Path and reset url path
+        history.push("/")
         let unsubcribeGetToUserFromDb = getTotalUsersFromDb(dispatch);
         return () => { unsubcribeGetToUserFromDb(); }
-    }, [dispatch])
+    }, [dispatch, history])
     if (userAlreadyHasAcct) {
         return (
             <div className="login">

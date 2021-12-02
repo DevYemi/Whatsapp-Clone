@@ -69,3 +69,12 @@
     text-decoration: none;
     color: #05943c;
 }
+
+
+@media (max-width: 840px) {
+
+    /* MOBILE STYLES */
+    .connectedDisplay {
+        display: none;
+    }
+}

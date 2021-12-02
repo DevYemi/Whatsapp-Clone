@@ -9,6 +9,7 @@ import RoomHeader from './RoomHeader';
 import RoomBody from './RoomBody';
 import RoomFooter from './RoomFooter';
 import { IconButton } from '@material-ui/core';
+import { displayConvoForMobile } from '../utils/mobileScreenUtils';
 
 function Room(props) {
     const {
@@ -162,8 +163,12 @@ function Room(props) {
         return () => { unsubcribeRoomInfo(); unsubcribeMessages(); unsubcribeRoomMembers(); }
     }, [roomId, setIsUserProfileRoom, dispatch]);
     useEffect(() => {
-        setSeed(Math.floor(Math.random() * 5000));
-    }, [])
+        // on first render display the room convo if the user is on a smaller screen
+        // this is because the user has clicked on the room on the sidebar
+        if (roomId) {
+            displayConvoForMobile("show");
+        }
+    }, [roomId])
     if (roomFirstRender) scrollRoomBody.toEnd(true) // scroll room body to bottom if room is rendering for the first time
     return (
         <div className="room convo">

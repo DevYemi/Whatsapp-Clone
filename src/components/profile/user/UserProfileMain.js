@@ -3,9 +3,10 @@ import "../../../styles/userProfileMain.css";
 import { CloseRounded, ArrowForwardIos, Block, ThumbDown, Delete } from "@material-ui/icons";
 import { Avatar } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
-import { profile } from "../Profile";
+import { profile } from "../../utils/profileUtils";
 import { useStateValue } from '../../global-state-provider/StateProvider';
 import { userprofileSidebar as animate } from "../../utils/userProfileUtils";
+import { mobileDisplayConvoProfile } from '../../utils/mobileScreenUtils';
 
 
 
@@ -16,7 +17,10 @@ function UserProfileMain(props) {
     return (
         <div className="userProfile__container">
             <div className="userProfile__header">
-                <CloseRounded onClick={() => profile.close(false)} />
+                <CloseRounded onClick={() => {
+                    mobileDisplayConvoProfile("hide", false);
+                    profile.close(false);
+                }} />
                 <p>Contact Info</p>
             </div>
             <div className="userProfile__body">

@@ -9,7 +9,8 @@ import Room from "./components/room/Room";
 import Sidebar from "./components/sidebar/Sidebar";
 import { useStateValue } from "./components/global-state-provider/StateProvider";
 import Profile from "./components/profile/Profile";
-import { getIsUserOnDarkModeOnDb, getTotalUsersFromDb } from "./components/backend/get&SetDataToDb";
+import { getIsUserOnDarkModeOnDb, getTotalUsersFromDb, resetIsUserOnlineOnDb } from "./components/backend/get&SetDataToDb";
+import { displayConvoForMobile } from "./components/utils/mobileScreenUtils";
 function App() {
   const [{
     user,
@@ -31,10 +32,12 @@ function App() {
   useEffect(() => {
     //  KEEPS A USER LOGGED IN CONSISTENT
     if (localStorage.whatsappCloneUser) {
+      let user = JSON.parse(localStorage.whatsappCloneUser)
       dispatch({
         type: "SET_USER",
-        user: JSON.parse(localStorage.whatsappCloneUser),
+        user: user,
       })
+      resetIsUserOnlineOnDb(user.info.uid, true)
     }
   }, [dispatch]);
   useEffect(() => {
@@ -50,12 +53,13 @@ function App() {
     return () => { unsubcribeGetToUserFromDb(); }
   }, [dispatch])
   return (
-    <div className={`app ${isUserOnDarkMode ? "dark" : "light"}`}>
-      {!user ? (
-        <Login />
-      ) : (
-        <Router>
-          {isAddChatFromRoomProfile && <Redirect to={`/chats/${selectedPreviewMember.id}`} />}
+    <Router>
+      {isAddChatFromRoomProfile && <Redirect to={`/chats/${selectedPreviewMember.id}`} />} {/* Redirect to  chat when a user adds chat from romm */}
+      {isAddChatFromRoomProfile && displayConvoForMobile("show")} {/* Opens the caht if user is on mobile screen */}
+      <div className={`app ${isUserOnDarkMode ? "dark" : "light"}`}>
+        {!user ? (
+          <Login />
+        ) : (
           <div className={`app__body ${isUserOnDarkMode ? "dark" : "light"}`}>
             <Sidebar
               setOpenModal={setOpenModal}
@@ -116,9 +120,10 @@ function App() {
               setIsChatBeingCleared={setIsChatBeingCleared}
             />
           </div>
-        </Router>
-      )}
-    </div>
+
+        )}
+      </div>
+    </Router>
   );
 }
 

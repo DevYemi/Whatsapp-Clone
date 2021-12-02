@@ -4,9 +4,10 @@ import gsap from "gsap";
 import React, { useEffect, useState } from "react";
 import db from "../backend/firebase";
 import { getMessgFromDb } from "../backend/get&SetDataToDb";
-import { displayConvoForMobile } from "../sidebar/SidebarConvo";
+import { displayConvoForMobile, mobileDisplayConvoProfile } from "../utils/mobileScreenUtils";
 import { useStateValue } from "../global-state-provider/StateProvider";
-import { profile } from "../profile/Profile";
+import { profile } from "../utils/profileUtils";
+import { useHistory } from "react-router";
 
 function ChatHeader(props) {
   const {
@@ -28,6 +29,7 @@ function ChatHeader(props) {
   const [searchInput, setSearchInput] = useState("");
   const [{ user }] = useStateValue(); // new logged in user
   const [ischatHeaderHelpOpened, setIschatHeaderHelpOpened] = useState(false); // keeps state if the chat help div is opened or not
+  const history = useHistory()
   const chatHeaderSearchBar = {
     open: function () {
       let headerContent = document.querySelector(".chat__headerWr");
@@ -145,11 +147,19 @@ function ChatHeader(props) {
   return (
     <section className="chat__header">
       <div className="chat__headerWr">
-        <IconButton onClick={() => displayConvoForMobile("hide")}>
+        <IconButton onClick={() => {
+          displayConvoForMobile("hide", () => history.push("/home"));
+        }}>
           <KeyboardBackspaceRounded />
         </IconButton>
-        <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => profile.open(false)} />
-        <div className="chat__headerInfo" onClick={() => profile.open(false)}>
+        <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => {
+          mobileDisplayConvoProfile("show", false);
+          profile.open(false)
+        }} />
+        <div className="chat__headerInfo" onClick={() => {
+          mobileDisplayConvoProfile("show", false);
+          profile.open(false)
+        }}>
           <h3>{currentDisplayConvoInfo?.name}</h3>
           <p>
             {
@@ -178,7 +188,12 @@ function ChatHeader(props) {
             </IconButton>
             <div className="chatHeaderHelp" id="chatHeaderHelp">
               <ul>
-                <li onClick={() => profile.open(false)}>Contact Info</li>
+                <li onClick={() => {
+                  mobileDisplayConvoProfile("show", false);
+                  profile.open(false)
+                }}
+                >Contact Info
+                </li>
                 <li>Select Messages</li>
                 <li
                   onClick={() => {

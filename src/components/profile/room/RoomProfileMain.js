@@ -18,10 +18,11 @@ import { getGroupMemberFromDb, getIfCurrentUserIsGroupAdminFromDb, isConvoMutedO
 import { useStateValue } from "../../global-state-provider/StateProvider";
 import { Avatar } from "@material-ui/core";
 import Picker from "emoji-picker-react";
-import { profile } from "../Profile";
+import { profile } from "../../utils/profileUtils";
 import Checkbox from "@material-ui/core/Checkbox";
 import { rearrangeForAdmin, roomProfileSidebar as animate } from '../../utils/roomProfileUtils';
 import Loading from '../../common/Loading';
+import { mobileDisplayConvoProfile } from '../../utils/mobileScreenUtils';
 
 function RoomProfileMain(props) {
     const { setOpenModal, setModalType, setIsRoom, setUpSidebarType, imgMssgPreview } = props;
@@ -170,6 +171,7 @@ function RoomProfileMain(props) {
                 <CloseRounded
                     onClick={() => {
                         profile.close(true);
+                        mobileDisplayConvoProfile("hide", true);
                         setIsGroupNameOnEdit(false);
                         setIsGroupDescripOnEdit(false);
                     }}

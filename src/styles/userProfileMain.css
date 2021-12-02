@@ -2,6 +2,7 @@
 .userProfile__wr {
     width: 0;
     height: 100%;
+    background-color: #ededed;
     display: flex;
 }
 
@@ -108,7 +109,7 @@
 
 .media_grid_wr {
     display: grid;
-    grid-template-columns: 100px 100px 100px;
+    grid-template-columns: auto auto auto;
     grid-column-gap: 10px;
     margin-top: .5em;
 }
@@ -117,6 +118,7 @@
     object-fit: contain;
     max-height: 100px;
     width: 100%;
+    max-width: 100px;
     height: 100%;
 }
 
@@ -196,4 +198,18 @@
 
 .userProfileBody__sec5.blocked {
     color: #07BC4C !important;
+}
+
+@media (max-width: 840px) {
+
+    /* MOBILE STYLES */
+    .userProfile__wr {
+        position: absolute;
+        box-shadow: 1px 1px 1px 1px rgb(148, 146, 146);
+        width: 100%;
+        left: 110%;
+        z-index: 3;
+        height: 100%;
+    }
+
 }

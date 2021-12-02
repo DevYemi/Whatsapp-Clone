@@ -615,10 +615,10 @@ export function getGroupMemberFromDb(roomId, reactHookCallback) {
 export function getIfCurrentUserIsGroupAdminFromDb(userId, roomId, reactHookCallback) {
   // gets if the current logged in user is an admin of the group
   return db
-    .collection("registeredUsers")
-    .doc(userId)
     .collection("rooms")
     .doc(roomId)
+    .collection("members")
+    .doc(userId)
     .onSnapshot((snapshot) => {
       reactHookCallback(snapshot.data()?.isAdmin);
     });

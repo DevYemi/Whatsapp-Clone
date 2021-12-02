@@ -4,9 +4,10 @@ import gsap from "gsap";
 import React, { useEffect, useState } from "react";
 import db from "../backend/firebase";
 import { getMessgFromDb } from "../backend/get&SetDataToDb";
-import { displayConvoForMobile } from "../sidebar/SidebarConvo";
+import { displayConvoForMobile, mobileDisplayConvoProfile } from "../utils/mobileScreenUtils";
 import { useStateValue } from "../global-state-provider/StateProvider";
-import { profile } from "../profile/Profile";
+import { profile } from "../utils/profileUtils";
+import { useHistory } from "react-router";
 
 function RoomHeader(props) {
   const {
@@ -26,7 +27,9 @@ function RoomHeader(props) {
   const [searchInput, setSearchInput] = useState("");
   const [{ user, currentDisplayConvoInfo }] = useStateValue(); // new logged in user
   const [isroomHeaderHelpOpened, setIsroomHeaderHelpOpened] = useState(false); // keeps state if the room help div is opened or not
+  const history = useHistory()
   const roomHeaderSearchBar = {
+    // opens room header search bar with a smooth animation
     open: function () {
       let headerContent = document.querySelector(".room__headerWr");
       let headerSearchBar = document.querySelector(".room__headerSearch");
@@ -42,6 +45,7 @@ function RoomHeader(props) {
         .to(roomHeader, { backgroundColor: "white" });
     },
     close: function () {
+      // closes room header search bar with a smooth animation
       setSearchInput("");
       setTotalRoomWordFound(0);
       setFoundWordIndex(0);
@@ -62,6 +66,7 @@ function RoomHeader(props) {
         .to(roomHeader, { backgroundColor: "#EDEDED" });
     },
     search: function () {
+      // search for the inputed word by user
       if (searchInput === "") return;
       let unsubcribeModifyMssg = db
         .collection("rooms")
@@ -96,6 +101,7 @@ function RoomHeader(props) {
         });
     },
     filterChange: function (messagesModify, word, parentIndex, matched) {
+      // modify the word in the message
       let specificMssg = messagesModify[parentIndex].message;
       const regexWord = new RegExp(`${word}`);
       let newMessage = specificMssg.replace(
@@ -142,11 +148,17 @@ function RoomHeader(props) {
   return (
     <section className="room__header">
       <div className="room__headerWr">
-        <IconButton onClick={() => displayConvoForMobile("hide")}>
+        <IconButton onClick={() => displayConvoForMobile("hide", () => history.push("/home"))}>
           <KeyboardBackspaceRounded />
         </IconButton>
-        <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => profile.open(true)} />
-        <div className="room__headerInfo" onClick={() => profile.open(true)}>
+        <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => {
+          mobileDisplayConvoProfile("show", true);
+          profile.open(true)
+        }} />
+        <div className="room__headerInfo" onClick={() => {
+          mobileDisplayConvoProfile("show", true);
+          profile.open(true)
+        }}>
           <h3>{currentDisplayConvoInfo?.roomName}</h3>
           <p>
             {roomMemberWhomTyping ?
@@ -176,7 +188,12 @@ function RoomHeader(props) {
             </IconButton>
             <div className="roomHeaderHelp" id="roomHeaderHelp">
               <ul>
-                <li onClick={() => profile.open(true)}>Group Info</li>
+                <li onClick={() => {
+                  mobileDisplayConvoProfile("show", true);
+                  profile.open(true)
+                }}>
+                  Group Info
+                </li>
                 <li>Select Messages</li>
                 <li
                   onClick={() => {

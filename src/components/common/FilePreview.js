@@ -50,7 +50,7 @@ function FilePreview(props) {
     const filePreviewAnimation = {
         open: function () {
             if (isFileOnPreview) {
-                gsap.to(".chat__filePreview", {
+                gsap.to(`.${isRoom ? "room" : "chat"}__filePreview`, {
                     ease: "power4.in",
                     duration: 0.5,
                     display: "block",
@@ -60,7 +60,7 @@ function FilePreview(props) {
         },
         close: function () {
             return new Promise((resolve) => {
-                gsap.to(".chat__filePreview", {
+                gsap.to(`.${isRoom ? "room" : "chat"}__filePreview`, {
                     duration: .1,
                     display: "block",
                     top: "110%",
@@ -72,7 +72,7 @@ function FilePreview(props) {
     useEffect(() => {
         // open filePreviewAnimation
         if (isFileOnPreview) {
-            gsap.to(".chat__filePreview", {
+            gsap.to(`.${isRoom ? "room" : "chat"}__filePreview`, {
                 ease: "power4.in",
                 duration: 0.5,
                 display: "block",
@@ -81,7 +81,7 @@ function FilePreview(props) {
         }
     }, [isFileOnPreview])
     return (
-        <section className={`chat__filePreview ${isFileOnPreview && "show"}`} >
+        <section className={`${isRoom ? "room" : "chat"}__filePreview ${isFileOnPreview && "show"}`} >
             <div className={`filePreview_wr`}>
                 <div className="filePreviewHeader">
                     <IconButton onClick={closeFilePreview}>

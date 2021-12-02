@@ -2,7 +2,6 @@
     width: 65%;
     position: relative;
     display: flex;
-    transition: all 1s ease-in-out;
     flex-direction: column;
 }
 
@@ -295,14 +294,15 @@
     margin-top: .5em;
 }
 
-@media(max-width: 767px) {
+@media(max-width: 840px) {
+
+    /* MOBILE STYLES */
     .room {
         position: absolute;
         box-shadow: 1px 1px 1px 1px rgb(148, 146, 146);
         width: 100%;
-        transform: rotate(7deg);
         left: 110%;
-        z-index: 3;
+        z-index: 1;
         height: 100%;
     }
 
@@ -312,11 +312,6 @@
         margin-left: -15px;
     }
 
-    .room.show {
-        transform: rotate(0deg);
-        left: 0;
-
-    }
 
     .room__headerInfo>p {
         max-width: 200px;

@@ -2,6 +2,8 @@
 .roomProfile__wr {
     width: 0;
     height: 100%;
+    z-index: 2;
+    background-color: #EDEDED;
     display: flex;
 }
 
@@ -418,4 +420,18 @@
 .roomProfileBody__sec6 p,
 .roomProfileBody__sec7 p {
     margin-left: 1.6em;
+}
+
+@media (max-width: 840px) {
+
+    /* MOBILE STYLES */
+    .roomProfile__wr {
+        position: absolute;
+        box-shadow: 1px 1px 1px 1px rgb(148, 146, 146);
+        width: 100%;
+        left: 110%;
+        z-index: 3;
+        height: 100%;
+    }
+
 }

@@ -8,7 +8,6 @@ import Loading from "../common/Loading";
 import SidebarConvo from "./SidebarConvo";
 import { useHistory } from "react-router-dom";
 import { sidebarProfile, sidebarMainHeaderHelp, handleLogOut, handleDarkMode, GreenSwitch } from '../utils/sidebarUtils';
-import Switch from '@mui/material/Switch';
 
 function SidebarMain(props) {
     const {
@@ -94,7 +93,7 @@ function SidebarMain(props) {
                 userChats: chats
             })
         }
-    }, [chats, dispatch])
+    }, [chats, dispatch]);
     return (
         <div className="sidebarMain">
             <section className={`sidebarMain__header ${isUserOnDarkMode ? "dark" : "light"}`}>

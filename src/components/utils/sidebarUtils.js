@@ -52,8 +52,7 @@ export function handleLogOut(user, dispatch) {
     // logs a user out
     localStorage.removeItem('whatsappCloneUser');
     dispatch({
-        type: "SET_USER",
-        user: null,
+        type: "LOG_OUT"
     })
     resetIsUserOnlineOnDb(user?.info?.uid, false);
 }
@@ -74,3 +73,4 @@ export const GreenSwitch = styled(Switch)(({ theme }) => ({
         backgroundColor: "#009688",
     },
 }));
+

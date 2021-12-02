@@ -23,11 +23,13 @@ export const handleRemoveParticipant = (chatId, selectedParticipant, setSelected
 }
 
 export const getChatThatAreNotMembers = (chats, members) => {
-    let chatsClone = [...chats]
-    members.forEach((mem, memIndex) => {
-        chatsClone = chatsClone.filter(chat => chat.id !== mem.id)
-    });
-    return chatsClone
+    if (Array.isArray(chats)) {
+        var chatsClone = [...chats]
+        members.forEach((mem, memIndex) => {
+            chatsClone = chatsClone.filter(chat => chat.id !== mem.id)
+        });
+    }
+    return chatsClone || []
 }
 
 export const add = { // create new chat,room and a send to db

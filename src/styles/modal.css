@@ -28,6 +28,15 @@
     color: rgba(0, 0, 0, 0.699);
 }
 
+.modal__muteConvo>h3 {
+    font-weight: lighter;
+}
+
+.modal__muteConvo>div {
+    display: flex;
+    align-items: center;
+}
+
 .modal__muteConvo div button {
     padding: 1em 1.2em;
     cursor: pointer;
@@ -379,4 +388,10 @@
 
 .modal__clickedRoomMember>p:nth-child(4) {
     color: red;
+}
+
+@media (max-width: 840px) {
+    .modal__addParticipant_wr {
+        min-width: 300px !important;
+    }
 }

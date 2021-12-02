@@ -6,8 +6,9 @@ import { getAndComputeNumberOfNewMssgOnDb, getMessgFromDb, resetRecieverMssgRead
 import SidebarConvoLastMessage from './SidebarConvoLastMessage';
 import { useStateValue } from '../global-state-provider/StateProvider';
 import { useLocation } from "react-router-dom";
-import { profile } from '../profile/Profile';
+import { profile } from '../utils/profileUtils';
 import { KeyboardArrowDownRounded } from '@material-ui/icons';
+import { displayConvoForMobile } from '../utils/mobileScreenUtils';
 
 
 function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, setOpenModal, setModalType, setIsConvoSearchBarOpen }) {
@@ -84,7 +85,6 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
         <Link to={isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`}>
             <div onClick={() => {
                 setNewMssgNum(0);
-                displayConvoForMobile("show");
                 profile.close(currentDisplayConvoInfo?.isRoom ? true : false);
                 setIsConnectedDisplayed(false);
                 setIsConvoSearchBarOpen(false);
@@ -105,8 +105,8 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
                                     : <div>{isRoom ? "Room" : "Chat"} is currently empty</div>}
                     </div>
                 </div>
-                <p className={newMssgNum > 0 && !isMuteNotifichecked && !isRoom ? "show chat" : ""}>{newMssgNum}</p>
-                <p className={newMssgNum > 0 && !isMuteNotifichecked && isRoom ? "show room" : ""}>{""}</p>
+                <p className={newMssgNum > 0 && !isMuteNotifichecked && !isRoom ? "show" : ""}>{newMssgNum}</p>
+                <p className={newMssgNum > 0 && !isMuteNotifichecked && isRoom ? "show" : ""}>{""}</p>
                 <KeyboardArrowDownRounded />
             </div>
         </Link>
@@ -120,14 +120,4 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
 
 
 export default React.memo(SidebarConvo)
-export const displayConvoForMobile = (event) => { // displays chat message on a mobile screen when the user clicks on the sideBarConvo component 
-    var currentScreenSize = window.innerWidth
-    let convoDiv = document.querySelector(".convo");
-    if (currentScreenSize > 767) return
-    if (!convoDiv) return
-    if (event === "show") {
-        convoDiv.classList.add("show")
-    } else {
-        convoDiv.classList.remove("show")
-    }
-}
+

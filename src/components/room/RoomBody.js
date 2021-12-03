@@ -5,7 +5,7 @@ import { useStateValue } from '../global-state-provider/StateProvider';
 function RoomBody(props) {
     const { messages, setImageFullScreen } = props
     const [messagesClone, setMessagesClone] = useState([]);
-    const [{ totalUserOnDb }] = useStateValue();
+    const [{ totalUserOnDb, isUserOnDarkMode }] = useStateValue();
     useEffect(() => {
         // gets all messages and updates with the latest users infos
         if (messages.length > 0) {
@@ -19,7 +19,7 @@ function RoomBody(props) {
         }
     }, [messages, totalUserOnDb])
     return (
-        <section className="room__body">
+        <section className={`room__body ${isUserOnDarkMode && "dark-mode-bgImg"}`}>
             {messagesClone.length > 0 &&
                 messagesClone.map((message, index) => (
                     <Message key={index}

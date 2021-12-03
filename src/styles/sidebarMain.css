@@ -1,8 +1,12 @@
 .sidebarMain {
     display: flex;
     flex-direction: column;
+    background-color: #ededed;
     height: 100%;
 }
+
+
+
 
 .sidebarMain__headerLeft {
     display: flex;
@@ -23,13 +27,7 @@
     border-right: 1px solid lightgrey;
 }
 
-.sidebarMain__header.light {
-    border-right: 1px solid lightgrey;
-}
 
-.sidebarMain__header.dark {
-    border-right: 1px solid #3D3D3D;
-}
 
 .sidebarMain__headerRight {
     display: flex;
@@ -65,7 +63,7 @@
 }
 
 .sidebarMain__headerHelp>ul li {
-    color: rgb(0 0 0 / 68%);
+    color: inherit;
     width: 100%;
     cursor: pointer;
     padding: 1.1em 4.5em .9em 1.1em;
@@ -89,13 +87,7 @@
     padding: 10px;
 }
 
-.sidebarMain__search.dark {
-    background-color: #3D3D3D;
-}
 
-.sidebarMain__search.light {
-    background-color: #f6f6f6;
-}
 
 .sidebarMain__searchContainer {
     display: flex;
@@ -106,10 +98,15 @@
     border-radius: 20px;
 }
 
+
+
+
 .sidebarMain__searchContainer>input {
     border: none;
     height: 100%;
+    color: inherit;
     outline: none;
+    background-color: inherit;
     width: 75%;
 }
 
@@ -125,13 +122,7 @@
     overflow-x: hidden;
 }
 
-.sidebarMain__convos.dark {
-    background-color: #212121;
-}
 
-.sidebarMain__convos.light {
-    background-color: white;
-}
 
 .sidebarMain__convos::-webkit-scrollbar {
     width: .6em;

@@ -16,7 +16,7 @@ function SidebarProfile() {
     const [newAboutInput, setNewAboutInput] = useState('') // keeps state of the newly inputed about
     const [whoseEmoji, setWhoseEmoji] = useState(); // keeps state if opened emoji div if for name input or About input
     const [loadingChangeAvi, setLoadingChangeAvi] = useState(false) // keeps state if new avi data is being sent to db
-    const [{ user }] = useStateValue() // keeps state for current logged in user
+    const [{ user, isUserOnDarkMode }] = useStateValue() // keeps state for current logged in user
     const handleAviFileChange = (e) => {
         // handles the uploading of the group new avi
         const selectedAvi = e.target.files[0];
@@ -98,8 +98,8 @@ function SidebarProfile() {
         return () => unsubGetUserInfoFromDb()
     }, [user])
     return (
-        <div className="sidebarProfile">
-            <div className="sidebarProfile__header">
+        <div className={`sidebarProfile ${isUserOnDarkMode && "dark-mode1"}`}>
+            <div className={`sidebarProfile__header ${isUserOnDarkMode && "dark-mode2"}`}>
                 <div>
                     <ArrowBack onClick={() => {
                         sidebarProfile.hide();
@@ -109,7 +109,7 @@ function SidebarProfile() {
                     <p>Profile</p>
                 </div>
             </div>
-            <div className="sidebarProfile__body">
+            <div className={`sidebarProfile__body ${isUserOnDarkMode && "dark-mode1"}`}>
                 <section className="sidebarProfile__avatar">
                     <Avatar src={userInfo?.avi} />
                     <input type="file" onChange={(e) => handleAviFileChange(e)} />
@@ -127,7 +127,7 @@ function SidebarProfile() {
                         />
                     }
                 </section>
-                <section className="sidebarProfile__sec2_wr">
+                <section className={`sidebarProfile__sec2_wr ${isUserOnDarkMode && "dark-mode2"}`}>
                     <p>Your Name</p>
                     <div className="sidebarProfile__sec2">
                         <div className="sidebarProfile__editName">
@@ -145,7 +145,7 @@ function SidebarProfile() {
                                         type="text"
                                     />
                                     <div className="sidebarProfile__editNameIconWr">
-                                        <p>{newNameInput.length}</p>
+                                        <p>{newNameInput?.length}</p>
                                         <div className={`sp__editName__emoji`}>
                                             <InsertEmoticon
                                                 onClick={(e) =>
@@ -184,7 +184,7 @@ function SidebarProfile() {
                     </p>
                 </section>
 
-                <section className="sidebarProfile__sec4_wr">
+                <section className={`sidebarProfile__sec4_wr ${isUserOnDarkMode && "dark-mode2"}`}>
                     <p>About</p>
                     <div className="sidebarProfile__sec4">
                         <div className="sidebarProfile__editName">
@@ -202,7 +202,7 @@ function SidebarProfile() {
                                         type="text"
                                     />
                                     <div className="sidebarProfile__editAboutIconWr">
-                                        <p>{newAboutInput.length}</p>
+                                        <p>{newAboutInput?.length}</p>
                                         <div className={`sp__editAbout__emoji`}>
                                             <InsertEmoticon
                                                 onClick={(e) =>

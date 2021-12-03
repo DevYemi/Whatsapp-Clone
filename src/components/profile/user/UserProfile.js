@@ -6,7 +6,7 @@ import UserProfileSideBar from "./UserProfileSideBar";
 import UserProfileMain from "./UserProfileMain";
 
 function UserProfile(props) {
-    const { setOpenModal, setModalType, setIsRoom, isConnectedDisplayed, isFirstRender } = props;
+    const { setOpenModal, setModalType, setIsRoom, isConnectedDisplayed, isFirstRender, setImageFullScreen } = props;
     const [{ user, currentDisplayConvoInfo, currentDisplayedConvoMessages, isMuteNotifichecked }, disptach] = useStateValue(); // keeps state for current logged in user
     const [upSidebarType, setUpSidebarType] = useState();
     const [imgMssgPreview, setImgMssgPreview] = useState([]); // keeps state for the 3 images that will be previewed on the chat profile
@@ -27,13 +27,13 @@ function UserProfile(props) {
             for (let i = 0; i < currentDisplayedConvoMessages.length; i++) { // get only the 3 images for the chat media preview
                 const mssg = currentDisplayedConvoMessages[i];
                 if (mssg?.fileType?.info?.type === "image") {
-                    imgMssgArrPreview.unshift(mssg.fileType)
+                    imgMssgArrPreview.unshift({ ...mssg.fileType, mssg: mssg.message })
                 }
                 if (imgMssgArrPreview.length === 3) i = currentDisplayedConvoMessages.length + 1
             }
             currentDisplayedConvoMessages.forEach(mssg => { // gets all the image messages
                 if (mssg?.fileType?.info?.type === "image") {
-                    imgMssgArrAll.push(mssg.fileType)
+                    imgMssgArrAll.push({ ...mssg.fileType, mssg: mssg.message })
                 }
             })
             setImgMssgAll(imgMssgArrAll);
@@ -54,10 +54,12 @@ function UserProfile(props) {
                 imgMssgPreview={imgMssgPreview}
                 imgMssgAll={imgMssgAll}
                 setUpSidebarType={setUpSidebarType}
+                setImageFullScreen={setImageFullScreen}
             />
             <UserProfileSideBar
                 upSidebarType={upSidebarType}
                 imgMssgAll={imgMssgAll}
+                setImageFullScreen={setImageFullScreen}
             />
         </div>
     );

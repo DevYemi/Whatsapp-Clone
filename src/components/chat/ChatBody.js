@@ -7,7 +7,7 @@ import { useStateValue } from '../global-state-provider/StateProvider';
 function ChatBody(props) {
     const { messages, setImageFullScreen, isChatBeingCleared } = props
     const [messagesClone, setMessagesClone] = useState([]);
-    const [{ totalUserOnDb }] = useStateValue();
+    const [{ totalUserOnDb, isUserOnDarkMode }] = useStateValue();
 
     useEffect(() => {
         // gets all messages and updates with the latest users infos
@@ -22,7 +22,7 @@ function ChatBody(props) {
         }
     }, [messages, totalUserOnDb])
     return (
-        <section className="chat__body">
+        <section className={`chat__body ${isUserOnDarkMode && "dark-mode-bgImg"}`}>
             {messagesClone.length > 0 &&
                 messagesClone.map((message, index) => (
                     <Message key={index}

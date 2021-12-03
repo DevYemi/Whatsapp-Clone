@@ -8,6 +8,10 @@
     background-color: #ebebebb2;
 }
 
+.sidebarConvoWr.current.dark-modeHover {
+    background-color: #3d3d3d !important;
+}
+
 
 .sidebarConvo {
     display: flex;
@@ -15,8 +19,11 @@
     position: relative;
     padding: 1em;
     cursor: pointer;
-    border-bottom: 1px solid #f6f6f6;
+    border-bottom: 1px solid;
+    border-color: #f6f6f6;
 }
+
+
 
 .sidebarConvoWr>p {
     display: none;
@@ -44,6 +51,7 @@
     background-color: #ebebebb2;
 }
 
+
 .sidebarConvo__info>h2 {
     font-size: 1rem;
     margin-bottom: 8px;
@@ -61,9 +69,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: flex;
-    color: #00000094;
+    color: inherit;
     align-items: center;
     position: relative;
+}
+
+.sidebarConvo__info>div.dark {
+    color: white;
 }
 
 .sidebarConvo__info>.typing {
@@ -105,8 +117,11 @@
     display: flex;
     font-weight: bold;
     cursor: pointer;
-    border-bottom: 1px solid #f6f6f6;
+    border-bottom: 1px solid;
+    border-color: #f6f6f6;
 }
+
+
 
 .sidebarConvo__addChat {
     text-align: center;
@@ -115,11 +130,14 @@
 }
 
 .sidebarConvo__addRoom {
-    border-left: 1px solid lightgrey;
+    border-left: 1px solid;
     padding: .5em;
     text-align: center;
-    flex: 1
+    flex: 1;
+    border-color: #f6f6f6;
 }
+
+
 
 .sidebarConvo__addRoom:hover,
 .sidebarConvo__addChat:hover {

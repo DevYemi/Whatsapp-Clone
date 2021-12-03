@@ -1,10 +1,12 @@
 import { Avatar, Checkbox } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { getUserInfoFromDb } from '../backend/get&SetDataToDb';
+import { useStateValue } from '../global-state-provider/StateProvider';
 
 function ModalAddParticipant({ chatId, setSelectedParticipant, selectedParticipant }) {
     const [isChecked, setIsChecked] = useState(false); // keeps state if user has been checked
     const [chatDirectInfo, setChatDirectInfo] = useState(); // keeps state of the user which of whom the chat is on
+    const [{ isUserOnDarkMode }] = useStateValue();
     const handleOnChange = () => {
         if (isChecked) {
             // REMOVE CHAT FROM SELECTED PARTICIPANT IF CHAT IS CHECKED
@@ -35,7 +37,8 @@ function ModalAddParticipant({ chatId, setSelectedParticipant, selectedParticipa
         }
     }, [selectedParticipant, chatId])
     return (
-        <div className="member" onClick={handleOnChange} >
+        <div className={`member  ${isUserOnDarkMode && "dark-mode2"}  ${isUserOnDarkMode && "dark-modeHover"} `}
+            onClick={handleOnChange} >
             <Checkbox
                 checked={isChecked}
                 style={{ color: "#009688" }}

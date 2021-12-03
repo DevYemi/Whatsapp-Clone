@@ -4,7 +4,14 @@ import UserProfile from './user/UserProfile';
 
 
 function Profile(props) {
-    const { setOpenModal, setModalType, setIsRoom, isRoom, isConnectedDisplayed, isFirstRender } = props;
+    const {
+        setOpenModal,
+        setModalType,
+        setIsRoom,
+        isRoom,
+        isConnectedDisplayed,
+        isFirstRender,
+        setImageFullScreen } = props;
 
     if (isRoom) {
         return <RoomProfile
@@ -13,7 +20,7 @@ function Profile(props) {
             setIsRoom={setIsRoom}
             isFirstRender={isFirstRender}
             isConnectedDisplayed={isConnectedDisplayed}
-
+            setImageFullScreen={setImageFullScreen}
         />
     } else {
         return <UserProfile
@@ -22,6 +29,7 @@ function Profile(props) {
             setIsRoom={setIsRoom}
             isFirstRender={isFirstRender}
             isConnectedDisplayed={isConnectedDisplayed}
+            setImageFullScreen={setImageFullScreen}
         />
     }
 

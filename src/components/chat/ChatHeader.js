@@ -27,7 +27,7 @@ function ChatHeader(props) {
     isChatSearchBarOpen
   } = props;
   const [searchInput, setSearchInput] = useState("");
-  const [{ user }] = useStateValue(); // new logged in user
+  const [{ user, isUserOnDarkMode }] = useStateValue(); // new logged in user
   const [ischatHeaderHelpOpened, setIschatHeaderHelpOpened] = useState(false); // keeps state if the chat help div is opened or not
   const history = useHistory()
   const chatHeaderSearchBar = {
@@ -146,11 +146,13 @@ function ChatHeader(props) {
   });
   return (
     <section className="chat__header">
-      <div className="chat__headerWr">
+      <div className={`chat__headerWr ${isUserOnDarkMode && "dark-mode2"}`}>
         <IconButton onClick={() => {
           displayConvoForMobile("hide", () => history.push("/home"));
         }}>
-          <KeyboardBackspaceRounded />
+          <KeyboardBackspaceRounded
+            className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+          />
         </IconButton>
         <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => {
           mobileDisplayConvoProfile("show", false);
@@ -172,7 +174,9 @@ function ChatHeader(props) {
         </div>
         <div className="chat__headerRight">
           <IconButton onClick={chatHeaderSearchBar.open}>
-            <SearchOutlined />
+            <SearchOutlined
+              className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+            />
           </IconButton>
           <IconButton>
             <input
@@ -180,14 +184,18 @@ function ChatHeader(props) {
               type="file"
               className="chat__attachfile"
             />
-            <AttachFile />
+            <AttachFile
+              className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+            />
           </IconButton>
           <div className="chatHeaderHelp__wr">
             <IconButton onClick={chatHeaderHelp.open}>
-              <MoreVert />
+              <MoreVert
+                className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+              />
             </IconButton>
             <div className="chatHeaderHelp" id="chatHeaderHelp">
-              <ul>
+              <ul className={`${isUserOnDarkMode && "dark-mode1"}`}>
                 <li onClick={() => {
                   mobileDisplayConvoProfile("show", false);
                   profile.open(false)
@@ -223,19 +231,20 @@ function ChatHeader(props) {
           </div>
         </div>
       </div>
-      <div className="chat__headerSearch">
+      <div className={`chat__headerSearch ${isUserOnDarkMode && "dark-mode2"}`}>
         <div>
           <LiveHelp className="helpIcon" />
           <small>Search one word Only</small>
         </div>
         <input
           value={searchInput}
+          className={`${isUserOnDarkMode && "dark-mode1"}`}
           onChange={(e) => setSearchInput(e.target.value)}
           type="text"
         />
         <SearchOutlined
+          className={`searchIcon ${isUserOnDarkMode && "dark-mode-color3"}`}
           onClick={chatHeaderSearchBar.search}
-          className="searchIcon"
         />
         <p onClick={chatHeaderSearchBar.close}>Cancel</p>
       </div>

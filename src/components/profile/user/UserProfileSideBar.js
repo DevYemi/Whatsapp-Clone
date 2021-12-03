@@ -6,14 +6,16 @@ import UpsbStarMessage from './UpsbStarMessage'
 
 
 function UserProfileSideBar(props) {
-    const { upSidebarType, imgMssgAll } = props
+    const { upSidebarType, imgMssgAll, setImageFullScreen } = props
     return (
         <div className="userProfileSidebar__wr">
             {upSidebarType === "STARRED-MESSAGE" ?
                 <UpsbStarMessage />
                 : upSidebarType === 'DISAPPEARING-MESSAGE' ?
                     <UpsbDisappearingMessage />
-                    : <UpsbMediaDocs imgMssgAll={imgMssgAll} />
+                    : <UpsbMediaDocs
+                        setImageFullScreen={setImageFullScreen}
+                        imgMssgAll={imgMssgAll} />
             }
 
         </div>

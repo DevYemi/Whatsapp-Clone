@@ -1,10 +1,13 @@
 import { ArrowBack } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react';
+import { useStateValue } from '../../global-state-provider/StateProvider';
+import { openImageFullScreen } from '../../utils/imageFullScreenUtils';
 import { userprofileSidebar as animate } from "../../utils/userProfileUtils";
 import { mediaDocsNav } from '../../utils/userProfileUtils'
 
-function UpsbMediaDocs({ imgMssgAll }) {
+function UpsbMediaDocs({ imgMssgAll, setImageFullScreen }) {
     const [mediaDocsNavType, setMediaDocsNavType] = useState('MEDIA');
+    const [{ isUserOnDarkMode }] = useStateValue();
     useEffect(() => {
         const resizeListener = () => {
             const navWidth = document.querySelector(".UPSB_mediaDocs_headerNav p").offsetWidth
@@ -18,7 +21,7 @@ function UpsbMediaDocs({ imgMssgAll }) {
     }, [])
     return (
         <div className='UPSB_mediaDocs'>
-            <div className="UPSB_mediaDocs_header">
+            <div className={`UPSB_mediaDocs_header ${isUserOnDarkMode && "dark-mode2"}`}>
                 <ArrowBack onClick={animate.close} />
                 <div className="UPSB_mediaDocs_headerNav">
                     <p onClick={() => { mediaDocsNav.slideTo(0); setMediaDocsNavType('MEDIA') }}>Media</p>
@@ -27,13 +30,16 @@ function UpsbMediaDocs({ imgMssgAll }) {
                     <span className='slide'></span>
                 </div>
             </div>
-            <div className="UPSB_mediaDocs_body">
+            <div className={`UPSB_mediaDocs_body ${isUserOnDarkMode && "dark-mode1"}`}>
                 {mediaDocsNavType === 'MEDIA' ?
                     <div className={`media ${imgMssgAll.length > 0 ? 'filled' : 'empty'}`}>
                         {imgMssgAll.length > 0 ?
                             (
                                 imgMssgAll.map((img, index) => (
-                                    <div className='imgDiv' key={index}>
+                                    <div
+                                        className='imgDiv'
+                                        onClick={() => openImageFullScreen(setImageFullScreen, img.url, img.mssg)}
+                                        key={index}>
                                         <img src={img?.url} alt="docImage" />
                                     </div>
                                 ))

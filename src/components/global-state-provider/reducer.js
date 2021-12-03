@@ -11,8 +11,8 @@ export const initialState = {
   selectedPreviewMember: null, // state of the member whom profile was clicked in RoomProfileMain 
   totalUserOnDb: null, // state for the total registered users on the db
   isUserOnDarkMode: false, // keeps state if user is on dark mode
-  darkMode: { d1: "#212121", d2: "#3D3D3D" },
-  lightMode: { l1: "white", l2: "EDEDED" }
+  darkMode: { bc1: { backgroundColor: "#212121" }, bc2: { backgroundColor: "#3D3D3D" } },
+  lightMode: { bc1: { backgroundColor: "white" }, bc2: { backgroundColor: "EDEDED" } }
 };
 
 function reducer(state, action) {

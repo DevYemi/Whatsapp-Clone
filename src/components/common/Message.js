@@ -4,19 +4,13 @@ import React, { useState, useEffect } from "react";
 import "../../styles/message.css";
 import { getIfMessageHasBeenReadFromDb } from "../backend/get&SetDataToDb";
 import { useStateValue } from "../global-state-provider/StateProvider";
+import { openImageFullScreen } from "../utils/imageFullScreenUtils";
 
 function Message({ convo, setImageFullScreen }) {
   const { message, name, fileType, timestamp, senderId, receiverId, id } = convo;
-  const [{ user, currentDisplayedConvoMessages }] = useStateValue();
+  const [{ user, currentDisplayedConvoMessages, isUserOnDarkMode }] = useStateValue();
   const [isRead, setIsRead] = useState(false); //keeps state if this message has been read
-  const openImageFullScreen = () => {
-    // Open image on full screen when a user clicks on a message
-    setImageFullScreen({
-      isFullScreen: true,
-      url: fileType?.url,
-      caption: message ? message : "",
-    });
-  };
+
   useEffect(() => { // checks if receiver has seen or read this message
     let unsubGetIfMessageHasBeenReadFromDb;
     if (senderId && receiverId && id) {
@@ -31,11 +25,11 @@ function Message({ convo, setImageFullScreen }) {
   }
   else if (fileType?.type === "text") {
     return (
-      <div className="message">
+      <div className={`message ${isUserOnDarkMode && "dark-mode-color2"}`}>
         <ArrowDropDownRounded className={`${user?.info.uid === senderId ? "sender" : "receiver"
           }`} />
         <div className="message-wr">
-          <span className="message__name">
+          <span className={`message__name  ${isUserOnDarkMode && "dark-mode-color1"}  `}>
             {(user?.info.uid === senderId) ? "" : name}
           </span>
           <div
@@ -61,11 +55,11 @@ function Message({ convo, setImageFullScreen }) {
     );
   } else if (fileType?.info?.type === "image") {
     return (
-      <div className="message">
+      <div className={`message ${isUserOnDarkMode && "dark-mode-color2"}`}>
         <ArrowDropDownRounded className={`${user?.info.uid === senderId ? "sender" : "receiver"
           }`} />
         <div className="message-wr">
-          <span className="message__name">
+          <span className={`message__name  ${isUserOnDarkMode && "dark-mode-color1"}  `}>
             {user?.info.uid === senderId ? "" : name}
           </span>
           <div
@@ -75,7 +69,7 @@ function Message({ convo, setImageFullScreen }) {
             <span className="message__name user">
               {user?.info.uid === senderId ? "You" : ""}
             </span>
-            <div onClick={openImageFullScreen}>
+            <div onClick={() => openImageFullScreen(setImageFullScreen, fileType?.url, message)}>
               <img src={fileType?.url} alt="" />
             </div>
             <p
@@ -97,11 +91,11 @@ function Message({ convo, setImageFullScreen }) {
     );
   } else if (fileType?.info?.type === "audio") {
     return (
-      <div className="message">
+      <div className={`message ${isUserOnDarkMode && "dark-mode-color2"}`}>
         <ArrowDropDownRounded className={`${user?.info.uid === senderId ? "sender" : "receiver"
           }`} />
         <div className="message-wr">
-          <span className="message__name">
+          <span className={`message__name  ${isUserOnDarkMode && "dark-mode-color1"}  `}>
             {user?.info.uid === senderId ? "" : name}
           </span>
           <div
@@ -131,11 +125,11 @@ function Message({ convo, setImageFullScreen }) {
     );
   } else if (fileType?.info?.type === "video") {
     return (
-      <div className="message">
+      <div className={`message ${isUserOnDarkMode && "dark-mode-color2"}`}>
         <ArrowDropDownRounded className={`${user?.info.uid === senderId ? "sender" : "receiver"
           }`} />
         <div className="message-wr">
-          <span className="message__name">
+          <span className={`message__name  ${isUserOnDarkMode && "dark-mode-color1"}  `}>
             {user?.info.uid === senderId ? "" : name}
           </span>
           <div
@@ -165,11 +159,11 @@ function Message({ convo, setImageFullScreen }) {
     );
   } else if (fileType?.info?.type === "voice-note") {
     return (
-      <div className="message">
+      <div className={`message ${isUserOnDarkMode && "dark-mode-color2"}`}>
         <ArrowDropDownRounded className={`${user?.info.uid === senderId ? "sender" : "receiver"
           }`} />
         <div className="message-wr">
-          <span className="message__name">
+          <span className={`message__name  ${isUserOnDarkMode && "dark-mode-color1"}  `}>
             {user?.info.uid === senderId ? "" : name}
           </span>
           <div

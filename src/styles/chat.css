@@ -129,7 +129,7 @@
 }
 
 .chatHeaderHelp>ul li {
-    color: rgb(0 0 0 / 68%);
+    color: inherit;
     width: 100%;
     cursor: pointer;
     padding: 1.1em 4.5em .9em 1.1em;

@@ -17,7 +17,7 @@ var micBlinking; //  holds the micBlinking timeInterval variable
 var isRecordingStopByCancel; // holds true or false if voice recording was ended by the user pressing cancel  
 var countDown; //  holds the countDown timeInterval variable
 function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollConvoBody }) {
-    const [{ user, currentDisplayConvoInfo }] = useStateValue();
+    const [{ user, currentDisplayConvoInfo, isUserOnDarkMode }] = useStateValue();
     const recordAudio = { // handles the recording of the audio
         setup: function () { // sets the Media API and gets permission for microphone usage from user device
             var audioChunks = [];
@@ -136,7 +136,7 @@ function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollConvoB
             <p onClick={(e) => { isRecordingStopByCancel = true; onRecordState.stop(); }} className={vnIsRecoding ? "show" : ""}>Cancel</p>
             <div className="voiceNoteRecoder__mic" onClick={() => vnIsRecoding ? onRecordState.stop() : recordAudio.setup()}>
                 <IconButton>
-                    {vnIsRecoding ? <SendRounded /> : <Mic />}
+                    {vnIsRecoding ? <SendRounded className={`${isUserOnDarkMode && "dark-mode-color3"}`} /> : <Mic className={`${isUserOnDarkMode && "dark-mode-color3"}`} />}
                 </IconButton>
             </div>
         </div>

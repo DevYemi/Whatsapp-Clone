@@ -33,6 +33,20 @@
 .sidebarProfile__body {
     background-color: #EDEDED;
     padding-top: 2em;
+    max-height: 84%;
+    overflow-y: scroll;
+}
+
+.sidebarProfile__body::-webkit-scrollbar {
+    width: .5em;
+}
+
+.sidebarProfile__body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(128, 128, 128, 0);
+}
+
+.sidebarProfile__body::-webkit-scrollbar-thumb {
+    background: rgba(73, 72, 72, 0.466);
 }
 
 .sidebarProfile__avatar {
@@ -132,6 +146,8 @@
 .sidebarProfile__editName input {
     outline: none;
     width: 100%;
+    background-color: inherit;
+    color: inherit;
     border: none;
     border-bottom: 2px solid #00BFA5;
 }
@@ -147,7 +163,7 @@
 
 .sidebarProfile__editNameIconWr p {
     font-size: 1rem !important;
-    color: rgba(0, 0, 0, 0.555) !important;
+    color: inherit;
     margin-top: 0 !important;
 }
 
@@ -260,7 +276,7 @@
 
 .sidebarProfile__editAboutIconWr p {
     font-size: 1rem !important;
-    color: rgba(0, 0, 0, 0.555) !important;
+    color: inherit;
     margin-top: 0 !important;
 }
 

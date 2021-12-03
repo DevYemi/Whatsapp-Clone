@@ -74,10 +74,6 @@
     color: rgba(0, 0, 0, 0.493);
 }
 
-.userProfileBody__sec1 div p:first-child {
-    font-size: 1.2rem;
-    color: rgba(0, 0, 0, 0.781);
-}
 
 .userProfileBody__sec2,
 .userProfileBody__sec3,
@@ -119,6 +115,7 @@
     max-height: 100px;
     width: 100%;
     max-width: 100px;
+    cursor: pointer;
     height: 100%;
 }
 

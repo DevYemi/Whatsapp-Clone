@@ -12,7 +12,7 @@ import { displayConvoForMobile } from '../utils/mobileScreenUtils';
 
 
 function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, setOpenModal, setModalType, setIsConvoSearchBarOpen }) {
-    const [{ user, isMuteNotifichecked, currentDisplayConvoInfo }] = useStateValue(); // keeps state for current logged in user
+    const [{ user, isMuteNotifichecked, currentDisplayConvoInfo, isUserOnDarkMode }] = useStateValue(); // keeps state for current logged in user
     const [convoDirectInfo, setConvoDirectInfo] = useState(); // keeps state of the info of user or room who is associated with the convo
     const [newMssgNum, setNewMssgNum] = useState(0); // keeps stste for the number of new messages
     const [lastMessage, setlastMessage] = useState(); // keeps state for the last message recived or sent
@@ -89,8 +89,13 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
                 setIsConnectedDisplayed(false);
                 setIsConvoSearchBarOpen(false);
             }}
-                className={`sidebarConvoWr ${isCurrentSidebar ? "current" : ""}`}>
-                <div className="sidebarConvo">
+                className={`sidebarConvoWr ${isCurrentSidebar && "current"} ${isUserOnDarkMode && "dark-modeHover"}`}>
+                <div className={`
+                sidebarConvo 
+                ${isUserOnDarkMode && "dark-border1"} 
+                ${isUserOnDarkMode && "dark-mode-color1"} 
+                ${isCurrentSidebar && "current"}
+                ${isUserOnDarkMode && "dark-modeHover"}`}>
                     <Avatar src={convoDirectInfo?.avi} />
                     <div className="sidebarConvo__info">
                         <h2>{isRoom ? convoDirectInfo?.roomName : convoDirectInfo?.name}</h2>
@@ -111,9 +116,21 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
             </div>
         </Link>
     ) : (
-        <div className="sidebarConvo__add">
-            <p onClick={() => { setModalType("ADD_CHAT"); setOpenModal(true) }} className="sidebarConvo__addChat">Add New Chat</p>
-            <p onClick={() => { setModalType("ADD_ROOM"); setOpenModal(true) }} className="sidebarConvo__addRoom">Create Room</p>
+        <div className={`sidebarConvo__add ${isUserOnDarkMode && "dark-mode2"}  `}>
+            <p
+                onClick={() => { setModalType("ADD_CHAT"); setOpenModal(true) }}
+                className={`sidebarConvo__addChat ${isUserOnDarkMode && "dark-modeHover"}`}>
+                Add New Chat
+            </p>
+            <p
+                onClick={() => {
+                    setModalType("ADD_ROOM");
+                    setOpenModal(true)
+                }}
+                className={`sidebarConvo__addRoom ${isUserOnDarkMode && "dark-mode2"}  ${isUserOnDarkMode && "dark-modeHover"}`}
+            >
+                Create Room
+            </p>
         </div>
     )
 }

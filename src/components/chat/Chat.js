@@ -7,7 +7,6 @@ import FilePreview from '../common/FilePreview';
 import ChatHeader from './ChatHeader';
 import ChatBody from './ChatBody';
 import ChatFooter from './ChatFooter';
-import ImageFullScreen from '../common/ImageFullScreen';
 import { displayConvoForMobile } from '../utils/mobileScreenUtils';
 
 function Chat(props) {
@@ -19,6 +18,7 @@ function Chat(props) {
         isChatSearchBarOpen,
         setIsAddChatFromRoomProfile,
         isChatBeingCleared,
+        setImageFullScreen,
         setIsChatSearchBarOpen } = props
 
     const [fileOnPreview, setFileOnPreview] = useState(null); //keeps state for the current file on preview
@@ -28,7 +28,6 @@ function Chat(props) {
     const [isFileTooBig, setIsFileTooBig] = useState(false); // keeps state if file picked is more than 15mb
     const [isFileSupported, setIsFileSupported] = useState(true) // keeps state if file picked is supported
     const [isFileOnPreviewLoading, setIsFileOnPreviewLoading] = useState(false) // keeps state if file on preview data is loading
-    const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
     const [{ user, currentDisplayConvoInfo }, dispatch] = useStateValue(); // new logged in user and the currentDisplayConvoInfo
     const [messages, setMessages] = useState([]); // keeps state for the messages in a chat
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
@@ -235,10 +234,6 @@ function Chat(props) {
                 setIsFileSupported={setIsFileSupported}
                 isFileOnPreviewLoading={isFileOnPreviewLoading}
                 setIsFileOnPreviewLoading={setIsFileOnPreviewLoading}
-            />
-            <ImageFullScreen
-                imageFullScreen={imageFullScreen}
-                setImageFullScreen={setImageFullScreen}
             />
         </div>
     )

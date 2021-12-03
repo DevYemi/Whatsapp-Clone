@@ -21,6 +21,7 @@
 .RPSB_starMessage__header>div {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .RPSB_starMessage__header>div p {
@@ -86,7 +87,7 @@
 .RPSB_mediaDocs_body .media.filled {
     overflow-y: scroll;
     overflow-x: hidden;
-    /* height: 90%; */
+    height: 86%;
     padding: 1em;
     padding-top: 2em;
     display: grid;
@@ -101,6 +102,7 @@
 .RPSB_mediaDocs_body .media.filled .imgDiv {
     max-width: 90px;
     max-height: 90px;
+    cursor: pointer;
 }
 
 .RPSB_mediaDocs_body .media.filled .imgDiv img {
@@ -137,6 +139,7 @@
 .RPSB_disappearingMessage__header>div {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .RPSB_disappearingMessage__header>div p {

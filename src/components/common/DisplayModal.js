@@ -61,6 +61,7 @@ function DisplayModal(props) {
     totalUserOnDb,
     selectedPreviewMember,
     userChats,
+    isUserOnDarkMode,
     isCurrentConvoBlocked, }, dispatch] = useStateValue(); // React context API
   const useStyles = makeStyles((theme) => ({
     modal: {
@@ -109,7 +110,7 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__addChat">
                 <h3>Input the User Phone Number</h3>
                 <PhoneInput
@@ -158,7 +159,7 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__addRoom">
                 <h3>Input A Name For The Room</h3>
                 <form
@@ -206,7 +207,7 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__muteConvo">
                 <h3>
                   Mute{" "}
@@ -214,7 +215,7 @@ function DisplayModal(props) {
                     currentDisplayConvoInfo?.roomName}{" "}
                   Messages
                 </h3>
-                <p>
+                <p className={isUserOnDarkMode && "dark-mode-color1"}>
                   {isMuteNotifichecked
                     ? `Unmute ${currentDisplayConvoInfo?.name ||
                     currentDisplayConvoInfo?.roomName
@@ -279,7 +280,7 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__notAdmin">
                 <p>Only admin can edit this group info</p>
                 <button onClick={handleClose}>OK</button>
@@ -305,7 +306,7 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__emptyGroupName">
                 <p>Group Subject can't be empty</p>
                 <button onClick={handleClose}>OK</button>
@@ -331,9 +332,9 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__blockChat">
-                <p>
+                <p className={isUserOnDarkMode && "dark-mode-color1"}>
                   {(isCurrentConvoBlocked && isCurrentConvoBlocked !== "")
                     ? `Unblock ${currentDisplayConvoInfo?.name} ?`
                     : `Block ${currentDisplayConvoInfo?.name} ? Blocked contact will not be able to call you or send you messages`}
@@ -383,16 +384,16 @@ function DisplayModal(props) {
         >
           <Fade in={openModal}>
             {isRoom ?
-              <div className={classes.paper}>
+              <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
                 <div className="modal__clearMssgs">
-                  <p>Sorry You Can't Clear Group chat Messages</p>
+                  <p className={isUserOnDarkMode && "dark-mode-color1"}>Sorry You Can't Clear Group chat Messages</p>
                   <button onClick={handleClose}>Close</button>
                 </div>
               </div>
               :
-              <div className={classes.paper}>
+              <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
                 <div className="modal__clearMssgs">
-                  <p>Clear this chat ?</p>
+                  <p className={isUserOnDarkMode && "dark-mode-color1"}>Clear this chat ?</p>
                   <button
                     onClick={() => {
                       clearChatOnDb(
@@ -431,10 +432,10 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__reportContact">
-                <p>Report Contact to whatsApp ?</p>
-                <span>
+                <p className={isUserOnDarkMode && "dark-mode-color1"}>Report Contact to whatsApp ?</p>
+                <span className={isUserOnDarkMode && "dark-mode-color1"}>
                   Most recent messages from this contact will be forwarded to
                   WhatsApp
                 </span>
@@ -447,7 +448,7 @@ function DisplayModal(props) {
                     }
                     inputProps={{ "aria-label": "primary checkbox" }}
                   />
-                  <p>Block Contact and clear Chat</p>
+                  <p className={isUserOnDarkMode && "dark-mode-color1"}>Block Contact and clear Chat</p>
                 </div>
                 <button
                   onClick={() => {
@@ -485,9 +486,9 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__deleteChat">
-                <p>Delete this chat ?</p>
+                <p className={isUserOnDarkMode && "dark-mode-color1"}>Delete this chat ?</p>
                 <button
                   onClick={() => {
                     mobileDisplayConvoProfile("hide", false);
@@ -527,9 +528,9 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__exitGroup">
-                <p>Exit Group ?</p>
+                <p className={isUserOnDarkMode && "dark-mode-color1"}>Exit Group ?</p>
                 <button
                   onClick={() => {
                     mobileDisplayConvoProfile("hide", true);
@@ -566,13 +567,13 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
               <div className="modal__reportGroup">
-                <p>Report this group to whatsApp ?</p>
-                <span>
+                <p className={isUserOnDarkMode && "dark-mode-color1"}>Report this group to whatsApp ?</p>
+                <span className={isUserOnDarkMode && "dark-mode-color1"}>
                   The last 5 messages in the group will br forwarded to Whatsapp
                 </span>
-                <span>
+                <span className={isUserOnDarkMode && "dark-mode-color1"}>
                   No one in this group will be notified
                 </span>
                 <div>
@@ -584,7 +585,7 @@ function DisplayModal(props) {
                     }
                     inputProps={{ "aria-label": "primary checkbox" }}
                   />
-                  <p>Exit group and clear Chat</p>
+                  <p className={isUserOnDarkMode && "dark-mode-color1"}>Exit group and clear Chat</p>
                 </div>
                 <button
                   onClick={() => {
@@ -626,14 +627,14 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={`${classes.paper} modal__addParticipant_wr`}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"} modal__addParticipant_wr`}>
               <div className="modal__addParticipant">
-                <section className="modal_addparticipant_header">
+                <section className={`modal_addparticipant_header ${isUserOnDarkMode && "dark-mode2"} `}>
                   <CloseRounded onClick={() => { handleClose(); setSelectedParticipant([]) }} />
                   <p>Add Participant</p>
                 </section>
-                <section className="modal_addparticipant_search">
-                  <div className="modal_addparticipant_searchContainer">
+                <section className={`modal_addparticipant_search ${isUserOnDarkMode && "dark-mode1"}`}>
+                  <div className={`modal_addparticipant_searchContainer ${isUserOnDarkMode && "dark-mode2"}`}>
                     <div className='icons'>
                       <SearchOutlined className='search' />
                       <ArrowBackRounded className="back" />
@@ -645,11 +646,12 @@ function DisplayModal(props) {
                       placeholder="Search or start a new group" />
                   </div>
                 </section>
-                <section className="modal_addparticipant_selectedWr">
-                  <div className="modal_addparticipant_selected">
+                <section className={`modal_addparticipant_selectedWr ${isUserOnDarkMode && "dark-mode2"} `}>
+                  <div className={`modal_addparticipant_selected`}>
                     {selectedParticipant.length > 0 &&
                       selectedParticipant.map(participant => (
-                        <div key={participant?.info.uid}>
+                        <div key={participant?.info.uid}
+                          className={`${isUserOnDarkMode && "dark-mode1"}`}>
                           <Avatar src={participant?.info.avi} />
                           <span>{participant?.info.name}</span>
                           <CloseRounded onClick={() => handleRemoveParticipant(participant?.info.uid, selectedParticipant, setSelectedParticipant)} />
@@ -659,7 +661,7 @@ function DisplayModal(props) {
                     }
                   </div>
                 </section>
-                <section className="modal_addparticipant_membersWr">
+                <section className={`modal_addparticipant_membersWr ${isUserOnDarkMode && "dark-mode2"}`}>
                   <div className="modal_addparticipant_members">
                     <h3>Contacts</h3>
                     {getChatThatAreNotMembers(currentUserChats, roomMembers).length > 0 ?
@@ -701,21 +703,25 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={classes.paper}>
-              <div className={`modal__aPConfirmation ${successSP.loading && 'loading'}`}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode1"}`}>
+              <div className={`modal__aPConfirmation ${successSP?.loading && 'loading'}`}>
                 {successSP.loading ?
                   <Loading
                     size={50}
                     type={'ThreeDots'}
                     color={"#00BFFF"}
                     class={"modal__aPConfirmation_loading"} />
-                  : successSP.success ?
+                  : successSP?.success ?
                     <>
-                      <p>{`${selectedParticipant.map(participant => participant?.info.name).toString()} has been added to "${currentDisplayConvoInfo.roomName}" Group Successfully`}</p>
+                      <p className={`${isUserOnDarkMode && "dark-mode-color1"}`}>
+                        {`${selectedParticipant?.map(participant => participant?.info?.name).toString()} has been added to "${currentDisplayConvoInfo?.roomName}" Group Successfully`}
+                      </p>
                       <button onClick={() => { handleClose(); setSelectedParticipant([]); setSuccessSP({ loading: false, success: false }) }}>Okay</button>
                     </>
                     : <>
-                      <p>{`Add ${selectedParticipant.map(participant => participant?.info.name).toString()} to "${currentDisplayConvoInfo.roomName}" Group`}</p>
+                      <p className={`${isUserOnDarkMode && "dark-mode-color1"}`}>
+                        {`Add ${selectedParticipant.map(participant => participant?.info.name).toString()} to "${currentDisplayConvoInfo.roomName}" Group`}
+                      </p>
                       <button onClick={() => {
                         setSuccessSP({ ...successSP, loading: true })
                         addRoomToUserConvoInDb(currentDisplayConvoInfo?.roomId, selectedParticipant, false, setSuccessSP)
@@ -749,21 +755,32 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={`${classes.paper} modal__clickedRoomMemberWr`}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode2"} modal__clickedRoomMemberWr`}>
               <div className="modal__clickedRoomMember">
-                <p>
-                  {selectedPreviewMember.data.name}
+                <p
+                  className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
+                >
+                  {selectedPreviewMember?.data?.name}
                 </p>
-                <p onClick={() => {
-                  mobileDisplayConvoProfile("hide", true);
-                  displayConvoForMobile("hide");
-                  clickedRoomMember.startChat(user, userChats, selectedPreviewMember, handleClose, setIsAddChatFromRoomProfile);
-                }}>
+                <p
+                  className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
+                  onClick={() => {
+                    mobileDisplayConvoProfile("hide", true);
+                    displayConvoForMobile("hide");
+                    clickedRoomMember.startChat(user, userChats, selectedPreviewMember, handleClose, setIsAddChatFromRoomProfile);
+                  }}>
                   Start Chat
                 </p>
-                {!selectedPreviewMember.isAdmin && <p onClick={() => { setModalType("CONFIRM_MAKE_ADMIN") }}>Make Group Admin</p>}
-                <p onClick={() => { setModalType("REMOVE_FROM_GROUP") }}>Remove From Group</p>
-                <p onClick={handleClose}>Cancel</p>
+                {!selectedPreviewMember?.isAdmin && <p onClick={() => { setModalType("CONFIRM_MAKE_ADMIN") }}>Make Group Admin</p>}
+                <p
+                  className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
+                  onClick={() => { setModalType("REMOVE_FROM_GROUP") }}>
+                  Remove From Group
+                </p>
+                <p
+                  className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
+                  onClick={handleClose}>
+                  Cancel</p>
 
               </div>
             </div>
@@ -787,16 +804,19 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={`${classes.paper} modal__confirmMakeAdminWr`}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode2"} modal__confirmMakeAdminWr`}>
               <div className="modal__confirmMakeAdmin">
-                <p>{`Make ${selectedPreviewMember.data.name} an admin in "${currentDisplayConvoInfo.roomName}" group`}</p>
-                <button onClick={() => {
-                  setMemberAdminStatusInDb(currentDisplayConvoInfo.roomId, selectedPreviewMember.id, true)
-                  handleClose();
-                }}>
-                  Make Group Admin
-                </button>
-                <button onClick={handleClose}>CANCEL</button>
+                <p>{`Make ${selectedPreviewMember?.data?.name} an admin in "${currentDisplayConvoInfo?.roomName}" group`}</p>
+                <div>
+                  <button onClick={() => {
+                    setMemberAdminStatusInDb(currentDisplayConvoInfo?.roomId, selectedPreviewMember?.id, true)
+                    handleClose();
+                  }}>
+                    Make Group Admin
+                  </button>
+                  <button onClick={handleClose}>CANCEL</button>
+                </div>
+
 
               </div>
             </div>
@@ -820,11 +840,13 @@ function DisplayModal(props) {
           }}
         >
           <Fade in={openModal}>
-            <div className={`${classes.paper} modal__removeFromGroupWr`}>
+            <div className={`${classes.paper} ${isUserOnDarkMode && "dark-mode2"} modal__removeFromGroupWr`}>
               <div className="modal__removeFromGroup">
-                <p>{`Remove ${selectedPreviewMember.data.name} from "${currentDisplayConvoInfo.roomName}" group`}</p>
+                <p className={`${isUserOnDarkMode && "dark-mode-color1"}`}>
+                  {`Remove ${selectedPreviewMember?.data?.name} from "${currentDisplayConvoInfo?.roomName}" group`}
+                </p>
                 <button onClick={() => {
-                  removeMemberFromRoomInDb(currentDisplayConvoInfo.roomId, selectedPreviewMember.id)
+                  removeMemberFromRoomInDb(currentDisplayConvoInfo?.roomId, selectedPreviewMember?.id)
                   handleClose();
                 }}>
                   Remove

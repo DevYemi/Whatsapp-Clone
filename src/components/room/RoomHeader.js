@@ -25,7 +25,7 @@ function RoomHeader(props) {
     isRoomSearchBarOpen
   } = props;
   const [searchInput, setSearchInput] = useState("");
-  const [{ user, currentDisplayConvoInfo }] = useStateValue(); // new logged in user
+  const [{ user, currentDisplayConvoInfo, isUserOnDarkMode }] = useStateValue(); // new logged in user
   const [isroomHeaderHelpOpened, setIsroomHeaderHelpOpened] = useState(false); // keeps state if the room help div is opened or not
   const history = useHistory()
   const roomHeaderSearchBar = {
@@ -147,9 +147,11 @@ function RoomHeader(props) {
 
   return (
     <section className="room__header">
-      <div className="room__headerWr">
+      <div className={`room__headerWr ${isUserOnDarkMode && "dark-mode2"}`}>
         <IconButton onClick={() => displayConvoForMobile("hide", () => history.push("/home"))}>
-          <KeyboardBackspaceRounded />
+          <KeyboardBackspaceRounded
+            className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+          />
         </IconButton>
         <Avatar src={currentDisplayConvoInfo?.avi} onClick={() => {
           mobileDisplayConvoProfile("show", true);
@@ -172,7 +174,9 @@ function RoomHeader(props) {
         </div>
         <div className="room__headerRight">
           <IconButton onClick={roomHeaderSearchBar.open}>
-            <SearchOutlined />
+            <SearchOutlined
+              className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+            />
           </IconButton>
           <IconButton>
             <input
@@ -180,14 +184,18 @@ function RoomHeader(props) {
               type="file"
               className="room__attachfile"
             />
-            <AttachFile />
+            <AttachFile
+              className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+            />
           </IconButton>
           <div className="roomHeaderHelp__wr">
             <IconButton onClick={roomHeaderHelp.open}>
-              <MoreVert />
+              <MoreVert
+                className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+              />
             </IconButton>
             <div className="roomHeaderHelp" id="roomHeaderHelp">
-              <ul>
+              <ul className={`${isUserOnDarkMode && "dark-mode1"}`}>
                 <li onClick={() => {
                   mobileDisplayConvoProfile("show", true);
                   profile.open(true)
@@ -224,19 +232,20 @@ function RoomHeader(props) {
           </div>
         </div>
       </div>
-      <div className="room__headerSearch">
+      <div className={`room__headerSearch ${isUserOnDarkMode && "dark-mode2"}`}>
         <div>
           <LiveHelp className="helpIcon" />
           <small>Search one word Only</small>
         </div>
         <input
           value={searchInput}
+          className={`${isUserOnDarkMode && "dark-mode1"}`}
           onChange={(e) => setSearchInput(e.target.value)}
           type="text"
         />
         <SearchOutlined
           onClick={roomHeaderSearchBar.search}
-          className="searchIcon"
+          className={`searchIcon ${isUserOnDarkMode && "dark-mode-color3"}`}
         />
         <p onClick={roomHeaderSearchBar.close}>Cancel</p>
       </div>

@@ -145,7 +145,7 @@
 }
 
 .roomHeaderHelp>ul li {
-    color: rgb(0 0 0 / 68%);
+    color: inherit;
     width: 100%;
     cursor: pointer;
     padding: 1.1em 4.5em .9em 1.1em;
@@ -246,8 +246,7 @@
     max-width: 231px
 }
 
-.room__filePreview,
-.room__imageFullScreen {
+.room__filePreview {
     position: absolute;
     display: none;
     transition: all 1s ease-in-out;
@@ -259,39 +258,9 @@
     opacity: 1;
 }
 
-.room__filePreview.show,
-.room__imageFullScreen.show {
+.room__filePreview.show {
     display: block;
     top: 0;
-}
-
-.room__imageFullScreen_wr {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-}
-
-.room__imageFullScreen_wr>.MuiButtonBase-root {
-    color: white;
-}
-
-.room__imageFullScreenDivWrap {
-    display: flex;
-    height: 80vh;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.room__imageFullScreenDivWrap>img {
-    width: 100%;
-    object-fit: contain;
-}
-
-.room__imageFullScreenCaption {
-    font-size: 1.2rem;
-    color: white;
-    margin-top: .5em;
 }
 
 @media(max-width: 840px) {

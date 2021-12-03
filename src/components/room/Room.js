@@ -1,4 +1,4 @@
-import { CloseRounded } from '@material-ui/icons'
+
 import React, { useEffect, useState } from 'react'
 import '../../styles/room.css'
 import { useParams } from 'react-router-dom';
@@ -8,7 +8,6 @@ import FilePreview from '../common/FilePreview';
 import RoomHeader from './RoomHeader';
 import RoomBody from './RoomBody';
 import RoomFooter from './RoomFooter';
-import { IconButton } from '@material-ui/core';
 import { displayConvoForMobile } from '../utils/mobileScreenUtils';
 
 function Room(props) {
@@ -17,6 +16,7 @@ function Room(props) {
         setModalType,
         setIsRoom,
         isRoomSearchBarOpen,
+        setImageFullScreen,
         setIsRoomSearchBarOpen,
         setIsUserProfileRoom } = props
     const [seed, setSeed] = useState(""); // keeps state get new id for every new group
@@ -26,7 +26,6 @@ function Room(props) {
     const [isFileTooBig, setIsFileTooBig] = useState(false); // keeps state if file picked is more than 15mb
     const [isFileSupported, setIsFileSupported] = useState(true) // keeps state if file picked is supported
     const [isFileOnPreviewLoading, setIsFileOnPreviewLoading] = useState(false) // keeps state if file on preview data is loading
-    const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
     const [{ user }, dispatch] = useStateValue(); // new logged in user
     const [messages, setMessages] = useState([]); // keeps state for the messages in a room
     const [input, setInput] = useState(""); // keeps state for the inputed message by user
@@ -39,7 +38,7 @@ function Room(props) {
     const sendMessage = (e, eventType, file) => { // sends new message to db
         e && e.preventDefault();
         let fileInput = document.querySelector(`room__headerRight input`);
-        fileInput.value = ""
+        if (fileInput) fileInput.value = ""
         setInput("");
         setIsFileTooBig(false);
         setIsFileSupported(true);
@@ -223,17 +222,6 @@ function Room(props) {
                 isFileOnPreviewLoading={isFileOnPreviewLoading}
                 setIsFileOnPreviewLoading={setIsFileOnPreviewLoading}
             />
-            <section className={`room__imageFullScreen ${imageFullScreen.isFullScreen && "show"}`}>
-                <div className={`room__imageFullScreen_wr`}>
-                    <IconButton onClick={closeImageOnFullScreen}>
-                        <CloseRounded />
-                    </IconButton>
-                    <div className="room__imageFullScreenDivWrap">
-                        <img src={imageFullScreen.url} alt="" />
-                        <span className="room__imageFullScreenCaption">{imageFullScreen.caption}</span>
-                    </div>
-                </div>
-            </section>
         </div>
     )
 }

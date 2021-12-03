@@ -25,21 +25,59 @@
   width: 90vw;
 }
 
-.app.dark {
-  background-color: #3D3D3D;
+/* DARK-MODE STYLES */
+
+.dark-mode1 {
+  background-color: #3D3D3D !important;
+  color: #f6f6f6 !important;
+  border-color: #212121 !important;
 }
 
-.app.light {
-  background-color: #EDEDED;
+.dark-mode2 {
+  background-color: #212121 !important;
+  color: #f6f6f6 !important;
+  border-color: #3D3D3D !important;
 }
 
-.app__body.dark {
-  background-color: #3D3D3D;
+.dark-border1 {
+  border-color: #3D3D3D !important;
 }
 
-.app__body.light {
-  background-color: #EDEDED;
+.dark-modeHover:hover {
+  background-color: #3D3D3D !important;
 }
+
+.dark-mode-bgImg {
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/whatsapp-clone-efb49.appspot.com/o/dark.jpg?alt=media&token=9c4826a2-429c-4afa-8e1e-1e6810b77dd6") !important;
+}
+
+.dark-mode-color1 {
+  color: #f6f6f6 !important;
+}
+
+.dark-mode-color2 {
+  color: black !important;
+}
+
+.dark-mode-color3 {
+  color: rgba(201 201 201) !important;
+}
+
+.dark-mode-bgImg::-webkit-scrollbar-thumb {
+  background: #f6f6f6 !important;
+}
+
+.dark-mode2::-webkit-scrollbar-thumb {
+  background: #f6f6f6 !important;
+}
+
+.dark-mode1::-webkit-scrollbar-thumb {
+  background: #f6f6f6 !important;
+}
+
+
+
+
 
 @media(min-width: 767px) {
   .app:before {
@@ -47,6 +85,16 @@
     top: 0;
     z-index: 1;
     background-color: #009688;
+    width: 100%;
+    height: 127px;
+    content: "";
+  }
+
+  .app.dark-mode1:before {
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: #212121 !important;
     width: 100%;
     height: 127px;
     content: "";

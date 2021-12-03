@@ -3,7 +3,6 @@ import gsap from "gsap";
 export const displayConvoForMobile = (event, history) => {
     // displays chat message on a mobile screen when the user clicks on the sideBarConvo component 
     let convoDiv = document.querySelector(".convo");
-    console.log("opening", convoDiv);
     if (window.screen.width > 840) return // return if user is on a bigger screen
     if (!convoDiv) return
     if (event === "show") {
@@ -13,9 +12,10 @@ export const displayConvoForMobile = (event, history) => {
             left: 0
         })
     } else {
+        // if history is false it means close convo but don't redirect to home page, so chat or room will open
         gsap.to(convoDiv, {
             duration: .5,
-            onComplete: () => history(),
+            onComplete: () => history && history(),
             ease: "power2",
             left: "110%"
         })

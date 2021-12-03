@@ -64,7 +64,7 @@ function SidebarChatLastMessage({ lastMessage, isRoom }) {
         // get message and updates with the latest users infos
         let lastMessageClone = { ...lastMessage }
         if (lastMessage) {
-            let match = totalUserOnDb.filter(user => user.uid === lastMessage.senderId)[0]
+            let match = totalUserOnDb?.filter(user => user.uid === lastMessage.senderId)[0]
             lastMessageClone.name = match?.name
         }
         setIsLastMessagesUpdated(lastMessageClone);

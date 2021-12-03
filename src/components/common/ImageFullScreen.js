@@ -2,15 +2,14 @@ import React from 'react'
 import { IconButton } from '@material-ui/core';
 import { CloseRounded } from '@material-ui/icons'
 import '../../styles/imageFullScreen.css'
+import { closeImageOnFullScreen } from '../utils/imageFullScreenUtils';
 
 function ImageFullScreen({ imageFullScreen, setImageFullScreen }) {
-    const closeImageOnFullScreen = () => { // close image on full when a user clicks the cancel icon
-        setImageFullScreen({ isFullScreen: false });
-    }
+
     return (
         <div className={`imageFullScreen ${imageFullScreen.isFullScreen && "show"}`}>
             <div className={`imageFullScreen_wr`}>
-                <IconButton onClick={closeImageOnFullScreen}>
+                <IconButton onClick={() => closeImageOnFullScreen(setImageFullScreen)}>
                     <CloseRounded />
                 </IconButton>
                 <div className="imageFullScreenDivWrap">

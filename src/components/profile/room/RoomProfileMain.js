@@ -23,11 +23,12 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { rearrangeForAdmin, roomProfileSidebar as animate } from '../../utils/roomProfileUtils';
 import Loading from '../../common/Loading';
 import { mobileDisplayConvoProfile } from '../../utils/mobileScreenUtils';
+import { openImageFullScreen } from '../../utils/imageFullScreenUtils';
 
 function RoomProfileMain(props) {
-    const { setOpenModal, setModalType, setIsRoom, setUpSidebarType, imgMssgPreview } = props;
+    const { setOpenModal, setModalType, setIsRoom, setUpSidebarType, imgMssgPreview, setImageFullScreen } = props;
     const [isAdmin, setIsAdmin] = useState(true);
-    const [{ user, currentDisplayConvoInfo, isMuteNotifichecked, }, disptach,] = useStateValue(); // keeps state for current logged in user
+    const [{ user, currentDisplayConvoInfo, isMuteNotifichecked, isUserOnDarkMode }, disptach,] = useStateValue(); // keeps state for current logged in user
     const [isGroupNameOnEdit, setIsGroupNameOnEdit] = useState(false); // keeps state if a user is currently editing the group name
     const [newNameInput, setNewNameInput] = useState(""); // keeps state for the inputed message by user
     const [isGroupDescripOnEdit, setIsGroupDescripOnEdit] = useState(false); // keeps state if a user is currently editing the group description
@@ -167,8 +168,9 @@ function RoomProfileMain(props) {
     }, [isMuteNotifichecked, disptach, user?.info?.uid, currentDisplayConvoInfo?.uid, currentDisplayConvoInfo?.roomId,]);
     return (
         <div className="roomProfile__container">
-            <div className="roomProfile__header">
+            <div className={`roomProfile__header ${isUserOnDarkMode && "dark-mode2"}`}>
                 <CloseRounded
+                    className={`${isUserOnDarkMode && "dark-mode-color3"}`}
                     onClick={() => {
                         profile.close(true);
                         mobileDisplayConvoProfile("hide", true);
@@ -178,8 +180,8 @@ function RoomProfileMain(props) {
                 />
                 <p>Contact Info</p>
             </div>
-            <div className="roomProfile__body">
-                <section className="roomProfileBody__sec1">
+            <div className={`roomProfile__body ${isUserOnDarkMode && "dark-mode1"}`}>
+                <section className={`roomProfileBody__sec1 ${isUserOnDarkMode && "dark-mode2"}`}>
                     <div className="roomProfileBody__sec1AviWr">
                         <Avatar src={currentDisplayConvoInfo?.avi} />
                         {isAdmin && (
@@ -187,7 +189,7 @@ function RoomProfileMain(props) {
                         )}
                         {isAdmin && (
                             <div className="rpb__sec1AviChnage">
-                                <CameraAltRounded />
+                                <CameraAltRounded className={`${isUserOnDarkMode && "dark-mode-color3"}`} />
                                 <p>Change Group Icon</p>
                             </div>
                         )}
@@ -236,7 +238,7 @@ function RoomProfileMain(props) {
                                     </div>
                                 </div>
                             ) : (
-                                <p>{currentDisplayConvoInfo?.roomName}</p>
+                                <h3>{currentDisplayConvoInfo?.roomName}</h3>
                             )}
 
                             <p>
@@ -261,8 +263,8 @@ function RoomProfileMain(props) {
                         )}
                     </div>
                 </section>
-                <section className="roomProfileBody__sec2">
-                    <div className="roomProfileBody__sec2OuterDiv">
+                <section className={`roomProfileBody__sec2 ${isUserOnDarkMode && "dark-mode2"}`}>
+                    <div className={`roomProfileBody__sec2OuterDiv  ${isUserOnDarkMode && "dark-mode2"}`}>
                         <div className="rpb__editDescrip">
                             <p>Description</p>
                             {isGroupDescripOnEdit ? (
@@ -318,15 +320,17 @@ function RoomProfileMain(props) {
                         )}
                     </div>
                 </section>
-                <section className="roomProfileBody__sec3">
+                <section className={`roomProfileBody__sec3 ${isUserOnDarkMode && "dark-mode2"}`}>
                     <div onClick={() => { animate.open(true); setUpSidebarType("MEDIA-DOCS"); }} className="roomProfileBody__sec3Info">
                         <p>Media, Links and Docs</p>
-                        <ArrowForwardIos />
+                        <ArrowForwardIos className={`${isUserOnDarkMode && "dark-mode-color3"}`} />
                     </div>
                     {
                         imgMssgPreview.length > 0 ? <div className="media_grid_wr">
                             {imgMssgPreview.map((mssg, index) => (
-                                <div key={index}>
+                                <div
+                                    onClick={() => openImageFullScreen(setImageFullScreen, mssg?.url, mssg?.mssg)}
+                                    key={index}>
                                     <img src={mssg?.url} alt="media" />
                                 </div>
                             ))}
@@ -336,8 +340,10 @@ function RoomProfileMain(props) {
                     }
                     <div className="roomProfileBody__sec3Doc"></div>
                 </section>
-                <section className="roomProfileBody__sec4">
-                    <div className="muteNotifi">
+                <section className={`roomProfileBody__sec4 ${isUserOnDarkMode && "dark-mode2"}`}>
+                    <div
+                        onClick={() => handleModalChange("MUTE__CONVO", true)}
+                        className="muteNotifi">
                         <p>Mute Notification</p>
                         <div>
                             <Checkbox
@@ -352,27 +358,29 @@ function RoomProfileMain(props) {
                     </div>
                     <div className="starMessg" onClick={() => { animate.open(false); setUpSidebarType("STARRED-MESSAGE"); }}>
                         <p>Starred Messages</p>
-                        <ArrowForwardIos />
+                        <ArrowForwardIos className={`${isUserOnDarkMode && "dark-mode-color3"}`} />
                     </div>
                     <div className="disappearingMessg" onClick={() => { animate.open(false); setUpSidebarType("DISAPPEARING-MESSAGE"); }}>
                         <p>
                             <span>Disappearing Messages</span>
                             <span>Off</span>
                         </p>
-                        <ArrowForwardIos />
+                        <ArrowForwardIos className={`${isUserOnDarkMode && "dark-mode-color3"}`} />
                     </div>
                 </section>
-                <section className="roomProfileBody__sec5">
+                <section className={`roomProfileBody__sec5 ${isUserOnDarkMode && "dark-mode2"}`}>
                     <div className="rpb_sec5_div1">
                         <p>{`${groupMembers?.length} participant`}</p>
                         <SearchOutlined />
                     </div>
                     <div className="rpb_sec5_div2">
-                        <div onClick={() => isAdmin && handleModalChange("ADD_PARTICIPANT", true)}>
+                        <div
+                            className={`${isUserOnDarkMode && "dark-modeHover"}`}
+                            onClick={() => isAdmin && handleModalChange("ADD_PARTICIPANT", true)}>
                             <PersonAddRounded />
                             <p>Add participant</p>
                         </div>
-                        <div>
+                        <div className={`${isUserOnDarkMode && "dark-modeHover"}`}>
                             <LinkRounded />
                             <p>Invite to group via link</p>
                         </div>
@@ -382,7 +390,7 @@ function RoomProfileMain(props) {
                             <div
                                 key={index}
                                 onClick={() => {
-                                    if (member.id !== user?.info?.uid || !member.isAdmin) {
+                                    if (member.id !== user?.info?.uid && isAdmin) {
                                         disptach({
                                             type: "SET_SELECTEDPREVIEWMEMBER",
                                             selectedPreviewMember: member
@@ -390,7 +398,9 @@ function RoomProfileMain(props) {
                                         handleModalChange("CLICKED_ROOM_MEMBER", true)
                                     }
                                 }}
-                                className="rpb_sec5_div3_memberWr">
+                                className={`rpb_sec5_div3_memberWr
+                                ${isUserOnDarkMode && "dark-modeHover"}
+                                 ${isUserOnDarkMode && "dark-mode2"}`}>
                                 <div>
                                     <Avatar src={member?.data.avi} />
                                     <p>{member?.data?.name}</p>
@@ -400,11 +410,13 @@ function RoomProfileMain(props) {
                         ))}
                     </div>
                 </section>
-                <section className="roomProfileBody__sec6" onClick={() => handleModalChange("EXIT_GROUP", true)}>
+                <section className={`roomProfileBody__sec6 ${isUserOnDarkMode && "dark-mode2"}`}
+                    onClick={() => handleModalChange("EXIT_GROUP", true)}>
                     <ExitToAppRounded />
                     <p>Exit Group</p>
                 </section>
-                <section className="roomProfileBody__sec7" onClick={() => handleModalChange("REPORT_GROUP", true)}>
+                <section className={`roomProfileBody__sec7 ${isUserOnDarkMode && "dark-mode2"}`}
+                    onClick={() => handleModalChange("REPORT_GROUP", true)}>
                     <ThumbDown />
                     <p>Report Group</p>
                 </section>

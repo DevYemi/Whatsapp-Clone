@@ -95,25 +95,31 @@ function SidebarMain(props) {
         }
     }, [chats, dispatch]);
     return (
-        <div className="sidebarMain">
-            <section className={`sidebarMain__header ${isUserOnDarkMode ? "dark" : "light"}`}>
+        <div className={`sidebarMain ${isUserOnDarkMode && "dark-mode2"}`}>
+            <section className={`sidebarMain__header ${isUserOnDarkMode && "dark-mode2"}`}>
                 <div onClick={sidebarProfile.show} className="sidebarMain__headerLeft">
                     <Avatar src={userInfoDb?.avi} />
                     <p>{userInfoDb?.phoneNumber}</p>
                 </div>
                 <div className="sidebarMain__headerRight">
                     <IconButton>
-                        <DonutLarge />
+                        <DonutLarge
+                            className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+                        />
                     </IconButton>
                     <IconButton>
-                        <Chat />
+                        <Chat
+                            className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+                        />
                     </IconButton>
                     <div className="sidebarMain__headerHelpWr">
                         <IconButton onClick={() => sidebarMainHeaderHelp.open(setIsSidebarHeaderHelpOpened)}>
-                            <MoreVert />
+                            <MoreVert
+                                className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+                            />
                         </IconButton>
                         <div className="sidebarMain__headerHelp" id="sidebarMain__headerHelp">
-                            <ul>
+                            <ul className={`${isUserOnDarkMode && "dark-mode1"}`}>
                                 <li>New Group</li>
                                 <li>Archived</li>
                                 <li> Starred Messages</li>
@@ -131,13 +137,13 @@ function SidebarMain(props) {
                     </div>
                 </div>
             </section>
-            <section className={`sidebarMain__search ${isUserOnDarkMode ? "dark" : "light"}`}>
-                <div className="sidebarMain__searchContainer">
+            <section className={`sidebarMain__search ${isUserOnDarkMode && "dark-mode1"}`}>
+                <div className={`sidebarMain__searchContainer ${isUserOnDarkMode && "dark-mode2"}`}>
                     <SearchOutlined />
                     <input type="text" placeholder="Search or start a new group" />
                 </div>
             </section>
-            <section className={`sidebarMain__convos  ${isUserOnDarkMode ? "dark" : "light"}`}>
+            <section className={`sidebarMain__convos  ${isUserOnDarkMode && "dark-mode2"}`}>
                 <SidebarConvo
                     addNewConvo
                     setOpenModal={setOpenModal}

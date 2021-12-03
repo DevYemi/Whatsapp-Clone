@@ -10,7 +10,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import { useStateValue } from "./components/global-state-provider/StateProvider";
 import Profile from "./components/profile/Profile";
 import { getIsUserOnDarkModeOnDb, getTotalUsersFromDb, resetIsUserOnlineOnDb } from "./components/backend/get&SetDataToDb";
-import { displayConvoForMobile } from "./components/utils/mobileScreenUtils";
+import ImageFullScreen from "./components/common/ImageFullScreen";
 function App() {
   const [{
     user,
@@ -18,6 +18,7 @@ function App() {
     isUserOnDarkMode,
   }, dispatch] = useStateValue();
   const [openModal, setOpenModal] = useState(false); // keeps state if modal is opened or not
+  const [imageFullScreen, setImageFullScreen] = useState({ isFullScreen: false }); // keeps state if there currently an image on fullScreen and also keeps details of the image if it is
   const [isChatBeingCleared, setIsChatBeingCleared] = useState(false) // keeps state if current displayed chat messages is being cleared
   const [modalInput, setModalInput] = useState(""); // keeps state of user input in the modal
   const [modalType, setModalType] = useState(""); // keeps state of which type of modal should pop up
@@ -29,6 +30,7 @@ function App() {
   const [isAddChatFromRoomProfile, setIsAddChatFromRoomProfile] = useState(false); // keeps state if user has successfully started a chat with a fellow member and redirect to chat
   const addChatBg = { url: "url(/img/chat-bg.svg)", position: "right bottom", size: "contain" } // addchat modal bg-image styles
   const addRoomBg = { url: "url(/img/room-bg.svg)", position: "right bottom", size: "97px" } // addroom modal bg-image styles
+
   useEffect(() => {
     //  KEEPS A USER LOGGED IN CONSISTENT
     if (localStorage.whatsappCloneUser) {
@@ -55,12 +57,11 @@ function App() {
   return (
     <Router>
       {isAddChatFromRoomProfile && <Redirect to={`/chats/${selectedPreviewMember.id}`} />} {/* Redirect to  chat when a user adds chat from romm */}
-      {isAddChatFromRoomProfile && displayConvoForMobile("show")} {/* Opens the caht if user is on mobile screen */}
-      <div className={`app ${isUserOnDarkMode ? "dark" : "light"}`}>
+      <div className={`app ${isUserOnDarkMode && "dark-mode1"}`}>
         {!user ? (
           <Login />
         ) : (
-          <div className={`app__body ${isUserOnDarkMode ? "dark" : "light"}`}>
+          <div className={`app__body ${isUserOnDarkMode && "dark-mode1"}`}>
             <Sidebar
               setOpenModal={setOpenModal}
               setModalType={setModalType}
@@ -79,6 +80,7 @@ function App() {
                   setIsUserProfileRoom={setIsUserProfileRoom}
                   isRoomSearchBarOpen={isConvoSearchBarOpen}
                   setIsRoomSearchBarOpen={setIsConvoSearchBarOpen}
+                  setImageFullScreen={setImageFullScreen}
                 />
               </Route>
               <Route path="/chats/:chatId">
@@ -92,6 +94,7 @@ function App() {
                   setIsChatSearchBarOpen={setIsConvoSearchBarOpen}
                   isChatBeingCleared={isChatBeingCleared}
                   setIsChatBeingCleared={setIsChatBeingCleared}
+                  setImageFullScreen={setImageFullScreen}
                 />
               </Route>
               <Route path="/home">
@@ -105,6 +108,7 @@ function App() {
               isRoom={isUserProfileRoom}
               isFirstRender={isFirstRender}
               isConnectedDisplayed={isConnectedDisplayed}
+              setImageFullScreen={setImageFullScreen}
             />
             <DisplayModal
               modalType={modalType}
@@ -119,6 +123,12 @@ function App() {
               setIsAddChatFromRoomProfile={setIsAddChatFromRoomProfile}
               setIsChatBeingCleared={setIsChatBeingCleared}
             />
+
+            <ImageFullScreen
+              imageFullScreen={imageFullScreen}
+              setImageFullScreen={setImageFullScreen}
+            />
+
           </div>
 
         )}

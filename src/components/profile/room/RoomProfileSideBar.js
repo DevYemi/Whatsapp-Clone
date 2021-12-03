@@ -5,14 +5,16 @@ import RpsbStarMessage from './RpsbStarMessage'
 import '../../../styles/roomProfileSideBar.css'
 
 function RoomProfileSideBar(props) {
-    const { upSidebarType, imgMssgAll } = props
+    const { upSidebarType, imgMssgAll, setImageFullScreen } = props
     return (
         <div className="roomProfileSidebar__wr">
             {upSidebarType === "STARRED-MESSAGE" ?
                 <RpsbStarMessage />
                 : upSidebarType === 'DISAPPEARING-MESSAGE' ?
                     <RpsbDisappearingMessage />
-                    : <RpsbMediaDocs imgMssgAll={imgMssgAll} />
+                    : <RpsbMediaDocs
+                        setImageFullScreen={setImageFullScreen}
+                        imgMssgAll={imgMssgAll} />
             }
 
         </div>

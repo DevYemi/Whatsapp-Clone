@@ -90,6 +90,11 @@
     word-wrap: break-word;
 }
 
+.modal__confirmMakeAdmin>div {
+    display: flex;
+    align-items: center;
+}
+
 .modal__blockChat button,
 .modal__clearMssgs button,
 .modal__reportContact button,
@@ -267,6 +272,8 @@
 .modal_addparticipant_searchContainer>input {
     border: none;
     height: 100%;
+    background-color: inherit;
+    color: inherit;
     outline: none;
     width: 75%;
 }

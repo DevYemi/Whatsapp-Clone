@@ -26,7 +26,7 @@ function ChatFooter(props) {
     totalChatWordFound,
   } = props;
   const [vnIsRecoding, setVnIsRecoding] = useState(false); // keeps state if the user is currently recording a voice note
-  const [{ user, isCurrentConvoBlocked }] = useStateValue();
+  const [{ user, isCurrentConvoBlocked, isUserOnDarkMode }] = useStateValue();
   const navigateToFoundWord = (key) => {
     let newIndex;
     switch (key) {
@@ -50,7 +50,7 @@ function ChatFooter(props) {
 
   if (isChatSearchBarOpen) {
     return (
-      <section className="chat__footer searching">
+      <section className={`chat__footer searching ${isUserOnDarkMode && "dark-mode1"}`}>
         <div className="chat__footerSearchNav">
           <IconButton onClick={() => navigateToFoundWord("MINUS")}>
             <ExpandLessRounded />
@@ -84,10 +84,12 @@ function ChatFooter(props) {
     }
   } else {
     return (
-      <section className="chat__footer">
+      <section className={`chat__footer ${isUserOnDarkMode && "dark-mode2"}`}>
         <div className={`footer__emoji ${vnIsRecoding && "hide"}`}>
           <IconButton onClick={(e) => showEmojis(e, false, "footer__emoji")}>
-            <InsertEmoticon />
+            <InsertEmoticon
+              className={`${isUserOnDarkMode && "dark-mode-color3"}`}
+            />
           </IconButton>
           <Picker className="hide" onEmojiClick={onEmojiClick} />
         </div>
@@ -95,6 +97,7 @@ function ChatFooter(props) {
           <input
             value={input}
             type="text"
+            className={`${isUserOnDarkMode && "dark-mode1"}`}
             onChange={(e) => setInput(e.target.value)}
             onFocus={(e) => {
               resetIsUserTypingOnDb(user.info.uid, chatId, false, true)

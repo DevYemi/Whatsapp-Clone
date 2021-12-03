@@ -20,7 +20,7 @@ function RoomFooter(props) {
         isRoomSearchBarOpen,
         totalRoomWordFound } = props
     const [vnIsRecoding, setVnIsRecoding] = useState(false); // keeps state if the user is currently recording a voice note
-    const [{ user }] = useStateValue();
+    const [{ user, isUserOnDarkMode }] = useStateValue();
     const navigateToFoundWord = (key) => {
         let newIndex;
         switch (key) {
@@ -44,7 +44,7 @@ function RoomFooter(props) {
     if (isRoomSearchBarOpen) {
 
         return (
-            <section className="room__footer searching">
+            <section className={`room__footer searching ${isUserOnDarkMode && "dark-mode1"}`}>
                 <div className="room__footerSearchNav">
                     <IconButton onClick={() => navigateToFoundWord("MINUS")}>
                         <ExpandLessRounded />
@@ -60,15 +60,18 @@ function RoomFooter(props) {
         )
     } else {
         return (
-            <section className="room__footer">
+            <section className={`room__footer ${isUserOnDarkMode && "dark-mode2"}`}>
                 <div className={`footer__emoji ${vnIsRecoding && "hide"}`}>
                     <IconButton onClick={(e) => showEmojis(e, false, "footer__emoji")}>
-                        <InsertEmoticon />
+                        <InsertEmoticon className={`${isUserOnDarkMode && "dark-mode-color3"}`} />
                     </IconButton>
                     <Picker className="hide" onEmojiClick={onEmojiClick} />
                 </div>
                 <form className={vnIsRecoding ? "hide" : ""} action="">
-                    <input value={input} type="text"
+                    <input
+                        value={input}
+                        type="text"
+                        className={`${isUserOnDarkMode && "dark-mode1"}`}
                         onChange={e => setInput(e.target.value)}
                         onFocus={e => {
                             resetIsUserTypingOnDb(user?.info?.uid, roomId, true, true)

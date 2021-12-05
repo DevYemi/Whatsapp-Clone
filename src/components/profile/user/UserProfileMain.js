@@ -28,7 +28,9 @@ function UserProfileMain(props) {
             </div>
             <div className={`userProfile__body ${isUserOnDarkMode ? "dark-mode1" : ""}`}>
                 <section className={`userProfileBody__sec1 ${isUserOnDarkMode ? "dark-mode1" : ""}`}>
-                    <Avatar src={currentDisplayConvoInfo?.avi} />
+                    <Avatar
+                        onClick={() => openImageFullScreen(setImageFullScreen, currentDisplayConvoInfo?.avi, "Profile Picture")}
+                        src={currentDisplayConvoInfo?.avi} />
                     <div>
                         <h3>{currentDisplayConvoInfo?.phoneNumber}</h3>
                         <p className={isUserOnDarkMode ? "dark-mode-color1" : ""}>~ {currentDisplayConvoInfo?.name}</p>

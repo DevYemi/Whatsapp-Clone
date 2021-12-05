@@ -1,3 +1,24 @@
+.auth {
+    position: relative;
+}
+
+.auth>img {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+}
+
+.auth-bg1 {
+    top: 16%;
+    right: 0;
+}
+
+.auth-bg2 {
+    bottom: 0;
+    left: 0;
+}
+
 .login {
     background-color: #f8f8f8;
     height: 100vh;
@@ -11,7 +32,8 @@
     text-align: center;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(63, 4, 4, 0.12) 0 1px
+    box-shadow: 0 1px 3px rgba(63, 4, 4, 0.12) 0 1px;
+    z-index: 1;
 }
 
 .login__container>img {
@@ -70,5 +92,15 @@
 
     .login__text {
         font-size: small;
+    }
+
+    .auth>img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .auth-bg1 {
+        top: 0;
+        right: 0;
     }
 }

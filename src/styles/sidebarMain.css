@@ -122,6 +122,12 @@
     overflow-x: hidden;
 }
 
+.sidebarMain__convos>h4 {
+    padding: 1em;
+    text-align: center;
+    color: red;
+}
+
 
 
 .sidebarMain__convos::-webkit-scrollbar {

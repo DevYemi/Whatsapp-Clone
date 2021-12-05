@@ -135,7 +135,7 @@ function SidebarProfile() {
                                 <div>
                                     <input
                                         value={newNameInput}
-                                        maxLength={"25"}
+                                        maxLength={"24"}
                                         onFocus={(e) =>
                                             showEmojis(e, true, "sp__editName__emoji")
                                         }
@@ -145,7 +145,7 @@ function SidebarProfile() {
                                         type="text"
                                     />
                                     <div className="sidebarProfile__editNameIconWr">
-                                        <p>{newNameInput?.length}</p>
+                                        <p>{24 - newNameInput?.length}</p>
                                         <div className={`sp__editName__emoji`}>
                                             <InsertEmoticon
                                                 onClick={(e) =>
@@ -187,22 +187,23 @@ function SidebarProfile() {
                 <section className={`sidebarProfile__sec4_wr ${isUserOnDarkMode && "dark-mode2"}`}>
                     <p>About</p>
                     <div className="sidebarProfile__sec4">
-                        <div className="sidebarProfile__editName">
+                        <div className="sidebarProfile__editAbout">
                             {isAboutOnEdit ? (
                                 <div>
-                                    <input
+                                    <textarea
                                         value={newAboutInput}
-                                        maxLength={"25"}
+                                        wrap="hard"
+                                        maxLength="140"
                                         onFocus={(e) =>
                                             showEmojis(e, true, "sp__editAbout__emoji")
                                         }
                                         onChange={(e) =>
                                             editProfileInfo.onChange(e.target.value, "ABOUT")
                                         }
-                                        type="text"
                                     />
+
                                     <div className="sidebarProfile__editAboutIconWr">
-                                        <p>{newAboutInput?.length}</p>
+                                        <p>{140 - newAboutInput?.length}</p>
                                         <div className={`sp__editAbout__emoji`}>
                                             <InsertEmoticon
                                                 onClick={(e) =>
@@ -221,7 +222,7 @@ function SidebarProfile() {
                                     </div>
                                 </div>
                             ) : (
-                                <p>{userInfo?.about}</p>
+                                <span>{userInfo?.about}</span>
                             )}
 
                         </div>

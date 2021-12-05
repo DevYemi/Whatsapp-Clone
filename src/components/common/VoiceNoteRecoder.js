@@ -1,4 +1,3 @@
-import { IconButton } from '@material-ui/core';
 import { Mic, SendRounded } from '@material-ui/icons';
 import React from 'react'
 import gsap from 'gsap';
@@ -28,7 +27,7 @@ function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollConvoB
         start: function (e) { // starts recording user VOICE NOTE
             setVnIsRecoding(true);
             let redRecodingMic = document.querySelector(".voiceNoteRecoder__recoding > div > .MuiSvgIcon-root");
-            micBlinking = setInterval(() => { redRecodingMic.classList.toggle("blink"); console.log(micBlinking) }, 500);
+            micBlinking = setInterval(() => { redRecodingMic.classList.toggle("blink"); }, 500);
             countDown = setInterval(() => { this.timerCount.count(); }, 1000);
             onRecordState.start();
         },
@@ -135,9 +134,9 @@ function VoiceNoteRecoder({ setVnIsRecoding, vnIsRecoding, convoId, scrollConvoB
             </div>
             <p onClick={(e) => { isRecordingStopByCancel = true; onRecordState.stop(); }} className={vnIsRecoding ? "show" : ""}>Cancel</p>
             <div className="voiceNoteRecoder__mic" onClick={() => vnIsRecoding ? onRecordState.stop() : recordAudio.setup()}>
-                <IconButton>
-                    {vnIsRecoding ? <SendRounded className={`${isUserOnDarkMode && "dark-mode-color3"}`} /> : <Mic className={`${isUserOnDarkMode && "dark-mode-color3"}`} />}
-                </IconButton>
+
+                {vnIsRecoding ? <SendRounded className={`${isUserOnDarkMode && "dark-mode-color3"}`} /> : <Mic className={`micIcon ${isUserOnDarkMode && "dark-mode-color3"}`} />}
+
             </div>
         </div>
     )

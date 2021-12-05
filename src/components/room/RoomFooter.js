@@ -1,5 +1,5 @@
 import { IconButton } from '@material-ui/core'
-import { ExpandLessRounded, ExpandMoreRounded, InsertEmoticon } from '@material-ui/icons'
+import { ExpandLessRounded, ExpandMoreRounded, InsertEmoticon, Send } from '@material-ui/icons'
 import Picker from 'emoji-picker-react';
 import React, { useState } from 'react'
 import { resetIsUserTypingOnDb } from '../backend/get&SetDataToDb';
@@ -62,9 +62,9 @@ function RoomFooter(props) {
         return (
             <section className={`room__footer ${isUserOnDarkMode && "dark-mode2"}`}>
                 <div className={`footer__emoji ${vnIsRecoding && "hide"}`}>
-                    <IconButton onClick={(e) => showEmojis(e, false, "footer__emoji")}>
-                        <InsertEmoticon className={`${isUserOnDarkMode && "dark-mode-color3"}`} />
-                    </IconButton>
+                    <InsertEmoticon
+                        onClick={(e) => showEmojis(e, false, "footer__emoji")}
+                        className={` footer__emojiIcon ${isUserOnDarkMode && "dark-mode-color3"}`} />
                     <Picker className="hide" onEmojiClick={onEmojiClick} />
                 </div>
                 <form className={vnIsRecoding ? "hide" : ""} action="">
@@ -87,6 +87,9 @@ function RoomFooter(props) {
                     convoId={roomId}
                     scrollConvoBody={scrollRoomBody}
                 />
+                {!vnIsRecoding && <Send
+                    onClick={(e) => sendMessage(e, "text")}
+                    className="room_footerSendIcon" />}
             </section>
         )
     }

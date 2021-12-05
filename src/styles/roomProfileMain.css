@@ -215,7 +215,7 @@
     cursor: pointer;
 }
 
-.rpb__editDescrip p {
+.rpb__editDescrip>p {
     font-size: small;
     color: #3BAEA4;
     margin-bottom: .5em;
@@ -271,6 +271,11 @@
     align-items: center;
     position: absolute;
     right: 0;
+}
+
+.rpb__editDescripIconWr>p {
+    font-size: small;
+    color: grey;
 }
 
 .roomProfileBody__sec3,

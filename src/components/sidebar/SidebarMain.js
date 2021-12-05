@@ -16,6 +16,7 @@ function SidebarMain(props) {
         setIsConnectedDisplayed,
         setOpenModal,
         setModalType,
+        isThereInternetConnection,
         setIsConvoSearchBarOpen,
         isConvoSearchBarOpen } = props
     const [rooms, setRooms] = useState(null); // keep state for all the rooms received from db
@@ -26,7 +27,6 @@ function SidebarMain(props) {
     const [{ user, isUserOnDarkMode }, dispatch] = useStateValue(); // keeps state for current logged in user
     const [userInfoDb, setUserInfoDb] = useState(); //keeps state of the user info from db
     const urlHistory = useHistory();
-
 
     useEffect(() => {
         // adds and remove an eventlistener that closes and open the sidebarMain__headerHelp Div
@@ -148,27 +148,31 @@ function SidebarMain(props) {
                     addNewConvo
                     setOpenModal={setOpenModal}
                     setModalType={setModalType} />
-                {convos.length > 0 ? (
-                    convos.map((convo) => (
-                        <SidebarConvo
-                            key={convo.id}
-                            convoId={convo.id}
-                            isRoom={convo.data.isRoom}
-                            setIsConnectedDisplayed={setIsConnectedDisplayed}
-                            setOpenModal={setOpenModal}
-                            setModalType={setModalType}
-                            setIsConvoSearchBarOpen={setIsConvoSearchBarOpen}
+                {!isThereInternetConnection ?
+                    <h4>
+                        Connection can't be established, please check you internet connection
+                    </h4>
+                    : convos.length > 0 ? (
+                        convos.map((convo) => (
+                            <SidebarConvo
+                                key={convo.id}
+                                convoId={convo.id}
+                                isRoom={convo.data.isRoom}
+                                setIsConnectedDisplayed={setIsConnectedDisplayed}
+                                setOpenModal={setOpenModal}
+                                setModalType={setModalType}
+                                setIsConvoSearchBarOpen={setIsConvoSearchBarOpen}
+                            />
+                        ))
+                    ) : (
+                        <Loading
+                            size={40}
+                            type={"ThreeDots"}
+                            visible={convos.length > 0 ? "Hide" : "Show"}
+                            color={"#00BFA5"}
+                            classname={"sidebarMain__loading"}
                         />
-                    ))
-                ) : (
-                    <Loading
-                        size={40}
-                        type={"ThreeDots"}
-                        visible={convos.length > 0 ? "Hide" : "Show"}
-                        color={"#00BFA5"}
-                        classname={"sidebarMain__loading"}
-                    />
-                )}
+                    )}
             </section>
         </div>
     );

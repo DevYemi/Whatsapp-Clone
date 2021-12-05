@@ -249,6 +249,20 @@
     display: none;
 }
 
+.footer__emojiIcon,
+.chat_footerSendIcon {
+    margin: 0 .5em;
+}
+
+.footer__emojiIcon,
+.micIcon {
+    color: rgb(80, 78, 78);
+}
+
+.chat_footerSendIcon {
+    color: rgb(62, 174, 218);
+}
+
 .footer__emoji>.emoji-picker-react {
     display: none;
     z-index: 2;
@@ -279,7 +293,7 @@
         box-shadow: 1px 1px 1px 1px rgb(148, 146, 146);
         width: 100%;
         left: 110%;
-        z-index: 3;
+        z-index: 1;
         height: 100%;
     }
 

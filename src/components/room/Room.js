@@ -110,9 +110,6 @@ function Room(props) {
         }
     }
 
-    const closeImageOnFullScreen = () => { // close image on full when a user clicks the cancel icon
-        setImageFullScreen({ isFullScreen: false });
-    }
     useEffect(() => {
         // if user is on room screen reset on db
         resetUserRoomOnScreenInDb(user?.info.uid, roomId, true)

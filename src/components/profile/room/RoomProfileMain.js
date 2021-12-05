@@ -183,7 +183,9 @@ function RoomProfileMain(props) {
             <div className={`roomProfile__body ${isUserOnDarkMode && "dark-mode1"}`}>
                 <section className={`roomProfileBody__sec1 ${isUserOnDarkMode && "dark-mode2"}`}>
                     <div className="roomProfileBody__sec1AviWr">
-                        <Avatar src={currentDisplayConvoInfo?.avi} />
+                        <Avatar
+                            onClick={() => !isAdmin && openImageFullScreen(setImageFullScreen, currentDisplayConvoInfo?.avi, "Room Profile Picture")}
+                            src={currentDisplayConvoInfo?.avi} />
                         {isAdmin && (
                             <input type="file" onChange={(e) => handleAviFileChange(e)} />
                         )}
@@ -219,7 +221,7 @@ function RoomProfileMain(props) {
                                         type="text"
                                     />
                                     <div className="rpb__editNameIconWr">
-                                        <p>{newNameInput.length}</p>
+                                        <p>{25 - newNameInput.length}</p>
                                         <div className={`rpb__editName__emoji`}>
                                             <InsertEmoticon
                                                 onClick={(e) =>
@@ -272,6 +274,7 @@ function RoomProfileMain(props) {
                                     <textarea
                                         value={newDescripInput}
                                         wrap="hard"
+                                        maxLength="140"
                                         onFocus={(e) =>
                                             showEmojis(e, true, "rpb__editDescrip__emoji")
                                         }
@@ -280,6 +283,7 @@ function RoomProfileMain(props) {
                                         }
                                     />
                                     <div className="rpb__editDescripIconWr">
+                                        <p>{140 - newDescripInput.length}</p>
                                         <div className={`rpb__editDescrip__emoji`}>
                                             <InsertEmoticon
                                                 onClick={(e) =>

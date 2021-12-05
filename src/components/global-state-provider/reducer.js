@@ -40,7 +40,7 @@ function reducer(state, action) {
     case "SET_ISUSERONDARKMODE":
       return { ...state, isUserOnDarkMode: action.isUserOnDarkMode }
     case "LOG_OUT":
-      return initialState
+      return { ...initialState, user: null }
     default:
       return state;
   }

@@ -8,7 +8,6 @@ import { useStateValue } from '../global-state-provider/StateProvider';
 import { useLocation } from "react-router-dom";
 import { profile } from '../utils/profileUtils';
 import { KeyboardArrowDownRounded } from '@material-ui/icons';
-import { displayConvoForMobile } from '../utils/mobileScreenUtils';
 
 
 function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, setOpenModal, setModalType, setIsConvoSearchBarOpen }) {
@@ -111,7 +110,7 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
                     </div>
                 </div>
                 <p className={newMssgNum > 0 && !isMuteNotifichecked && !isRoom ? "show" : ""}>{newMssgNum}</p>
-                <p className={newMssgNum > 0 && !isMuteNotifichecked && isRoom ? "show" : ""}>{""}</p>
+                <p className={`roomRead ${newMssgNum > 0 && !isMuteNotifichecked && isRoom ? "show" : ""}`}>{""}</p>
                 <KeyboardArrowDownRounded />
             </div>
         </Link>

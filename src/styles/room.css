@@ -208,6 +208,20 @@
     border-top: 1px solid lightgrey;
 }
 
+.footer__emojiIcon,
+.room_footerSendIcon {
+    margin: 0 .5em;
+}
+
+.footer__emojiIcon,
+.micIcon {
+    color: rgb(80, 78, 78);
+}
+
+.room_footerSendIcon {
+    color: rgb(62, 174, 218);
+}
+
 .room__footer>form {
     flex: 1;
     display: flex;
@@ -258,10 +272,6 @@
     opacity: 1;
 }
 
-.room__filePreview.show {
-    display: block;
-    top: 0;
-}
 
 @media(max-width: 840px) {
 

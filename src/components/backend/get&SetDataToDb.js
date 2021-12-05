@@ -913,7 +913,7 @@ export function resetIsUserTypingOnDb(userId, convoId, isRoom, value) {
 export function getIsUserTypingFromDb(userId, convoId, isRoom, reactHookCallback) {
   if (isRoom) {
     // gets members that are typing on db
-    db.collection("rooms")
+    return db.collection("rooms")
       .doc(convoId)
       .collection("members")
       .where("isTyping", "==", true)

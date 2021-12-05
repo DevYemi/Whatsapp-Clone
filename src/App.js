@@ -11,6 +11,7 @@ import { useStateValue } from "./components/global-state-provider/StateProvider"
 import Profile from "./components/profile/Profile";
 import { getIsUserOnDarkModeOnDb, getTotalUsersFromDb, resetIsUserOnlineOnDb } from "./components/backend/get&SetDataToDb";
 import ImageFullScreen from "./components/common/ImageFullScreen";
+import gsap from "gsap";
 function App() {
   const [{
     user,
@@ -28,6 +29,7 @@ function App() {
   const [isConvoSearchBarOpen, setIsConvoSearchBarOpen] = useState(false) // keeps state if the convoheader search bar is open
   const [isConnectedDisplayed, setIsConnectedDisplayed] = useState(false); // keeps state if the connectedDisplay component is currently mounted
   const [isAddChatFromRoomProfile, setIsAddChatFromRoomProfile] = useState(false); // keeps state if user has successfully started a chat with a fellow member and redirect to chat
+  const [isThereInternetConnection, setIsThereInternetConnection] = useState(navigator.onLine)  // keeps state and returns a boalean if a user has an internet connection or not
   const addChatBg = { url: "url(/img/chat-bg.svg)", position: "right bottom", size: "contain" } // addchat modal bg-image styles
   const addRoomBg = { url: "url(/img/room-bg.svg)", position: "right bottom", size: "97px" } // addroom modal bg-image styles
 
@@ -54,6 +56,50 @@ function App() {
     let unsubcribeGetToUserFromDb = getTotalUsersFromDb(dispatch);
     return () => { unsubcribeGetToUserFromDb(); }
   }, [dispatch])
+  useEffect(() => {
+    // adds an event listener thats shows an animated text when a user loses internet connection
+    const internetOnline = {
+      open: function () {
+        const tl = gsap.timeline()
+        tl.to(".sidebar_offline", { duration: .2, ease: "power2", display: "none", left: "-100%" })
+          .to(".sidebar_online",
+            {
+              duration: 1,
+              onComplete: () => { setIsThereInternetConnection(navigator.onLine); setTimeout(internetOnline.close, 7000) },
+              ease: "power3",
+              left: "10px"
+            })
+      },
+      close: function () {
+        gsap.to(".sidebar_online",
+          {
+            duration: .5,
+            ease: "power3.out",
+            left: "-100%"
+          })
+      }
+    }
+
+    const internetOffline = {
+      open: function () {
+        gsap.to(".sidebar_offline",
+          {
+            duration: 1,
+            ease: "power2",
+            display: "",
+            left: "10px"
+          })
+      },
+    }
+
+    window.addEventListener("online", internetOnline.open)
+    window.addEventListener("offline", internetOffline.open)
+    return () => {
+      window.removeEventListener("online", internetOnline.open)
+      window.removeEventListener("offline", internetOffline.open)
+    }
+
+  }, [])
   return (
     <Router>
       {isAddChatFromRoomProfile && <Redirect to={`/chats/${selectedPreviewMember.id}`} />} {/* Redirect to  chat when a user adds chat from romm */}
@@ -70,6 +116,7 @@ function App() {
               setIsConnectedDisplayed={setIsConnectedDisplayed}
               setIsConvoSearchBarOpen={setIsConvoSearchBarOpen}
               isConvoSearchBarOpen={isConvoSearchBarOpen}
+              isThereInternetConnection={isThereInternetConnection}
             />
             <Switch>
               <Route path="/rooms/:roomId">

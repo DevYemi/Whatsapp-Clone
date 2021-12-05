@@ -25,6 +25,7 @@ function FilePreview(props) {
         setIsFileOnPreviewLoading,
         isFileOnPreviewLoading,
         isRoom } = props
+    console.log(isRoom)
 
     const closeFilePreview = async () => { // Closes file on preview
         let done = await filePreviewAnimation.close();
@@ -79,7 +80,7 @@ function FilePreview(props) {
                 top: 0,
             })
         }
-    }, [isFileOnPreview])
+    }, [isFileOnPreview, isRoom])
     return (
         <section className={`${isRoom ? "room" : "chat"}__filePreview ${isFileOnPreview && "show"}`} >
             <div className={`filePreview_wr`}>

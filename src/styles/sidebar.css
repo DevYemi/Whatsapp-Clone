@@ -3,6 +3,28 @@
     position: relative;
 }
 
+.sidebar_online,
+.sidebar_offline {
+    position: absolute;
+    bottom: 5%;
+    left: -100%;
+    padding: .5em 1.5em;
+    text-align: center;
+    color: white;
+    border-radius: 5px;
+    z-index: 4;
+}
+
+.sidebar_online {
+    border: 1px solid #4BEC68;
+    background-color: #4BEC68;
+}
+
+.sidebar_offline {
+    border: 1px solid #d91d1d;
+    background-color: #d91d1d;
+}
+
 @media (max-width: 840px) {
     .sidebar {
         width: 100%;

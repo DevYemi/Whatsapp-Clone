@@ -1,7 +1,6 @@
 import gsap from "gsap"
 import { resetIsUserOnDarkModeOnDb, resetIsUserOnlineOnDb } from "../backend/get&SetDataToDb"
-import { alpha, styled } from '@mui/material/styles';
-import { pink } from '@mui/material/colors';
+import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 
 export const sidebarProfile = { // handles the smooth animation of displaying and hiding the sidebar div
@@ -51,9 +50,11 @@ export const sidebarMainHeaderHelp = {
 export function handleLogOut(user, dispatch) {
     // logs a user out
     localStorage.removeItem('whatsappCloneUser');
+    console.log(localStorage.whatsappCloneUser)
     dispatch({
         type: "LOG_OUT"
     })
+
     resetIsUserOnlineOnDb(user?.info?.uid, false);
 }
 

@@ -11,6 +11,7 @@ function Sidebar(props) {
     setOpenModal,
     setModalType,
     setIsConvoSearchBarOpen,
+    isThereInternetConnection,
     isConvoSearchBarOpen } = props
 
   return (
@@ -23,8 +24,11 @@ function Sidebar(props) {
         setIsConnectedDisplayed={setIsConnectedDisplayed}
         isConvoSearchBarOpen={isConvoSearchBarOpen}
         setIsConvoSearchBarOpen={setIsConvoSearchBarOpen}
+        isThereInternetConnection={isThereInternetConnection}
       />
       <SidebarProfile />
+      <p className="sidebar_online">Online</p>
+      <p className="sidebar_offline">Offline, connection lost</p>
     </div>
   )
 

@@ -83,7 +83,7 @@
   .app:before {
     position: fixed;
     top: 0;
-    z-index: 1;
+    z-index: 2;
     background-color: #009688;
     width: 100%;
     height: 127px;
@@ -93,7 +93,7 @@
   .app.dark-mode1:before {
     position: fixed;
     top: 0;
-    z-index: 1;
+    z-index: 2;
     background-color: #212121 !important;
     width: 100%;
     height: 127px;

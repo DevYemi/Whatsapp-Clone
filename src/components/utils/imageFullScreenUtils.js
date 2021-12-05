@@ -1,7 +1,6 @@
 
 export const openImageFullScreen = (setImageFullScreen, url, message) => {
     // Open image on full screen when a user clicks on a message
-    console.log(setImageFullScreen, url, message)
     setImageFullScreen({
         isFullScreen: true,
         url: url,

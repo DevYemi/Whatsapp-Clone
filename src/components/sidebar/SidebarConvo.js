@@ -33,7 +33,7 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
             unsubRoomMemberWhomTyping && unsubRoomMemberWhomTyping();
             unsubIschatUserTypingDb && unsubIschatUserTypingDb();
         }
-    }, [user, convoId, isRoom])
+    }, [user, convoId, isRoom,])
 
     useEffect(() => { // Get the info of the convo user
         let unsubGetUserInfoFromDb;
@@ -79,7 +79,6 @@ function SidebarConvo({ addNewConvo, convoId, isRoom, setIsConnectedDisplayed, s
         }
 
     }, [convoId, isRoom, urlLocation]);
-
     return !addNewConvo ? (
         <Link to={isRoom ? `/rooms/${convoId}` : `/chats/${convoId}`}>
             <div onClick={() => {

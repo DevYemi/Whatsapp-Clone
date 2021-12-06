@@ -51,7 +51,7 @@ export const sign = {
     },
     hasPhoneNumBeenUsedBefore: function (phoneInput, totalUserOnDb) { // checks if the new user number input has been used before
         let res;
-        for (let i = 0; i < totalUserOnDb.length; i++) {
+        for (let i = 0; i < totalUserOnDb?.length; i++) {
             const user = totalUserOnDb[i];
             if (user.phoneNumber === phoneInput) {
                 alert(`The number ${phoneInput} has already been used by another user`);
@@ -66,7 +66,7 @@ export const sign = {
     hasEmailBeenUsedBefore: function (email, totalUserOnDb) { // checks if the new user email from google has been used before
         let res;
         let matchedPhoneNumber
-        for (let i = 0; i < totalUserOnDb.length; i++) {
+        for (let i = 0; i < totalUserOnDb?.length; i++) {
             const user = totalUserOnDb[i];
             if (user.email === email) {
                 i = totalUserOnDb + 1

@@ -771,7 +771,11 @@ function DisplayModal(props) {
                   }}>
                   Start Chat
                 </p>
-                {!selectedPreviewMember?.isAdmin && <p onClick={() => { setModalType("CONFIRM_MAKE_ADMIN") }}>Make Group Admin</p>}
+                {!selectedPreviewMember?.isAdmin && <p
+                  className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
+                  onClick={() => { setModalType("CONFIRM_MAKE_ADMIN") }}>
+                  Make Group Admin
+                </p>}
                 <p
                   className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
                   onClick={() => { setModalType("REMOVE_FROM_GROUP") }}>

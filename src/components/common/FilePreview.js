@@ -25,7 +25,6 @@ function FilePreview(props) {
         setIsFileOnPreviewLoading,
         isFileOnPreviewLoading,
         isRoom } = props
-    console.log(isRoom)
 
     const closeFilePreview = async () => { // Closes file on preview
         let done = await filePreviewAnimation.close();

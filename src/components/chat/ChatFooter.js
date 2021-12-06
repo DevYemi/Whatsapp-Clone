@@ -71,7 +71,7 @@ function ChatFooter(props) {
     if (isCurrentConvoBlocked === user?.info?.uid) {
       // if it was the current logged in user that blocked the convo
       return (
-        <div className="chat__footer blocked">
+        <div className={`chat__footer blocked ${isUserOnDarkMode && "dark-mode2"}`}>
           <p>You can't send message to a Blocked contact</p>
         </div>
       );

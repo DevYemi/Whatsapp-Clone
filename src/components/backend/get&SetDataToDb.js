@@ -1,5 +1,8 @@
 import db, { storage } from "./firebase";
 import firebase from "firebase/app";
+import developerWelcomeMessage from '../utils/developWelcomeMessage.js'
+
+
 
 export function getUserInfoFromDb(id, hookCallBack, isReducerCallback) {
   if (isReducerCallback) {
@@ -143,6 +146,7 @@ export function addNewMemberToRoomToDb(roomId, user, admin, isCreator) {
       id: user?.info.uid,
       isAdmin: admin,
       isCreator: isCreator,
+      isRead: false,
       isOnScreen: false
     }).catch(e => console.log(e))
 }
@@ -166,7 +170,7 @@ export function addRoomToUserConvoInDb(roomId, users, admin, hookCallback) {
             addNewMemberToRoomToDb(roomId, user, admin, false);
           })
           .catch(e => { console.log(e) })
-        if (index === users.length - 1) hookCallback({ loading: false, success: true })
+        if (index === users.length - 1) hookCallback && hookCallback({ loading: false, success: true })
       })
     } catch (e) {
       console.log(e)
@@ -176,7 +180,7 @@ export function addRoomToUserConvoInDb(roomId, users, admin, hookCallback) {
   }
 }
 export function getMessgFromDb(userId, convoId, isRoom, order, hookCallback, getLastMessage) {
-  // gets all the message in a room fromdb
+  // gets all the message in a room from db
   if (isRoom) {
     return db
       .collection("rooms")
@@ -283,7 +287,6 @@ export function setNewMessageToDb(convoId, text, user, scrollConvoBody, isRoom, 
         isRead: true,
         receiverId: convoId,
         fileType: fileType,
-        name: user?.info.displayName,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .then(() => {
@@ -300,19 +303,18 @@ export function setNewMessageToDb(convoId, text, user, scrollConvoBody, isRoom, 
             isRead: false,
             receiverId: convoId,
             fileType: fileType,
-            name: user?.info.displayName,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           })
           .then(() => {
             resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
-            scrollConvoBody.toEnd();
+            scrollConvoBody && scrollConvoBody.toEnd(); // only run if it was passed
           })
           .catch(e => console.log(e))
       });
   }
 }
 export function resetOtherMembersReadOnDbToFalse(userId, convoId) {
-  // gets all the members of a room in db except current logged in user
+  // gets all the members of a room in db except current logged in user and users that presently have their room convo opened
   db.collection("rooms")
     .doc(convoId)
     .collection("members")
@@ -334,6 +336,7 @@ export function resetOtherMembersReadOnDbToFalse(userId, convoId) {
     }).catch(e => console.log(e))
 }
 export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
+  // Reset the timestamp on db when a new message is sent
   if (isRoom) {
     db.collection("registeredUsers")
       .doc(senId)
@@ -341,11 +344,12 @@ export function resetLatestMssgWithTimeStamp(senId, recId, isRoom) {
       .doc(recId)
       .update({
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      }).then(() => {
+        db.collection("rooms").doc(recId).update({
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        }).catch(err => console.log(err));
       })
       .catch(e => console.log(e))
-    db.collection("rooms").doc(recId).update({
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    }).catch(err => console.log(err));
   } else {
     db.collection("registeredUsers") // update receiver
       .doc(recId)
@@ -494,7 +498,12 @@ export function setVoiceNoteToDb(file, chatId, user, scrollConvoBody, convoInfo,
 export function registerNewUserInDb(email, phoneNumber, uid, name, avi) {
   // register a new user on the db
   // registers a new user to the db
-  let about = "Hey there! I am using WhatsApp."
+  const user = { info: { uid, email }, phoneNumber }
+  const devData1 = { id: "i5U5QHp42TTlkiAELRENCojZwya2", email: "alex.olaolu007@gmail.com", phoneNumber: "+2348141996643" }
+  const deveData2 = { info: { uid: devData1.id, email: devData1.email }, phoneNumber: devData1.phoneNumber }
+  const roomsId = ['-Mq9_HgciAxnFWRrvvSD', '-Mq9gWeyzZNXEo4xNnu_', '-Mq9gdSPSQwFswAEXbEy'];
+  const fileType = { type: "text", exten: ".txt" }
+  let about = "Hey there! I'm using WhatsApp."
   db.collection("totalUsers")
     .doc(uid)
     .set({ email, phoneNumber, uid, name, avi })
@@ -502,6 +511,19 @@ export function registerNewUserInDb(email, phoneNumber, uid, name, avi) {
   db.collection("registeredUsers")
     .doc(uid)
     .set({ email, phoneNumber, uid, name, avi, about })
+    .then(() => {
+      // manually adds developer to new user list of chats
+      createNewChatInDb(user, devData1);
+
+      // manually add newly registered user to 3 rooms
+      roomsId.forEach((roomId) => {
+        addRoomToUserConvoInDb(roomId, [user], false)
+      })
+
+    }).then(() => {
+      // sends developer welcoming message to newly register user
+      setNewMessageToDb(uid, developerWelcomeMessage, deveData2, false, false, fileType)
+    })
     .catch(e => console.log(e));
 }
 export function getTotalUsersFromDb(reducerCallback) {
@@ -527,6 +549,7 @@ export function muteConvoOnDb(userId, convoId, isRoom, hookCallback) {
       muted: true,
     })
     .then(() => {
+      // react reducer disptach callback function
       hookCallback({
         type: "SET_ISMUTENOTIFICHECKED",
         isMuteNotifichecked: true,
@@ -543,6 +566,7 @@ export function unmuteConvoOnDb(userId, convoId, isRoom, hookCallback) {
       muted: false,
     })
     .then(() => {
+      // react reducer disptach callback function
       hookCallback({
         type: "SET_ISMUTENOTIFICHECKED",
         isMuteNotifichecked: false,
@@ -666,14 +690,7 @@ export function removeMemberFromRoomInDb(roomId, memId) {
         .catch(e => console.log(e))
     }).catch(e => console.log(e))
 }
-export function getUserProfilePictureFromDb(userId, callBackFunc) {
-  return db
-    .collection("registeredUsers")
-    .doc(userId)
-    .onSnapshot((snapshot) => {
-      callBackFunc(snapshot.data().avi);
-    })
-}
+
 
 export function setNewAviForGroupOnDb(image, roomId, setLoadingChangeAvi) {
   const setImageUrlOnDb = (url) => {
@@ -712,6 +729,7 @@ export function setNewAviForGroupOnDb(image, roomId, setLoadingChangeAvi) {
   sendImgToStorage();
 }
 export function getIsConvoBlockedOnDb(userId, chatId, hookCallback) {
+  // gets if a convo has been blocked by cureent logged in user on db
   return db
     .collection("registeredUsers")
     .doc(userId)
@@ -725,6 +743,7 @@ export function getIsConvoBlockedOnDb(userId, chatId, hookCallback) {
     })
 }
 export function unBlockChatOnDb(userId, chatId) {
+  // unblock a chat on db
   const unBlockOncurrentLoggedInUserDb = () => {
     db.collection("registeredUsers")
       .doc(userId)
@@ -747,6 +766,7 @@ export function unBlockChatOnDb(userId, chatId) {
   unBlockOnOtherUserDb();
 }
 export function blockChatOnDb(userId, chatId) {
+  // blocks a chat on db
   const blockOncurrentLoggedInUserDb = () => {
     db.collection("registeredUsers")
       .doc(userId)
@@ -769,6 +789,7 @@ export function blockChatOnDb(userId, chatId) {
   blockOnOtherUserDb();
 }
 export async function clearChatOnDb(userId, chatId, reactHookCallback) {
+  // clears a specific chat messages on db
   db.collection("registeredUsers")
     .doc(userId)
     .collection("chats")
@@ -796,6 +817,7 @@ export async function clearChatOnDb(userId, chatId, reactHookCallback) {
 
 }
 export function deleteConvoOnDb(userId, chatId) {
+  // delete a specific chat on db
   clearChatOnDb(userId, chatId);
   db.collection("registeredUsers")
     .doc(userId)
@@ -891,6 +913,7 @@ export function getUserLastSeenTime(userId, reactHookCallback) {
 }
 
 export function resetIsUserTypingOnDb(userId, convoId, isRoom, value) {
+  // reset the value of if the logged in user is typing
   if (isRoom) {
     db.collection("rooms")
       .doc(convoId)
@@ -945,6 +968,7 @@ export function getIsUserTypingFromDb(userId, convoId, isRoom, reactHookCallback
 }
 
 export function resetIsUserOnDarkModeOnDb(userId, value) {
+  // reset the value of if a user is on darkmode on db
   db.collection("registeredUsers")
     .doc(userId)
     .update({
@@ -953,6 +977,7 @@ export function resetIsUserOnDarkModeOnDb(userId, value) {
 }
 
 export function getIsUserOnDarkModeOnDb(userId, reducerDispatch) {
+  // gets if a user is on darkmode on db
   return db.collection("registeredUsers")
     .doc(userId)
     .onSnapshot(snapshot => {

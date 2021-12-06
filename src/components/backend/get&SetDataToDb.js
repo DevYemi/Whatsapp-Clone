@@ -1,5 +1,6 @@
 import db, { storage } from "./firebase";
 import firebase from "firebase/app";
+import { v4 as uuidv4 } from 'uuid';
 import developerWelcomeMessage from '../utils/developWelcomeMessage.js'
 
 
@@ -255,63 +256,69 @@ export function getCurrentChatNameFromDb(userId, chatId, hookCallback) {
 }
 export function setNewMessageToDb(convoId, text, user, scrollConvoBody, isRoom, fileType) {
   // send new sent message to db
-  var newMssgKey = firebase.database().ref().child("messages").push().key;
-  if (isRoom) {
-    db.collection("rooms")
-      .doc(convoId)
-      .collection("messages")
-      .add({
-        message: text,
-        senderId: user?.info.uid,
-        fileType: fileType,
-        name: user?.info.displayName,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      })
-      .then(() => {
-        resetRecieverMssgReadOnDb(user?.info?.uid, convoId, true, isRoom);
-        resetOtherMembersReadOnDbToFalse(user?.info?.uid, convoId)
-        resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
-        scrollConvoBody.toEnd();
-      })
-      .catch(e => console.log(e))
-  } else {
-    db.collection("registeredUsers") // set to sender
-      .doc(user?.info.uid)
-      .collection("chats")
-      .doc(convoId)
-      .collection("messages")
-      .doc(newMssgKey)
-      .set({
-        message: text,
-        senderId: user?.info.uid,
-        isRead: true,
-        receiverId: convoId,
-        fileType: fileType,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      })
-      .then(() => {
-        //set to reciever
-        db.collection("registeredUsers") // set to reciever
-          .doc(convoId)
-          .collection("chats")
-          .doc(user?.info.uid)
-          .collection("messages")
-          .doc(newMssgKey)
-          .set({
-            message: text,
-            senderId: user?.info?.uid,
-            isRead: false,
-            receiverId: convoId,
-            fileType: fileType,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          })
-          .then(() => {
-            resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
-            scrollConvoBody && scrollConvoBody.toEnd(); // only run if it was passed
-          })
-          .catch(e => console.log(e))
-      });
+  try {
+
+    var newMssgKey = uuidv4();
+    if (isRoom) {
+      db.collection("rooms")
+        .doc(convoId)
+        .collection("messages")
+        .add({
+          message: text,
+          senderId: user?.info.uid,
+          fileType: fileType,
+          name: user?.info.displayName,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => {
+          resetRecieverMssgReadOnDb(user?.info?.uid, convoId, true, isRoom);
+          resetOtherMembersReadOnDbToFalse(user?.info?.uid, convoId)
+          resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
+          scrollConvoBody.toEnd();
+        })
+        .catch(e => console.log(e))
+    } else {
+      db.collection("registeredUsers") // set to sender
+        .doc(user?.info.uid)
+        .collection("chats")
+        .doc(convoId)
+        .collection("messages")
+        .doc(newMssgKey)
+        .set({
+          message: text,
+          senderId: user?.info.uid,
+          isRead: true,
+          receiverId: convoId,
+          fileType: fileType,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => {
+          //set to reciever
+          db.collection("registeredUsers") // set to reciever
+            .doc(convoId)
+            .collection("chats")
+            .doc(user?.info.uid)
+            .collection("messages")
+            .doc(newMssgKey)
+            .set({
+              message: text,
+              senderId: user?.info?.uid,
+              isRead: false,
+              receiverId: convoId,
+              fileType: fileType,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            })
+            .then(() => {
+              resetLatestMssgWithTimeStamp(user?.info.uid, convoId, isRoom);
+              scrollConvoBody && scrollConvoBody.toEnd(); // only run if it was passed
+            })
+            .catch(e => console.log(e))
+        });
+    }
+  } catch (e) {
+    console.log(e.message)
   }
+
 }
 export function resetOtherMembersReadOnDbToFalse(userId, convoId) {
   // gets all the members of a room in db except current logged in user and users that presently have their room convo opened

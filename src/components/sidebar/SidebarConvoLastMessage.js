@@ -83,7 +83,7 @@ function SidebarChatLastMessage({ lastMessage, isRoom }) {
 
                 }
                 {" "}
-                {message}
+                <span>{message}</span>
             </div>
         )
     } else if (fileType?.info?.type === "image") {

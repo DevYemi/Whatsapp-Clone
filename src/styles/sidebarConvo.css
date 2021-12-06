@@ -74,6 +74,14 @@
     position: relative;
 }
 
+.sidebarConvo__info>div>span {
+    width: 100%;
+    max-width: 151px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .sidebarConvo__info>div.dark {
     color: white;
 }

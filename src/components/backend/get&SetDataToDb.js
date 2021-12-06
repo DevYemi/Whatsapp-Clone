@@ -449,8 +449,7 @@ export function resetUserRoomOnScreenInDb(userId, roomId, value) {
 }
 export function uploadFileToDb(file, fileInfo, setFileOnPreview, setIsFileOnPreviewLoading) {
   // upload files e.g image, audio, video to strorage and returns the URL
-  const newKey = firebase.database().ref().child("file").push().key;
-  console.log(newKey)
+  const newKey = uuidv4();
   const uploadTask = storage.ref(`${fileInfo.type}/${newKey}`).put(file); // saved new image to storage
   uploadTask.on(
     "state_changed",
@@ -477,7 +476,7 @@ export function uploadFileToDb(file, fileInfo, setFileOnPreview, setIsFileOnPrev
 }
 export function setVoiceNoteToDb(file, chatId, user, scrollConvoBody, convoInfo, min, sec) {
   // upload the new created voice note to strorage and send the url to db
-  const newKey = firebase.database().ref().child("file").push().key;
+  const newKey = uuidv4();
   const uploadTask = storage.ref(`audio/voice-note${newKey}`).put(file);
   uploadTask.on(
     "state_changed",

@@ -24,7 +24,7 @@
 .message__image,
 .message__VN_wr {
   font-size: 0.9rem;
-  word-break: break-all;
+  overflow-wrap: break-word;
   padding: 0.6em;
   max-width: 70%;
   background-color: #ffffff;

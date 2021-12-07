@@ -1,13 +1,14 @@
 
 // THIS IS A WELCOME MESSAGE THAT IS SENT BY THE DEVELOPER TO A NEWLY REGISTERED USER
-const developerWelcomeMessage = `Hi there, i'm Adeyanju Adeyemi the developer of this whatsapp web clone and thanks for checking it out <br/>
+const firstMessage = `Hi there, i'm Adeyanju Adeyemi the developer of this whatsapp web clone and thanks for checking it out <br/>
 **DISCALIMER** <br />
 - THIS IS NOT THE REAL WHATSAPP WEB <br />
 - THIS IS A PORTFOLIO PROJECT BUILT WITH REACT (FRONT-END) AND FIREBASE (BACK-END) <br />
 - FIREBASE WAS DEVELOPED BY GOOGLE AND SO ITS VERY SECURE BUT I WILL STILL ADVISE NOT TO SEND ANY VERY SENSITIVE DATA ON HERE <br />
 <br  />
-<br  />
-Okay enough of those technical jargons and lets get to the fun part lol. <br  />
+<br  />`
+
+const secondMessage = `Okay enough of those technical jargons and lets get to the fun part lol. <br  />
 <br  />
 WHAT CAN THIS WEB APP DO ???? <br  />
 - End-to-End real time chat capability <br />
@@ -29,13 +30,12 @@ WHAT CAN THIS WEB APP DO ???? <br  />
 - Dark Mode feature <br />
 - Fully responsive for mobile user and web user <br />
 <br  />
-<br  />
-Omo that's all i can remember right now so just play around with it and tell me what you think <br />
+<br  />`
+
+const thirdMessage = `Omo that's all i can remember right now so just play around with it and tell me what you think <br />
 <br  />
 PS: incase this thing go crash as you dey use am abeg no vex! just refresh the message and send me a message, i fit don miss some bugs
-
-
-
-
 `
-export default developerWelcomeMessage
+
+const developerWelcomeMessages = [firstMessage, secondMessage, thirdMessage];
+export default developerWelcomeMessages

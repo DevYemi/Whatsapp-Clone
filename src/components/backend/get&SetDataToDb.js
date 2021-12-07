@@ -1,7 +1,7 @@
 import db, { storage } from "./firebase";
 import firebase from "firebase/app";
 import { v4 as uuidv4 } from 'uuid';
-import developerWelcomeMessage from '../utils/developWelcomeMessage.js'
+import developerWelcomeMessages from '../utils/developWelcomeMessage.js'
 
 
 
@@ -108,7 +108,7 @@ export function createNewChatInDb(user, chatUser, shouldOpenChatCallback) {
     .catch(e => console.log(e))
 }
 export function createNewRoomInDb(user, roomName) {
-  var newRoomKey = firebase.database().ref().child("rooms").push().key;
+  var newRoomKey = uuidv4();
   db.collection("registeredUsers") // add room to creator db
     .doc(user?.info.uid)
     .collection("rooms")
@@ -527,8 +527,10 @@ export function registerNewUserInDb(email, phoneNumber, uid, name, avi) {
       })
 
     }).then(() => {
-      // sends developer welcoming message to newly register user
-      setNewMessageToDb(uid, developerWelcomeMessage, deveData2, false, false, fileType)
+      // sends developer welcoming messages to newly register user
+      developerWelcomeMessages.forEach(mssg => {
+        setNewMessageToDb(uid, mssg, deveData2, false, false, fileType);
+      })
     })
     .catch(e => console.log(e));
 }

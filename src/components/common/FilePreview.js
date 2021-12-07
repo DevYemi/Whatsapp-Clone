@@ -42,6 +42,7 @@ function FilePreview(props) {
     }
     const sendFileOnPreview = async (e) => {
         e.preventDefault();
+        if (isFileOnPreviewLoading) return;
         let done = await filePreviewAnimation.close();
         if (fileOnPreview && done) {
             sendMessage(null, "file", fileOnPreview);

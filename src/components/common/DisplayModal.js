@@ -177,7 +177,8 @@ function DisplayModal(props) {
                   />
                 </form>
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault()
                     if (modalInput === "") return;
                     add.room(setModalInput, modalInput, user, totalUserOnDb);
                     handleClose();

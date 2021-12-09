@@ -26,7 +26,7 @@ WHAT CAN THIS WEB APP DO ???? <br  />
 - Create a room and add your contact list to the room <br />
 - Make fellow members admin in a room which gives them the ability to edit the room infos <br />
 - As admin, you can remove other users <br />
-- Indicator when a user is online and when a user is currently typing and also shows a user last seen when they log out. <br />
+- Indicator when a user is online and when a user is currently typing, when internet connection is lost and reconnected and also shows a user last seen when they log out. <br />
 - Dark Mode feature <br />
 - Fully responsive for mobile user and web user <br />
 <br  />
@@ -34,7 +34,7 @@ WHAT CAN THIS WEB APP DO ???? <br  />
 
 const thirdMessage = `Omo that's all i can remember right now so just play around with it and tell me what you think <br />
 <br  />
-PS: incase this thing go crash as you dey use am abeg no vex! just refresh the message and send me a message, i fit don miss some bugs
+PS: incase this thing go crash as you dey use am abeg no vex! just refresh the App and send me a direct message, i fit don miss some bugs
 `
 
 const developerWelcomeMessages = [firstMessage, secondMessage, thirdMessage];

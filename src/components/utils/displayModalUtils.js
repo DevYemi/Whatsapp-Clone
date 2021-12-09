@@ -67,6 +67,13 @@ export const add = { // create new chat,room and a send to db
 
 }
 
+export function isLoggedInUserAdmin(user, roomMembers) {
+    // checks and return value if logged user is an admin of a group
+    const member = roomMembers.filter(mem => mem.id === user?.info?.uid)
+
+    return member[0]?.isAdmin
+}
+
 export const clickedRoomMember = {
     startChat: function (user, userChats, clickedMember, handleClose, setIsAddChatFromRoomProfile) {
         const openChat = () => {

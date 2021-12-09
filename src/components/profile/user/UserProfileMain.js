@@ -54,7 +54,7 @@ function UserProfileMain(props) {
                             ))}
                         </div>
                             :
-                            <p>No Media, Links and Docs</p>
+                            <p className={isUserOnDarkMode ? "dark-mode-color1" : ""}>No Media, Links and Docs</p>
                     }
                     <div className="userProfileBody__sec2Doc"></div>
                 </section>

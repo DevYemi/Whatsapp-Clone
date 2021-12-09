@@ -27,7 +27,7 @@ import { ArrowBackRounded, CheckRounded, CloseRounded, SearchOutlined } from "@m
 import ModalAddParticipant from "./ModalAddParticipant";
 import { Avatar } from "@material-ui/core";
 import Loading from "./Loading";
-import { addParticipantAnimation, getChatThatAreNotMembers, handleRemoveParticipant, clickedRoomMember, add } from '../utils/displayModalUtils'
+import { addParticipantAnimation, getChatThatAreNotMembers, isLoggedInUserAdmin, handleRemoveParticipant, clickedRoomMember, add } from '../utils/displayModalUtils'
 
 const useStylesTextField = makeStyles((theme) => ({
   root: {
@@ -654,7 +654,7 @@ function DisplayModal(props) {
                         <div key={participant?.info.uid}
                           className={`${isUserOnDarkMode && "dark-mode1"}`}>
                           <Avatar src={participant?.info.avi} />
-                          <span>{participant?.info.name}</span>
+                          <span className={isUserOnDarkMode ? "dark-mode-color1" : ""}>{participant?.info.name}</span>
                           <CloseRounded onClick={() => handleRemoveParticipant(participant?.info.uid, selectedParticipant, setSelectedParticipant)} />
                         </div>
                       ))
@@ -676,7 +676,7 @@ function DisplayModal(props) {
                       ))
                       :
                       (
-                        <p>You currently dont have any active chats</p>
+                        <p className={isUserOnDarkMode ? "dark-mode-color1" : ""}>You currently dont have any active chats</p>
                       )
 
                     }
@@ -772,7 +772,7 @@ function DisplayModal(props) {
                   }}>
                   Start Chat
                 </p>
-                {!selectedPreviewMember?.isAdmin && <p
+                {(!selectedPreviewMember?.isAdmin && isLoggedInUserAdmin(user, roomMembers)) && <p
                   className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
                   onClick={() => { setModalType("CONFIRM_MAKE_ADMIN") }}>
                   Make Group Admin

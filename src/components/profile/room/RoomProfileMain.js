@@ -326,7 +326,7 @@ function RoomProfileMain(props) {
                 </section>
                 <section className={`roomProfileBody__sec3 ${isUserOnDarkMode && "dark-mode2"}`}>
                     <div onClick={() => { animate.open(true); setUpSidebarType("MEDIA-DOCS"); }} className="roomProfileBody__sec3Info">
-                        <p>Media, Links and Docs</p>
+                        <p >Media, Links and Docs</p>
                         <ArrowForwardIos className={`${isUserOnDarkMode && "dark-mode-color3"}`} />
                     </div>
                     {
@@ -340,7 +340,7 @@ function RoomProfileMain(props) {
                             ))}
                         </div>
                             :
-                            <p>No Media, Links and Docs</p>
+                            <p className={isUserOnDarkMode ? "dark-mode-color1" : ""}>No Media, Links and Docs</p>
                     }
                     <div className="roomProfileBody__sec3Doc"></div>
                 </section>
@@ -394,7 +394,7 @@ function RoomProfileMain(props) {
                             <div
                                 key={index}
                                 onClick={() => {
-                                    if (member.id !== user?.info?.uid && isAdmin) {
+                                    if (member.id !== user?.info?.uid) {
                                         disptach({
                                             type: "SET_SELECTEDPREVIEWMEMBER",
                                             selectedPreviewMember: member

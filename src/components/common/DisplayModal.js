@@ -777,11 +777,14 @@ function DisplayModal(props) {
                   onClick={() => { setModalType("CONFIRM_MAKE_ADMIN") }}>
                   Make Group Admin
                 </p>}
-                <p
-                  className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
-                  onClick={() => { setModalType("REMOVE_FROM_GROUP") }}>
-                  Remove From Group
-                </p>
+                {isLoggedInUserAdmin(user, roomMembers) &&
+                  <p
+                    className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
+                    onClick={() => { setModalType("REMOVE_FROM_GROUP") }}>
+                    Remove From Group
+                  </p>
+                }
+
                 <p
                   className={` ${isUserOnDarkMode && "dark-modeHover"}  ${isUserOnDarkMode && "dark-mode2"}`}
                   onClick={handleClose}>

@@ -26,7 +26,7 @@ Then for the backend you will need to create a Firebase Account with your Google
 
 ![image](/public/img/readme1.png)
 
-After copying the config, open the src dir in the root dir then open the backend dir and create a "firebase.js" file there. Paste the copied API keys into "firebaseConfig" const and save the file
+After copying the config, open the src dir in the root dir then open the backend dir and create a "firebase.js" file there. Paste the copied API keys into "firebaseConfig" const and save the file. Your firebase.js file must look exactly like the one displayed in the image attached below.
 
 ![image](/public/img/readme2.png)
 
